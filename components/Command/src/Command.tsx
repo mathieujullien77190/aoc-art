@@ -28,7 +28,10 @@ const Command = ({
 	const displayResult = useDisplayByLetter({
 		baseTxt: result,
 		canRendered,
-		animation,
+		animation:
+			baseCommand?.display?.animation !== undefined
+				? baseCommand?.display?.animation
+				: animation,
 		lang,
 		reverse: baseCommand?.display?.reverse,
 		stepTime: baseCommand?.display?.stepTime,
