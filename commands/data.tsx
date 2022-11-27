@@ -1,4 +1,5 @@
 /** @format */
+import { useState } from "react"
 import { BaseCommand, Help } from "_/types"
 import reactStringReplace from "react-string-replace"
 import uniqid from "uniqid"
@@ -174,6 +175,34 @@ export const commands: BaseCommand[] = [
 				}
 			}
 		},
+		JSX: () => {
+			const [display, setDisplay] = useState<boolean>(true)
+
+			return (
+				<>
+					{display && (
+						<div
+							style={{
+								display: "flex",
+								position: "fixed",
+								justifyContent: "center",
+								top: "24px",
+								right: "24px",
+								bottom: "24px",
+								left: "24px",
+								zIndex: 10,
+								background: colors.overlay,
+								border: `solid 2px ${colors.textColor}`,
+								cursor: "pointer",
+								overflow: "hidden",
+							}}
+							onClick={() => setDisplay(false)}
+						></div>
+					)}
+				</>
+			)
+		},
+
 		help: {
 			description: "Affiche l'exercice du jour En ASCII Art ",
 			patterns: [
@@ -186,6 +215,9 @@ export const commands: BaseCommand[] = [
 					description: "Affiche un jour spécifique",
 				},
 			],
+		},
+		display: {
+			animation: false,
 		},
 	},
 	{

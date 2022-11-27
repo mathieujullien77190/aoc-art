@@ -36,7 +36,6 @@ export default class MyDocument extends Document {
 	}
 
 	render() {
-		const isProd = process.env.NODE_ENV === "production"
 		return (
 			<Html lang="fr">
 				<Head>

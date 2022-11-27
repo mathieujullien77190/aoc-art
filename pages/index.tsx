@@ -15,6 +15,7 @@ import {
 	setIsRendered,
 	useGetCommands,
 	useGetCurrentCommand,
+	useGetStart,
 } from "_store/history/"
 import { useGetLanguage, useGetAnimation } from "_store/global/"
 
@@ -25,6 +26,7 @@ const Home = () => {
 	const commands = useGetCommands()
 	const options = { animation: useGetAnimation(), lang: useGetLanguage() }
 	const currentCommand = useGetCurrentCommand()
+	const start = useGetStart()
 
 	const handleRendered = useCallback(
 		(id: string) => {
@@ -82,20 +84,24 @@ const Home = () => {
 		handleSendRestrictedCommand("welcome")
 	}, [handleSendRestrictedCommand, handleSendCommand])
 
+	useEffect(() => {
+		if (start === true && location.hash.includes("#")) {
+			handleSendCommand(location.hash.substring(1).split("_").join(" "))
+		}
+	}, [start])
+
 	return (
 		<Layout onClick={handleClick}>
-			<>
-				<Terminal
-					options={options}
-					commands={commands}
-					currentCommand={currentCommand}
-					onSendCommand={handleSendCommand}
-					onSendRestrictedCommand={handleSendRestrictedCommand}
-					onSendPreviousCommand={() => handleSetCursor(-1)}
-					onSendNextCommand={() => handleSetCursor(1)}
-					onRendered={handleRendered}
-				/>
-			</>
+			<Terminal
+				options={options}
+				commands={commands}
+				currentCommand={currentCommand}
+				onSendCommand={handleSendCommand}
+				onSendRestrictedCommand={handleSendRestrictedCommand}
+				onSendPreviousCommand={() => handleSetCursor(-1)}
+				onSendNextCommand={() => handleSetCursor(1)}
+				onRendered={handleRendered}
+			/>
 		</Layout>
 	)
 }

@@ -37,6 +37,7 @@ export type BaseCommand = {
 		reverse?: boolean
 		stepTime?: number
 		stepSize?: number
+		animation?: boolean
 	}
 }
 

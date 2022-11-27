@@ -2,6 +2,7 @@
 
 export const colors = {
 	background: "#212E35",
+	overlay: "#005481c2",
 	textColor: "#CED4DF",
 	importantColor: "#FFCC6A",
 	cmdColor: "#c4e98d",
