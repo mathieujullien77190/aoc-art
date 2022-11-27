@@ -11,7 +11,6 @@ import { scripts } from "./script"
 
 import { setProperties } from "_store/global/"
 import { clear } from "_store/history/"
-import Script from "next/script"
 
 const textHelp = (help: Help) => {
 	const patterns = help.patterns
