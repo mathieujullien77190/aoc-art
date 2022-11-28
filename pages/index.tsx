@@ -2,8 +2,8 @@
 
 import React, { useCallback, useEffect } from "react"
 
-import { findCommand } from "_commands/data"
-import { createCommand } from "_commands/terminalEngine"
+import { commands as baseCommands } from "_commands/commands"
+import { createCommand, findCommand } from "_commands/terminalEngine"
 
 import Layout from "_components/Layout"
 import Terminal from "_components/Terminal"
@@ -37,13 +37,29 @@ const Home = () => {
 
 	const handleSendRestrictedCommand = useCallback(
 		(commandPattern: string) => {
-			const cmd = createCommand(commandPattern, true)
-			const baseCmd = findCommand(cmd.name, true)
+			const cmd = createCommand({
+				commands: baseCommands,
+				commandPattern,
+				restricted: true,
+			})
+			const baseCmd = findCommand({
+				commands: baseCommands,
+				name: cmd.name,
+				restricted: true,
+			})
 
 			if (baseCmd?.redux && cmd.canExecute)
 				dispatch(baseCmd.redux({ args: cmd.args }))
 
-			dispatch(addCommand(createCommand(commandPattern, true)))
+			dispatch(
+				addCommand(
+					createCommand({
+						commands: baseCommands,
+						commandPattern,
+						restricted: true,
+					})
+				)
+			)
 		},
 		[dispatch]
 	)
@@ -56,8 +72,16 @@ const Home = () => {
 
 	const handleSendCommand = useCallback(
 		(commandPattern: string) => {
-			const cmd = createCommand(commandPattern, false)
-			const baseCmd = findCommand(cmd.name, false)
+			const cmd = createCommand({
+				commands: baseCommands,
+				commandPattern,
+				restricted: false,
+			})
+			const baseCmd = findCommand({
+				commands: baseCommands,
+				name: cmd.name,
+				restricted: false,
+			})
 
 			if (baseCmd?.redux && cmd.canExecute)
 				dispatch(baseCmd.redux({ args: cmd.args }))

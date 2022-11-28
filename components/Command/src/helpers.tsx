@@ -1,11 +1,10 @@
 /** @format */
 import reactStringReplace from "react-string-replace"
-import { Trad } from "_/types"
 import { colors, app } from "_components/constants"
 import uniqid from "uniqid"
 import React from "react"
 
-export const trad = (input: Trad | string, lang: string) => {
+export const trad = (input: string, lang: string) => {
 	if (lang === "leet") return frToLeet(input["fr"] || input)
 	if (lang === "xleet") return frToLeet(input["fr"] || input, true)
 	if (lang === "#")

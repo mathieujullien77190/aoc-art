@@ -1,15 +1,12 @@
 /** @format */
-import { useState } from "react"
 
 import { BaseCommand, Help } from "_/types"
-import reactStringReplace from "react-string-replace"
-import uniqid from "uniqid"
 
 import { colors, app } from "_components/constants"
 
-import { title } from "./asciArt"
+import { title, highlightFlower } from "./asciArt"
 
-import { scripts, Games } from "./script"
+import { scripts, Games } from "_scripts/script"
 
 import { setProperties } from "_store/global/"
 import { clear } from "_store/history/"
@@ -23,7 +20,7 @@ const textHelp = (help: Help) => {
 	}${patterns}`
 }
 
-const allCommandsHelp = () => {
+const allCommandsHelp = (commands: BaseCommand[]) => {
 	return commands
 		.filter(
 			command => !command.restricted && command.help && command.name !== "help"
@@ -37,38 +34,9 @@ const allCommandsHelp = () => {
 		.join("")
 }
 
-const highlightFlower = (text, baseStyles) => {
-	let result = text
-
-	const list = [
-		{ reg: /R(.*)R/g, styles: { color: colors.restrictedColor } },
-		{ reg: /I(.*)I/g, styles: { color: colors.importantColor } },
-		{ reg: /B(.*)B/g, styles: { color: colors.infoColor } },
-		{ reg: /G(.*)G/g, styles: { color: colors.appColor } },
-		{ reg: /T(.*)T/g, styles: { color: colors.restrictedColor } },
-		{ reg: /J(.*)J/g, styles: { color: colors.importantColor } },
-		{ reg: /H(.*)H/g, styles: { color: colors.appColor } },
-		{ reg: /K(.*)K/g, styles: { color: colors.restrictedColor } },
-		{ reg: /X(.*)X/g, styles: { color: colors.restrictedColor } },
-		{ reg: /D(.*)D/g, styles: { color: colors.appColor } },
-		{ reg: /Z(.*)Z/g, styles: { color: colors.infoColor } },
-	]
-
-	list.forEach(item => {
-		result = reactStringReplace(result, item.reg, (match, i) => (
-			<span
-				key={uniqid()}
-				style={{
-					...item.styles,
-					...baseStyles,
-				}}
-			>
-				{match}
-			</span>
-		))
-	})
-
-	return result
+const commandHelp = (commands: BaseCommand[], name: string): Help | null => {
+	const select = commands.filter(command => command.name === name)[0]
+	return select?.help || null
 }
 
 export const commands: BaseCommand[] = [
@@ -77,8 +45,11 @@ export const commands: BaseCommand[] = [
 		name: "welcome",
 		action: () => {
 			return [
+				"\n",
 				`Bienvenue, Vous êtes sur $${app.name}$.`,
+				"\n",
 				"Pour voir le ASCII Art d'un jour précis tapez : `day [nbDay]`",
+				"Pour lister tout les scripts tapez : `day list`",
 				"Pour obtenir plus d'information tapez : `help` ",
 			].join("\n")
 		},
@@ -127,7 +98,7 @@ export const commands: BaseCommand[] = [
 		restricted: true,
 		name: "argumenterror",
 		action: () => {
-			return { fr: `argument(s) non reconnu`, en: "xxx" }
+			return "argument(s) non reconnu"
 		},
 		help: {
 			description:
@@ -138,14 +109,15 @@ export const commands: BaseCommand[] = [
 	{
 		restricted: false,
 		name: "help",
-		action: ({ args, help }) => {
+		action: ({ args, help, commands }) => {
 			if (args.length === 0) {
-				return `${textHelp(
-					help
-				)}\nListe des commandes : \n\n${allCommandsHelp()}`
+				return `${textHelp(help)}\nListe des commandes : \n\n${allCommandsHelp(
+					commands
+				)}`
 			} else {
-				const select = findCommand(args[0], null)
-				if (select) return textHelp(select.help)
+				const select = commandHelp(commands, args[0])
+
+				if (select) return textHelp(select)
 				return "Cette commande n’existe pas"
 			}
 		},
@@ -163,7 +135,17 @@ export const commands: BaseCommand[] = [
 		restricted: false,
 		name: "day",
 		action: ({ args }) => {
+			if (args[0] === "list") {
+				return (
+					"\n" +
+					scripts
+						.map(script => ` • +day ${script.day}+ : ${script.fn()}`)
+						.join("\n")
+				)
+			}
+
 			const search = scripts.filter(script => script.day === args[0])
+
 			if (search.length === 1) {
 				return `§Jour : ${search[0].day}§\n\n${search[0].fn()}`
 			} else {
@@ -181,6 +163,10 @@ export const commands: BaseCommand[] = [
 					pattern: "day [numero]",
 					description: "Affiche un jour spécifique",
 				},
+				{
+					pattern: "day list",
+					description: "Liste tout les scripts",
+				},
 			],
 		},
 		display: {
@@ -191,9 +177,7 @@ export const commands: BaseCommand[] = [
 		restricted: false,
 		name: "hello",
 		action: ({ args }) => {
-			return args.length === 0
-				? { fr: "Hello le monde", en: "xxx" }
-				: { fr: `Hello ${args.join(" ")}`, en: "xxx" }
+			return args.length === 0 ? "Hello le monde" : `Hello ${args.join(" ")}`
 		},
 		help: {
 			description: "Affiche du texte à l'écran",
@@ -252,9 +236,7 @@ export const commands: BaseCommand[] = [
 		name: "animation",
 		testArgs: { authorize: ["on", "off"], empty: false },
 		action: ({ args }) => {
-			return args[0] === "on"
-				? { fr: "activé", en: "enabled" }
-				: { fr: "désactiver", en: "disabled" }
+			return args[0] === "on" ? "activé" : "désactiver"
 		},
 		redux: ({ args }) => {
 			return setProperties({
@@ -281,7 +263,7 @@ export const commands: BaseCommand[] = [
 		name: "lang",
 		testArgs: { authorize: ["fr", "leet", "xleet", "#"], empty: false },
 		action: ({ args }) => {
-			return { fr: `langage : ${args[0]}`, en: `language : ${args[0]}` }
+			return `langage : ${args[0]}`
 		},
 		redux: ({ args }) => {
 			return setProperties({
@@ -312,26 +294,3 @@ export const commands: BaseCommand[] = [
 		},
 	},
 ]
-
-export const findCommand = (
-	name: string,
-	restricted: boolean = false
-): BaseCommand | null => {
-	return (
-		commands.filter(
-			command =>
-				command.name === name &&
-				(command.restricted === restricted || restricted === null)
-		)[0] || null
-	)
-}
-
-export const autocompleteCommand = (startCommand: string): string => {
-	if (startCommand === "") return ""
-
-	const find = commands.filter(
-		command => !command.restricted && command.name.indexOf(startCommand) === 0
-	)
-	if ((find[0]?.name || "").length === startCommand.length) return ""
-	return find[0]?.name || ""
-}

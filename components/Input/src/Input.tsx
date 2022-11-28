@@ -12,7 +12,8 @@ import { isMobile } from "react-device-detect"
 
 import { app } from "_components/constants"
 
-import { autocompleteCommand } from "_commands/data"
+import { commands as baseCommands } from "_commands/commands"
+import { autocompleteCommand } from "_commands/terminalEngine"
 
 import * as S from "./UI"
 import { cleanCommand } from "./helpers"
@@ -31,7 +32,10 @@ export const Input = ({
 	const handleKeyUp = useCallback(
 		(e: KeyboardEvent<HTMLInputElement>) => {
 			const commandPattern = cleanCommand(e.currentTarget.value)
-			const autocomplete = autocompleteCommand(commandPattern)
+			const autocomplete = autocompleteCommand({
+				commands: baseCommands,
+				startCommand: commandPattern,
+			})
 
 			setNbsLetters(e.currentTarget.value.length)
 			setPredict(autocomplete)
