@@ -163,50 +163,15 @@ export const commands: BaseCommand[] = [
 		restricted: false,
 		name: "day",
 		action: ({ args }) => {
-			if (args.length === 0) {
-				return `§Jour : ${scripts[scripts.length - 1].day}§\n\n${scripts[
-					scripts.length - 1
-				].fn()}`
-			} else if (args[0]) {
-				const search = scripts.filter(script => script.day === args[0])
-				if (search.length === 1) {
-					return `§Jour : ${search[0].day}§\n\n${search[0].fn()}`
-				} else {
-					return `Aucun script pour le jour §${args[0]}§`
-				}
+			const search = scripts.filter(script => script.day === args[0])
+			if (search.length === 1) {
+				return `§Jour : ${search[0].day}§\n\n${search[0].fn()}`
+			} else {
+				return `Aucun script pour ce jour `
 			}
 		},
 		JSX: ({ args }) => {
-			const [display, setDisplay] = useState<boolean>(true)
-
-			const search = scripts.filter(script => script.day === args[0])
-
-			return (
-				<>
-					{display && search.length === 1 && (
-						<div
-							style={{
-								display: "flex",
-								position: "fixed",
-								justifyContent: "center",
-								alignItems: "center",
-								top: "24px",
-								right: "24px",
-								bottom: "24px",
-								left: "24px",
-								zIndex: 10,
-								background: colors.overlay,
-								border: `solid 2px ${colors.textColor}`,
-								cursor: "pointer",
-								overflow: "hidden",
-							}}
-							onClick={() => setDisplay(false)}
-						>
-							<Games day={args[0]} />
-						</div>
-					)}
-				</>
-			)
+			return <Games day={args[0]} />
 		},
 
 		help: {
