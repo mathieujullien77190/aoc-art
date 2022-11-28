@@ -35,7 +35,7 @@ export const Games = ({ day }: { day: string }) => {
 						background: colors.overlay,
 						border: `solid 2px ${colors.textColor}`,
 						cursor: "pointer",
-						overflow: "hidden",
+						overflow: "auto",
 					}}
 					onClick={() => setDisplay(false)}
 				>

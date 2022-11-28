@@ -6,17 +6,17 @@ export type Help = {
 	patterns: { pattern: string; description: string }[]
 }
 
-export type Trad = { fr: string; en: string }
-
 export type Action = ({
 	name,
 	args,
 	help,
+	commands,
 }: {
 	name?: Command["name"]
 	args?: Command["args"]
 	help?: Command["help"]
-}) => Trad | string
+	commands?: BaseCommand[]
+}) => string
 
 export type Args = { authorize: string[]; empty: boolean }
 
@@ -45,7 +45,7 @@ export type Command = {
 	pattern: string
 	name: string
 	args: string[]
-	result: Trad | string
+	result: string
 	restricted: boolean
 	visible?: boolean
 	timestamp?: number

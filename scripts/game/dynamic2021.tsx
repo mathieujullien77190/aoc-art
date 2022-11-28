@@ -7,10 +7,15 @@ import { read } from "./helpers"
 type AnimationProps = { time: number }
 
 const Animation = ({ time }: AnimationProps) => {
+	let timer
 	const [text, setText] = useState<string>("")
 
 	useEffect(() => {
-		read(data, time, item => setText(item))
+		timer = read(data, time, item => setText(item))
+
+		return () => {
+			clearInterval(timer)
+		}
 	}, [])
 
 	return <pre style={{ fontSize: "10px", lineHeight: "6px" }}>{text}</pre>

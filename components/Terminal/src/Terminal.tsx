@@ -7,7 +7,8 @@ import { TerminalProps } from "./types"
 import Input from "_components/Input"
 import Command from "_components/Command"
 
-import { findCommand } from "_commands/data"
+import { commands as baseCommands } from "_commands/commands"
+import { findCommand } from "_commands/terminalEngine"
 
 import * as S from "./UI"
 
@@ -27,7 +28,11 @@ export const Terminal = ({
 				.filter(command => command.visible)
 				.map((command, i, all) => {
 					const prevIsRendered = i === 0 ? true : all[i - 1].isRendered
-					const baseCommand = findCommand(command.name, command.restricted)
+					const baseCommand = findCommand({
+						commands: baseCommands,
+						name: command.name,
+						restricted: command.restricted,
+					})
 
 					return (
 						<Command

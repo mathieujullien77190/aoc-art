@@ -61,7 +61,11 @@ export const sortString = str =>
 
 export const copy = objectOrArray => JSON.parse(JSON.stringify(objectOrArray))
 
-export const read = (arr, timeStep, fn) => {
+export const read = (
+	arr: string[],
+	timeStep: number,
+	fn: (arg: string) => void
+): number => {
 	const timer = window.setInterval(
 		initTime => {
 			const index = Math.floor((new Date().getTime() - initTime) / timeStep) - 1
@@ -71,4 +75,5 @@ export const read = (arr, timeStep, fn) => {
 		timeStep,
 		new Date().getTime()
 	)
+	return timer
 }
