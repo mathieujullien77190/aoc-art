@@ -71,7 +71,7 @@ const Command = ({
 							  )}
 					</S.CmdResult>
 
-					{baseCommand?.JSX && baseCommand.JSX()}
+					{baseCommand?.JSX && baseCommand.JSX({ args: command.args })}
 				</S.CmdContainer>
 			)}
 		</>

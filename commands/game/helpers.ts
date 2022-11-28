@@ -60,3 +60,15 @@ export const sortString = str =>
 		.join("")
 
 export const copy = objectOrArray => JSON.parse(JSON.stringify(objectOrArray))
+
+export const read = (arr, timeStep, fn) => {
+	const timer = window.setInterval(
+		initTime => {
+			const index = Math.floor((new Date().getTime() - initTime) / timeStep) - 1
+			if (arr[index]) fn.call(this, arr[index], timer)
+			else clearInterval(timer)
+		},
+		timeStep,
+		new Date().getTime()
+	)
+}

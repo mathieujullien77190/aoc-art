@@ -25,7 +25,7 @@ export type BaseCommand = {
 	name: string
 	action: Action
 	redux?: ({ args }: { args?: Command["args"] }) => unknown
-	JSX?: () => JSX.Element
+	JSX?: ({ args }: { args?: Command["args"] }) => JSX.Element
 	help?: Help
 	testArgs?: Args
 	display?: {
