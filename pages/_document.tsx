@@ -1,4 +1,5 @@
 /** @format */
+import { Fragment } from "react"
 
 import Document, {
 	Head,
@@ -24,10 +25,10 @@ export default class MyDocument extends Document {
 			return {
 				...initialProps,
 				styles: [
-					<>
+					<Fragment key="someKey">
 						{initialProps.styles}
 						{sheet.getStyleElement()}
-					</>,
+					</Fragment>,
 				],
 			}
 		} finally {

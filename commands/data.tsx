@@ -1,5 +1,6 @@
 /** @format */
 import { useState } from "react"
+
 import { BaseCommand, Help } from "_/types"
 import reactStringReplace from "react-string-replace"
 import uniqid from "uniqid"
@@ -7,8 +8,8 @@ import uniqid from "uniqid"
 import { colors, app } from "_components/constants"
 
 import { title } from "./asciArt"
-import { sameLetters, strSpaces } from "./helpers"
-import { scripts } from "./script"
+
+import { scripts, Games } from "./script"
 
 import { setProperties } from "_store/global/"
 import { clear } from "_store/history/"
@@ -175,17 +176,20 @@ export const commands: BaseCommand[] = [
 				}
 			}
 		},
-		JSX: () => {
+		JSX: ({ args }) => {
 			const [display, setDisplay] = useState<boolean>(true)
+
+			const search = scripts.filter(script => script.day === args[0])
 
 			return (
 				<>
-					{display && (
+					{display && search.length === 1 && (
 						<div
 							style={{
 								display: "flex",
 								position: "fixed",
 								justifyContent: "center",
+								alignItems: "center",
 								top: "24px",
 								right: "24px",
 								bottom: "24px",
@@ -197,7 +201,9 @@ export const commands: BaseCommand[] = [
 								overflow: "hidden",
 							}}
 							onClick={() => setDisplay(false)}
-						></div>
+						>
+							<Games day={args[0]} />
+						</div>
 					)}
 				</>
 			)
@@ -206,10 +212,6 @@ export const commands: BaseCommand[] = [
 		help: {
 			description: "Affiche l'exercice du jour En ASCII Art ",
 			patterns: [
-				{
-					pattern: "day",
-					description: "Affiche le dernier jour",
-				},
 				{
 					pattern: "day [numero]",
 					description: "Affiche un jour spécifique",
