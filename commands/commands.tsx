@@ -4,7 +4,7 @@ import { BaseCommand, Help } from "_/types"
 
 import { colors, app } from "_components/constants"
 
-import { title, highlightFlower } from "./asciArt"
+import { title, highlightFlower, plantFlowers } from "./asciArt"
 
 import { scripts, Games } from "_scripts/script"
 
@@ -139,7 +139,7 @@ export const commands: BaseCommand[] = [
 				return (
 					"\n" +
 					scripts
-						.map(script => ` • +day ${script.day}+ : ${script.fn()}`)
+						.map(script => ` > +day ${script.day}+ : ${script.fn()}`)
 						.join("\n")
 				)
 			}
@@ -254,6 +254,34 @@ export const commands: BaseCommand[] = [
 				{
 					pattern: "debug off",
 					description: "désactive les animations",
+				},
+			],
+		},
+	},
+	{
+		restricted: false,
+		name: "flowers",
+		action: () => {
+			return plantFlowers()
+		},
+		display: {
+			stylePre: {
+				fontSize: "calc(100vw/60)",
+				color: colors.appColor,
+				transform: "scaleX(-1)",
+				textAlign: "right",
+			},
+			highlight: text => highlightFlower(text, { fontSize: "calc(100vw/60)" }),
+			trad: false,
+			reverse: true,
+			stepTime: 1,
+			stepSize: 1,
+		},
+		help: {
+			patterns: [
+				{
+					pattern: "flowers",
+					description: `${app.logo}${app.logo}${app.logo} Plantez des fleurs ${app.logo}${app.logo}${app.logo}`,
 				},
 			],
 		},
