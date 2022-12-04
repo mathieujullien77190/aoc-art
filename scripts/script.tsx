@@ -22,6 +22,14 @@ const Container = styled.div`
 	overflow: auto;
 `
 
+const Info = styled.div`
+	border: solid 3px white;
+	padding: 24px;
+	position: fixed;
+	top: 24px;
+	right: 24px;
+`
+
 export const scripts = [
 	{
 		day: "-1",
@@ -52,6 +60,7 @@ export const Games = ({ day }: { day: string }) => {
 		<>
 			{display && search.length === 1 && (
 				<Container onClick={() => setDisplay(false)}>
+					<Info>Fermer</Info>
 					{day === "-1" && <Game2021 />}
 					{day === "1" && <GameDay1 />}
 					{day === "4" && <GameDay4 />}
