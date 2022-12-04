@@ -82,3 +82,29 @@ export const read = (
 	)
 	return timer
 }
+
+export const getNeighbours = (arr, lineI, columnI, matrix) => {
+	return matrix
+		.map(item => {
+			if (
+				arr[lineI + item[0]] &&
+				arr[lineI + item[0]][columnI + item[1]] !== undefined
+			) {
+				return {
+					value: arr[lineI + item[0]][columnI + item[1]],
+					lineI: lineI + item[0],
+					columnI: columnI + item[1],
+				}
+			}
+			return null
+		})
+		.filter(item => item !== null)
+}
+
+export const arr2DForEach = (arr, fn) => {
+	for (let i = 0; i < arr.length; i++) {
+		for (let j = 0; j < arr[i].length; j++) {
+			fn.call(this, { item: arr[i][j], indexLine: i, indexColumn: j })
+		}
+	}
+}
