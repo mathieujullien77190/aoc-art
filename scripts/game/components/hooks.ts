@@ -1,63 +1,120 @@
 /** @format */
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 
 import { read } from "../helpers"
 
-const stats = ({ countView, countChar, totalView, vps, speed }) => {
-	return `
+const end = `-----------------------
+|        END          |
+|                     |
+| Cliquez pour fermer |
+----------------------
+				`
 
---------------------------------------
-| Stats :                            |
-|                                    |
-| Total frame : ${(totalView.toLocaleString() + "             ").substring(
-		0,
-		13
-	)}        |
-| Current frame : ${(countView.toLocaleString() + "             ").substring(
-		0,
-		13
-	)}      |
-| FPS: ${(
+const getStats = ({ countView, nbsView, countChar, totalView, vps, speed }) => {
+	const size = 34
+	const add = "                         "
+
+	const totalFrame = (
+		"Total frame : " +
+		totalView.toLocaleString() +
+		add
+	).substring(0, size)
+	const currentFrame = (
+		"Current frame : " +
+		countView.toLocaleString() +
+		add
+	).substring(0, size)
+	const nbsFrame = (
+		"Frame displayed : " +
+		nbsView.toLocaleString() +
+		add
+	).substring(0, size)
+	const fps = (
+		"FPS : " +
 		vps.toLocaleString() +
 		" / " +
 		1000 / speed +
-		"             "
-	).substring(0, 13)}                 |
-| Char displayed : ${(countChar.toLocaleString() + "             ").substring(
+		add
+	).substring(0, size)
+	const speedD = ("Speed : " + speed + add).substring(0, size)
+
+	const c = ("Char displayed : " + countChar.toLocaleString() + add).substring(
 		0,
-		13
-	)}     |
---------------------------------------
+		size
+	)
+
+	return ` ------------------------------------  
+| Infos :                            | 
+|                                    | 
+| pour Arrêter cliquez n'importe où  |
+|                                    | 
+| Stats :                            | 
+|                                    | 
+| ${totalFrame} | 
+| ${currentFrame} |
+| ${nbsFrame} | 
+| ${fps} | 
+| ${speedD} | 
+| ${c} | 
+|                                    | 
+------------------------------------  
 `
 }
 
-export const useAnim = (viewsFn: () => string[], speed: number = 20) => {
+export const useAnim = (
+	viewsFn: () => string[],
+	speed: number = 20,
+	reload: number
+) => {
 	let timer
 	const [HTML, setHTML] = useState<string>("")
+	const [stats, setStats] = useState<string>("")
+
+	const views = useMemo(() => viewsFn(), [])
+	const calcSpeed = useMemo(
+		() => (speed <= 0 ? 1 : speed > 1000 ? 1000 : speed),
+		[speed]
+	)
 
 	useEffect(() => {
-		const views = viewsFn()
 		const totalView = views.length
 
 		let countChar = 0
 		let countView = 0
 		const start = new Date().getTime()
 
-		timer = read(views, speed, ({ item: view, i }) => {
-			countChar += view.length
-			countView++
-			const now = new Date().getTime()
+		clearInterval(timer)
 
-			const vps = (countView / ((now - start) / 1000)).toFixed(1)
+		timer = read(
+			views,
+			calcSpeed,
+			({ item: view, i }) => {
+				countChar += view.length
+				countView++
+				const now = new Date().getTime()
 
-			setHTML(view + stats({ countView: i, countChar, totalView, vps, speed }))
-		})
+				const vps = (countView / ((now - start) / 1000)).toFixed(1)
+
+				setHTML(view)
+				setStats(
+					getStats({
+						nbsView: countView,
+						countView: i + 1,
+						countChar,
+						totalView,
+						vps,
+						speed: calcSpeed,
+					})
+				)
+			},
+			() => setHTML(end)
+		)
 
 		return () => {
 			clearInterval(timer)
 		}
-	}, [])
+	}, [calcSpeed, reload])
 
-	return HTML
+	return [HTML, stats]
 }
