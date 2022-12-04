@@ -79,8 +79,10 @@ export const extractMax = (extract, max) => {
 	return max
 }
 
-export const generateViews = sizeClip => {
-	const data = extractData(input)
+export const generateViews = (sizeClip, dataSize) => {
+	const data = extractData(input).filter(
+		(_, i, tab) => i < Math.floor((tab.length * dataSize) / 100)
+	)
 	const fullBoat = createFullBoat(man1, man2, data)
 	const beautifullBoat = createBeautifullBoat(baseBoat.split("\n"), fullBoat)
 	const views = clip(beautifullBoat, sizeClip)

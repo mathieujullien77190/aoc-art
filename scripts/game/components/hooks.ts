@@ -4,16 +4,16 @@ import { useEffect, useState, useMemo } from "react"
 
 import { read } from "../helpers"
 
-const end = `-----------------------
-|        END          |
-|                     |
-| Cliquez pour fermer |
-----------------------
-				`
-
-const getStats = ({ countView, nbsView, countChar, totalView, vps, speed }) => {
+const getStats = ({
+	countView,
+	nbsView,
+	countChar,
+	totalView,
+	speed,
+	dataSize,
+}) => {
 	const size = 34
-	const add = "                         "
+	const add = "                                 "
 
 	const totalFrame = (
 		"Total frame : " +
@@ -30,19 +30,16 @@ const getStats = ({ countView, nbsView, countChar, totalView, vps, speed }) => {
 		nbsView.toLocaleString() +
 		add
 	).substring(0, size)
-	const fps = (
-		"FPS : " +
-		vps.toLocaleString() +
-		" / " +
-		1000 / speed +
-		add
-	).substring(0, size)
+
 	const speedD = ("Speed : " + speed + add).substring(0, size)
 
 	const c = ("Char displayed : " + countChar.toLocaleString() + add).substring(
 		0,
 		size
 	)
+	const d = dataSize
+		? ("% data : " + dataSize + "%" + add).substring(0, size)
+		: ("% data : -" + add).substring(0, size)
 
 	return ` ------------------------------------  
 | Infos :                            | 
@@ -54,9 +51,9 @@ const getStats = ({ countView, nbsView, countChar, totalView, vps, speed }) => {
 | ${totalFrame} | 
 | ${currentFrame} |
 | ${nbsFrame} | 
-| ${fps} | 
 | ${speedD} | 
 | ${c} | 
+| ${d} | 
 |                                    | 
 ------------------------------------  
 `
@@ -68,6 +65,7 @@ type UseAnimProps = {
 		view: string
 		i: number
 	}
+	dataSize?: number
 	speed: number
 	reload: number
 }
@@ -75,6 +73,7 @@ type UseAnimProps = {
 export const useAnim = ({
 	viewsFn,
 	transform = ({ view, i }) => ({ view, i }),
+	dataSize,
 	speed,
 	reload,
 }: UseAnimProps) => {
@@ -82,51 +81,39 @@ export const useAnim = ({
 	const [HTML, setHTML] = useState<string>("")
 	const [stats, setStats] = useState<string>("")
 
-	const views = useMemo(() => viewsFn(), [])
-	const calcSpeed = useMemo(
-		() => (speed <= 0 ? 1 : speed > 1000 ? 1000 : speed),
-		[speed]
-	)
+	const views = useMemo(() => viewsFn(), [dataSize])
+	const calcSpeed = useMemo(() => (speed === 0 ? 1 : speed), [speed])
 
 	useEffect(() => {
 		const totalView = views.length
 
 		let countChar = 0
 		let countView = 0
-		const start = new Date().getTime()
 
 		clearInterval(timer)
 
-		timer = read(
-			views,
-			calcSpeed,
-			args => {
-				const { view, i } = transform(args)
-				countChar += view.length
-				countView++
-				const now = new Date().getTime()
+		timer = read(views, calcSpeed, args => {
+			const { view, i } = transform(args)
+			countChar += view.length
+			countView++
 
-				const vps = (countView / ((now - start) / 1000)).toFixed(1)
-
-				setHTML(view)
-				setStats(
-					getStats({
-						nbsView: countView,
-						countView: i + 1,
-						countChar,
-						totalView,
-						vps,
-						speed: calcSpeed,
-					})
-				)
-			},
-			() => setHTML(end)
-		)
+			setHTML(view)
+			setStats(
+				getStats({
+					nbsView: countView,
+					countView: i + 1,
+					countChar,
+					totalView,
+					dataSize,
+					speed: calcSpeed,
+				})
+			)
+		})
 
 		return () => {
 			clearInterval(timer)
 		}
-	}, [calcSpeed, reload])
+	}, [calcSpeed, reload, dataSize])
 
-	return [HTML, stats]
+	return { HTML, stats }
 }

@@ -14,7 +14,7 @@ const Wrapper = styled.div`
 	background: ${colors.aoc};
 
 	label {
-		width: 70px;
+		width: 95px;
 		display: inline-block;
 	}
 
@@ -28,7 +28,7 @@ const Button = styled.button`
 	color: white;
 	background: ${colors.aoc};
 	margin-right: 10px;
-	width: 40px;
+	min-width: 40px;
 	height: 40px;
 	font-weight: bold;
 	cursor: pointer;
@@ -42,12 +42,14 @@ const Button = styled.button`
 type StatsProps = {
 	stats: string
 	onChangeSpeed?: (value: number) => void
+	onChangeSize?: (value: number) => void
 	onReload?: () => void
 }
 
 const Stats = ({
 	stats,
 	onChangeSpeed = () => {},
+	onChangeSize = null,
 	onReload = () => {},
 }: StatsProps) => {
 	const [statsVisibility, setStatsVisibility] = useState<boolean>(false)
@@ -69,14 +71,14 @@ const Stats = ({
 			<p>Commands : </p>
 
 			<p>
-				<label>Reload</label>
+				<label>Action</label>
 				<Button
 					onClick={e => {
 						e.stopPropagation()
 						onReload()
 					}}
 				>
-					R
+					Reload
 				</Button>
 			</p>
 			<p>
@@ -97,7 +99,60 @@ const Stats = ({
 				>
 					+
 				</Button>
+				<Button
+					onClick={e => {
+						e.stopPropagation()
+						onChangeSpeed(-1000)
+					}}
+				>
+					max
+				</Button>
+				<Button
+					onClick={e => {
+						e.stopPropagation()
+						onChangeSpeed(1000)
+					}}
+				>
+					min
+				</Button>
 			</p>
+			{onChangeSize && (
+				<p>
+					<label>Data size</label>
+					<Button
+						onClick={e => {
+							e.stopPropagation()
+							onChangeSize(-10)
+						}}
+					>
+						-
+					</Button>
+					<Button
+						onClick={e => {
+							e.stopPropagation()
+							onChangeSize(10)
+						}}
+					>
+						+
+					</Button>
+					<Button
+						onClick={e => {
+							e.stopPropagation()
+							onChangeSize(100)
+						}}
+					>
+						max
+					</Button>
+					<Button
+						onClick={e => {
+							e.stopPropagation()
+							onChangeSize(-100)
+						}}
+					>
+						min
+					</Button>
+				</p>
+			)}
 		</Wrapper>
 	)
 }

@@ -15,19 +15,24 @@ const Game = styled.pre`
 
 const Animation = () => {
 	const [speed, setSpeed] = useState<number>(20)
+
 	const [reload, setReload] = useState<number>(0)
 
-	const [html, stats] = useAnim({ viewsFn: () => data, speed, reload })
+	const { HTML, stats } = useAnim({ viewsFn: () => data, speed, reload })
 
 	return (
 		<>
 			<Game style={{ fontSize: "10px", lineHeight: "6px", margin: 0 }}>
-				{html}
+				{HTML}
 			</Game>
 			{!isMobile && (
 				<Stats
 					stats={stats}
-					onChangeSpeed={value => setSpeed(n => n + value)}
+					onChangeSpeed={value =>
+						setSpeed(n =>
+							n + value > 1000 ? 1000 : n + value <= 0 ? 0 : n + value
+						)
+					}
 					onReload={() => setReload(n => n + 1)}
 				/>
 			)}
