@@ -26,25 +26,27 @@ const getViews = (size, view) => {
 }
 
 export const generateViews = (size: number) => {
-	const output = extractTab3Int(input, "\n", ",", "-").map((line, i) => {
-		const p1 = createArray(line[0][1] - line[0][0] + 1).map(
-			(_, i) => i + line[0][0]
-		)
-		const p2 = createArray(line[1][1] - line[1][0] + 1).map(
-			(_, i) => i + line[1][0]
-		)
+	const output = extractTab3Int(input, "\n", ",", "-")
+		.slice(0, 200)
+		.map((line, i) => {
+			const p1 = createArray(line[0][1] - line[0][0] + 1).map(
+				(_, i) => i + line[0][0]
+			)
+			const p2 = createArray(line[1][1] - line[1][0] + 1).map(
+				(_, i) => i + line[1][0]
+			)
 
-		const max = Math.max(...line[0], ...line[1])
-		const base = createArray(max + 1)
-		const base1 = base.map((item, i) => (p1.includes(i) ? "?" : " "))
-		const base2 = base1.map((item, i) =>
-			p2.includes(i) && item !== "?" ? "!" : item
-		)
-		const base3 = base2.map((item, i) =>
-			p2.includes(i) && p1.includes(i) ? "#" : item
-		)
-		return base3
-	})
+			const max = Math.max(...line[0], ...line[1])
+			const base = createArray(max + 1)
+			const base1 = base.map((item, i) => (p1.includes(i) ? "?" : " "))
+			const base2 = base1.map((item, i) =>
+				p2.includes(i) && item !== "?" ? "!" : item
+			)
+			const base3 = base2.map((item, i) =>
+				p2.includes(i) && p1.includes(i) ? "#" : item
+			)
+			return base3
+		})
 
 	const output2 = [...output, ...createArray(size).map(item => [" "])]
 
