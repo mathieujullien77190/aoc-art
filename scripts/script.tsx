@@ -1,14 +1,44 @@
 /** @format */
 
 import { useState } from "react"
-import Game2021 from "./game/2021"
+import styled from "styled-components"
+
+import Game2021 from "./game/loading/2021"
+import GameDay1 from "./game/loading/day1"
+import GameDay4 from "./game/loading/day4"
 import { colors } from "_components/constants"
+
+const Container = styled.div`
+	position: fixed;
+	padding: 24px;
+	top: 24px;
+	right: 24px;
+	bottom: 24px;
+	left: 24px;
+	z-index: 10;
+	background: ${colors.overlay};
+	border: solid 2px ${colors.textColor};
+	cursor: pointer;
+	overflow: auto;
+`
 
 export const scripts = [
 	{
 		day: "-1",
 		fn: () => {
 			return "Test d'une animation du AOC 2021"
+		},
+	},
+	{
+		day: "1",
+		fn: () => {
+			return "--- Day 1: Calorie Counting ---"
+		},
+	},
+	{
+		day: "4",
+		fn: () => {
+			return "--- Day 4: Camp Cleanup ---"
 		},
 	},
 ]
@@ -21,26 +51,11 @@ export const Games = ({ day }: { day: string }) => {
 	return (
 		<>
 			{display && search.length === 1 && (
-				<div
-					style={{
-						display: "flex",
-						position: "fixed",
-						justifyContent: "center",
-						alignItems: "center",
-						top: "24px",
-						right: "24px",
-						bottom: "24px",
-						left: "24px",
-						zIndex: 10,
-						background: colors.overlay,
-						border: `solid 2px ${colors.textColor}`,
-						cursor: "pointer",
-						overflow: "auto",
-					}}
-					onClick={() => setDisplay(false)}
-				>
+				<Container onClick={() => setDisplay(false)}>
 					{day === "-1" && <Game2021 />}
-				</div>
+					{day === "1" && <GameDay1 />}
+					{day === "4" && <GameDay4 />}
+				</Container>
 			)}
 		</>
 	)
