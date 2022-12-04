@@ -14,7 +14,7 @@ const getViews = (size, view) => {
 			filter[0] = filter[0].map((item, l) => {
 				if (l === k) {
 					if (item === "#") tot++
-					return `<span style="font-size:30px;font-weight:bold;">[${item}]</span>`
+					return `<span style="font-size:24px;font-weight:bold;">[${item}]</span>`
 				}
 				return item
 			})

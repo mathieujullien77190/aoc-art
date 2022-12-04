@@ -3,6 +3,7 @@
 export const colors = {
 	background: "#212E35",
 	overlay: "#0f0f23c2",
+	aoc: "#0f0f23",
 	textColor: "#CED4DF",
 	importantColor: "#FFCC6A",
 	cmdColor: "#c4e98d",

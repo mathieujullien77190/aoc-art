@@ -60,7 +60,6 @@ export const Games = ({ day }: { day: string }) => {
 		<>
 			{display && search.length === 1 && (
 				<Container onClick={() => setDisplay(false)}>
-					<Info>Fermer</Info>
 					{day === "-1" && <Game2021 />}
 					{day === "1" && <GameDay1 />}
 					{day === "4" && <GameDay4 />}
