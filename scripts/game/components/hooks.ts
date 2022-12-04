@@ -62,11 +62,22 @@ const getStats = ({ countView, nbsView, countChar, totalView, vps, speed }) => {
 `
 }
 
-export const useAnim = (
-	viewsFn: () => string[],
-	speed: number = 20,
+type UseAnimProps = {
+	viewsFn: () => string[]
+	transform?: ({ view, i }: { view: string; i: number }) => {
+		view: string
+		i: number
+	}
+	speed: number
 	reload: number
-) => {
+}
+
+export const useAnim = ({
+	viewsFn,
+	transform = ({ view, i }) => ({ view, i }),
+	speed,
+	reload,
+}: UseAnimProps) => {
 	let timer
 	const [HTML, setHTML] = useState<string>("")
 	const [stats, setStats] = useState<string>("")
@@ -89,7 +100,8 @@ export const useAnim = (
 		timer = read(
 			views,
 			calcSpeed,
-			({ item: view, i }) => {
+			args => {
+				const { view, i } = transform(args)
 				countChar += view.length
 				countView++
 				const now = new Date().getTime()
