@@ -1,12 +1,12 @@
 /** @format */
 import { input, listStack } from "../data/day5"
-import { createArray, rotate90, mergeView, extractTab2 } from "../helpers"
+import { createArray, rotate90, mergeView, extractTab2, copy } from "../helpers"
 
 const createCargoCrane = (heightCase, nbCase) => {
 	const pied = [
 		"            _______________".split(""),
 		"           |CrateMover 9000|".split(""),
-		"   ======/=========".split(""),
+		"   ======/===========".split(""),
 		...createArray(heightCase + 4).map((item, i) => {
 			if (i === 0) return "    ##   |x|".split("")
 			if (i === 1) return "    ##   |x|###".split("")
@@ -50,26 +50,28 @@ const generatedView = (data, nbCaseMax, filPosition, level) => {
 		line.map(element => element.split("")).flat()
 	)
 
-	return mergeView(background, caseDisplay, 20, 3)
-		.map(item => item.join(""))
-		.join("\n")
+	return (
+		mergeView(background, caseDisplay, 20, 3)
+			.map(item => item.join(""))
+			.join("\n") +
+		"\nResponse : " +
+		data.map(item => item[item.length - 1]).join("")
+	)
 }
 
-const up = (data, nbCaseMax, position) => {
-	const n = nbCaseMax - data[position].length + 3
+const up = (data, nbCaseMax, position, n) => {
 	return createArray(n).map((_, i) => {
 		return generatedView(data, nbCaseMax, position, i)
 	})
 }
 
-const down = (data, nbCaseMax, position) => {
-	const n = nbCaseMax - data[position].length + 3
+const down = (data, nbCaseMax, position, n) => {
 	return createArray(n).map((_, i) => {
 		return generatedView(data, nbCaseMax, position, n - i - 1)
 	})
 }
 
-const translateX = (view, x, y, width, height, sens) => {
+const translateX = (view, x, y, width, height, sens, pas) => {
 	let arr = extractTab2(view, "\n", "")
 	let item
 	const add1 = sens === 1 ? x + width - 1 : x
@@ -78,27 +80,27 @@ const translateX = (view, x, y, width, height, sens) => {
 	for (let i = y; i < y + height; i++) {
 		for (let j = 0; j < width; j++) {
 			item = arr[i][add1 + j * -sens]
-			arr[i][add2 + j * -sens] = item
+			arr[i][add2 + j * -sens + pas * sens] = item
 			arr[i][add3 + j * -sens] = " "
 		}
 	}
 	return arr.map(item => item.join("")).join("\n")
 }
 
-const translateFromTo = (view, from, to) => {
+const translateFromTo = (view, from, to, h) => {
 	let views = []
 
 	const diff = Math.abs(to - from)
 	const sens = from < to ? 1 : -1
-	createArray(diff * 5).forEach((_, i) => {
-		view = translateX(view, 21 + i * sens + from * 5, 3, 3, 3, sens)
+	createArray(diff).forEach((_, i) => {
+		view = translateX(view, 21 + i * sens * 5 + from * 5, 3, 3, h, sens, 4)
 		views.push(view)
 	})
 
 	return views
 }
 
-const nbCaseMax = 30
+const nbCaseMax = 40
 
 const background = createCargoCrane(nbCaseMax, 9)
 
@@ -120,16 +122,37 @@ export const generateViews = (dataSize: number) => {
 	let data = listStack
 	let views = []
 
-	moves.forEach(move => {
+	const test = [
+		{ nbs: 1, from: 0, to: 4 },
+		{ nbs: 1, from: 6, to: 2 },
+	]
+
+	moves.forEach((move, i) => {
+		const max = Math.max(
+			...data
+				.slice(
+					move.from < move.to ? move.from : move.to,
+					move.to > move.from ? move.to + 1 : move.from + 1
+				)
+				.map(item => item.length)
+		)
+		const nUp = max - data[move.from].length + 3
+		const nDown = max - data[move.to].length + 1
+
+		const h = nbCaseMax - max + 3
+
 		//const a1 = new Date().getTime()
-		views.push(...up(data, nbCaseMax, move.from))
+		views.push(...up(data, nbCaseMax, move.from, nUp < 0 ? 0 : nUp))
 		//const a2 = new Date().getTime()
-		views.push(...translateFromTo(views[views.length - 1], move.from, move.to))
+
+		views.push(
+			...translateFromTo(views[views.length - 1], move.from, move.to, h)
+		)
 		//const a3 = new Date().getTime()
 		data[move.to] = [...data[move.to], ...data[move.from].slice(-move.nbs)]
 		data[move.from] = data[move.from].slice(0, -move.nbs)
 		//const a4 = new Date().getTime()
-		views.push(...down(data, nbCaseMax, move.to))
+		views.push(...down(data, nbCaseMax, move.to, nDown < 0 ? 0 : nDown))
 		//const a5 = new Date().getTime()
 		//console.log(a2 - a1, a3 - a2, a4 - a3, a5 - a4)
 	})
