@@ -1,9 +1,9 @@
 /** @format */
 import { useState } from "react"
 import styled from "styled-components"
-import { useAnim } from "./hooks"
 
-import { data } from "../data/2021"
+import { useAnim } from "./hooks"
+import { generateViews } from "../core/day5"
 
 import Stats from "./Stats"
 
@@ -14,18 +14,26 @@ const Game = styled.pre`
 `
 
 const Animation = () => {
-	const [speed, setSpeed] = useState<number>(20)
+	const [speed, setSpeed] = useState<number>(15)
 
 	const [reload, setReload] = useState<number>(0)
-
-	const { HTML, stats } = useAnim({ viewsFn: () => data, speed, reload })
+	const { HTML, stats } = useAnim({
+		viewsFn: () => generateViews(10),
+		speed,
+		reload,
+		dataSize: 10,
+	})
 
 	return (
 		<>
-			<Game style={{ fontSize: "10px", lineHeight: "6px" }}>{HTML}</Game>
+			<Game
+				style={{ fontSize: "14px" }}
+				dangerouslySetInnerHTML={{ __html: HTML }}
+			/>
 			{!isMobile && (
 				<Stats
 					stats={stats}
+					maxData={10}
 					onChangeSpeed={value =>
 						setSpeed(n =>
 							n + value > 1000 ? 1000 : n + value <= 0 ? 0 : n + value

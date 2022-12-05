@@ -41,6 +41,7 @@ const Button = styled.button`
 
 type StatsProps = {
 	stats: string
+	maxData?: number
 	onChangeSpeed?: (value: number) => void
 	onChangeSize?: (value: number) => void
 	onReload?: () => void
@@ -48,6 +49,7 @@ type StatsProps = {
 
 const Stats = ({
 	stats,
+	maxData = 100,
 	onChangeSpeed = () => {},
 	onChangeSize = null,
 	onReload = () => {},
@@ -138,7 +140,7 @@ const Stats = ({
 					<Button
 						onClick={e => {
 							e.stopPropagation()
-							onChangeSize(100)
+							onChangeSize(maxData)
 						}}
 					>
 						max
@@ -146,7 +148,7 @@ const Stats = ({
 					<Button
 						onClick={e => {
 							e.stopPropagation()
-							onChangeSize(-100)
+							onChangeSize(-maxData)
 						}}
 					>
 						min

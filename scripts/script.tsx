@@ -6,6 +6,7 @@ import styled from "styled-components"
 import Game2021 from "./game/loading/2021"
 import GameDay1 from "./game/loading/day1"
 import GameDay4 from "./game/loading/day4"
+import GameDay5 from "./game/loading/day5"
 import GameOctopus from "./game/loading/octopus"
 import { colors } from "_components/constants"
 
@@ -21,14 +22,6 @@ const Container = styled.div`
 	border: solid 2px ${colors.textColor};
 	cursor: pointer;
 	overflow: auto;
-`
-
-const Info = styled.div`
-	border: solid 3px white;
-	padding: 24px;
-	position: fixed;
-	top: 24px;
-	right: 24px;
 `
 
 export const scripts = [
@@ -56,6 +49,12 @@ export const scripts = [
 			return "--- Day 4: Camp Cleanup ---"
 		},
 	},
+	{
+		day: "5",
+		fn: () => {
+			return "--- Day 5: Supply Stacks ---"
+		},
+	},
 ]
 
 export const Games = ({ day }: { day: string }) => {
@@ -71,6 +70,7 @@ export const Games = ({ day }: { day: string }) => {
 					{day === "-2" && <GameOctopus />}
 					{day === "1" && <GameDay1 />}
 					{day === "4" && <GameDay4 />}
+					{day === "5" && <GameDay5 />}
 				</Container>
 			)}
 		</>
