@@ -1,14 +1,11 @@
 /** @format */
 
 export const extractTab1 = (d, separator) => {
-	return d.split(separator).filter(item => item != "")
+	return d.split(separator)
 }
 
 export const extractTab2 = (d, firstSeparator, secondSeparator) => {
-	return d
-		.split(firstSeparator)
-		.map(item => item.split(secondSeparator))
-		.filter(item => item != "")
+	return d.split(firstSeparator).map(item => item.split(secondSeparator))
 }
 
 export const extractTab3 = (
@@ -107,4 +104,24 @@ export const arr2DForEach = (arr, fn) => {
 			fn.call(this, { item: arr[i][j], indexLine: i, indexColumn: j })
 		}
 	}
+}
+
+export const rotate90 = arr => {
+	let arr2 = createArray(Math.max(...arr.map(item => item.length))).map(
+		() => []
+	)
+	arr2DForEach(arr, ({ item, indexLine, indexColumn }) => {
+		arr2[indexColumn][indexLine] = item
+	})
+	return arr2
+}
+
+export const mergeView = (back, front, x, y) => {
+	let arr = back.map(item => item.slice(0))
+	for (let i = 0; i < front.length; i++) {
+		for (let j = 0; j < front[i].length; j++) {
+			arr[i + y][j + x] = front[i][j]
+		}
+	}
+	return arr
 }
