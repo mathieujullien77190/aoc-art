@@ -14,26 +14,26 @@ const Game = styled.pre`
 `
 
 const Animation = () => {
-	const [speed, setSpeed] = useState<number>(15)
-
+	const [speed, setSpeed] = useState<number>(10)
+	const [dataSize, setDataSize] = useState<number>(40)
 	const [reload, setReload] = useState<number>(0)
 	const { HTML, stats } = useAnim({
-		viewsFn: () => generateViews(10),
+		viewsFn: () => generateViews(dataSize),
 		speed,
 		reload,
-		dataSize: 10,
+		dataSize: dataSize,
 	})
 
 	return (
 		<>
 			<Game
-				style={{ fontSize: "14px" }}
+				style={{ fontSize: "12px" }}
 				dangerouslySetInnerHTML={{ __html: HTML }}
 			/>
 			{!isMobile && (
 				<Stats
 					stats={stats}
-					maxData={10}
+					maxData={dataSize}
 					onChangeSpeed={value =>
 						setSpeed(n =>
 							n + value > 1000 ? 1000 : n + value <= 0 ? 0 : n + value
