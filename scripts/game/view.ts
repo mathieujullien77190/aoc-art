@@ -1,8 +1,8 @@
 /** @format */
 
-type View = { width: number; height: number; value: string }
+export type View = { width?: number; height?: number; value: string }
 
-type Position = { x: number; y: number }
+export type Position = { x: number; y: number }
 
 const createViewFromString = (arr: string[], complete: boolean): View => {
 	let value, width, height
@@ -41,10 +41,17 @@ export const mergeView = (back: View, front: View, position: Position) => {
 	let line, first, last
 	const frontWidth = front.width + 1
 	const backWidth = back.width + 1
-	const partx = Math.abs(position.x + front.width - back.width)
-	const party = Math.abs(position.y + front.height - back.height)
-	for (let i = 0; i < party; i++) {
-		line = front.value.substring(i * frontWidth, i * frontWidth + partx)
+	const partX =
+		position.x + front.width > back.width
+			? front.width - (position.x + front.width - back.width)
+			: front.width
+	const partY =
+		position.y + front.height > back.height
+			? front.height - (position.y + front.height - back.height)
+			: front.height
+
+	for (let i = 0; i < partY; i++) {
+		line = front.value.substring(i * frontWidth, i * frontWidth + partX)
 		first = copy.value.substring(0, (position.y + i) * backWidth + position.x)
 		last = copy.value.substring(
 			(position.y + i) * backWidth + position.x + line.length
@@ -54,4 +61,26 @@ export const mergeView = (back: View, front: View, position: Position) => {
 	}
 
 	return copy
+}
+
+export const read = (
+	arr: View[],
+	timeStep: number,
+	fn: ({ view, i }: { view: View; i: number }) => void,
+	end?: () => void
+): number => {
+	const timer = window.setInterval(
+		initTime => {
+			const index = Math.floor((new Date().getTime() - initTime) / timeStep) - 1
+			if (arr[index]) fn.call(this, { view: arr[index], i: index }, timer)
+			else {
+				fn.call(this, { view: arr[arr.length - 1], i: arr.length - 1 }, timer)
+				clearInterval(timer)
+				if (end) end()
+			}
+		},
+		timeStep,
+		new Date().getTime()
+	)
+	return timer
 }

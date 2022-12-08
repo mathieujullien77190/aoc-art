@@ -50,8 +50,8 @@ export const generateViews = (size: number, dataSize: number) => {
 
 	const output2 = [...output, ...createArray(size).map(item => [" "])]
 
-	return getViews(size, output2).map(view =>
-		view
+	return getViews(size, output2).map(view => ({
+		value: view
 			.map(line =>
 				line
 					.replace(/(\?+)/g, '<span style="color:red">$1</span>')
@@ -59,6 +59,6 @@ export const generateViews = (size: number, dataSize: number) => {
 					.replace(/(\#+)/g, '<span style="color:orange">$1</span>')
 					.replace(/[\?\!\#]/g, "#")
 			)
-			.join("\n")
-	)
+			.join("\n"),
+	}))
 }

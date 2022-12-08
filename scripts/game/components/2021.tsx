@@ -18,7 +18,11 @@ const Animation = () => {
 
 	const [reload, setReload] = useState<number>(0)
 
-	const { HTML, stats } = useAnim({ viewsFn: () => data, speed, reload })
+	const { HTML, stats } = useAnim({
+		viewsFn: () => data.map(item => ({ value: item })),
+		speed,
+		reload,
+	})
 
 	return (
 		<>

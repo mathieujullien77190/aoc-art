@@ -1,6 +1,9 @@
 /** @format */
 import { input, listStack } from "../data/day5"
-import { createArray, rotate90, mergeView, extractTab2, copy } from "../helpers"
+import { createArray, rotate90, extractTab2, copy } from "../helpers"
+import { createView, mergeView, Position } from "../view"
+
+type Move = { nbs?: number; from: number; to: number }
 
 const createCargoCrane = (heightCase, nbCase) => {
 	const pied = [
@@ -26,86 +29,96 @@ const createCargoCrane = (heightCase, nbCase) => {
 	])
 }
 
-const generatedPile = (data, filPosition, nbCaseMax, level) => {
-	let item
-	const d1 = data.map((item, i, tab) => [
-		...item.map(item2 => ` [${item2}] `),
-		...createArray(nbCaseMax - item.length + 4).map((item2, j) =>
-			filPosition === i && j >= level ? "  |  " : "     "
-		),
-	])
-	if (level > 0) {
-		item = ` [${data[filPosition][data[filPosition].length - 1]}] `
-		d1[filPosition][data[filPosition].length - 1] = "     "
-		d1[filPosition][data[filPosition].length - 1 + level] = item
-	}
-	return d1.map(item => item.reverse())
+const getMaxStack = (data: string[][]): number => {
+	return Math.max(...data.map(item => item.length))
 }
 
-const generatedView = (data, nbCaseMax, filPosition, level) => {
-	const caseDisplay11 = generatedPile(data, filPosition, nbCaseMax, level)
+const getDiffStack = (data: string[][], move: Move, target: number): number => {
+	const s = move.from < move.to ? move.from : move.to
+	const e = move.to > move.from ? move.to : move.from
 
-	const caseDisplay2 = rotate90(caseDisplay11)
-	const caseDisplay = caseDisplay2.map(line =>
-		line.map(element => element.split("")).flat()
-	)
-
-	return (
-		mergeView(background, caseDisplay, 20, 3)
-			.map(item => item.join(""))
-			.join("\n") +
-		"\nResponse : " +
-		data.map(item => item[item.length - 1]).join("")
-	)
+	return getMaxStack(data.slice(s, e + 1)) - data[target].length
 }
 
-const up = (data, nbCaseMax, position, n) => {
-	return createArray(n).map((_, i) => {
-		return generatedView(data, nbCaseMax, position, i)
-	})
+const drawStacks = (data: string[][]): string[][] => {
+	const max = getMaxStack(data)
+	return rotate90(
+		data.map(item => [
+			...item.map(item2 => ` [${item2}] `),
+			...createArray(max - item.length).map(() => "     "),
+		])
+	).reverse()
 }
 
-const down = (data, nbCaseMax, position, n) => {
-	return createArray(n).map((_, i) => {
-		return generatedView(data, nbCaseMax, position, n - i - 1)
-	})
+const getRealPosition = (
+	data: string[][],
+	x: number,
+	y: number,
+	sizeBlock: number,
+	index: number
+): Position => {
+	const nbs = data[index].length
+	const max = getMaxStack(data)
+	return { x: x + index * sizeBlock, y: y + max - nbs }
 }
 
-const translateX = (view, x, y, width, height, sens, pas) => {
-	let arr = extractTab2(view, "\n", "")
-	let item
-	const add1 = sens === 1 ? x + width - 1 : x
-	const add2 = sens === 1 ? x + width : x + sens
-	const add3 = sens === 1 ? x + width - 1 : x
-	for (let i = y; i < y + height; i++) {
-		for (let j = 0; j < width; j++) {
-			item = arr[i][add1 + j * -sens]
-			arr[i][add2 + j * -sens + pas * sens] = item
-			arr[i][add3 + j * -sens] = " "
-		}
-	}
-	return arr.map(item => item.join("")).join("\n")
+const getUpPositions = (
+	data: string[][],
+	move: Move,
+	start: Position,
+	plus: number = 0
+): Position[] => {
+	const diff = getDiffStack(data, move, move.from) + 1 + plus
+	return createArray(diff).map((_, i) => ({
+		y: start.y - i - 2 + plus,
+		x: start.x,
+	}))
 }
 
-const translateFromTo = (view, from, to, h) => {
-	let views = []
+const getHPositions = (
+	data: string[][],
+	start: Position,
+	sizeBlock: number,
+	move: Move
+): Position[] => {
+	const diffV = getDiffStack(data, move, move.from) + 2
+	const diffH = Math.abs(move.from - move.to) - 1
+	const sens = move.from < move.to ? 1 : -1
+	return createArray(diffH < 0 ? 0 : diffH).map((_, i) => ({
+		y: start.y - diffV,
+		x: start.x + (i + 1) * sizeBlock * sens,
+	}))
+}
 
-	const diff = Math.abs(to - from)
-	const sens = from < to ? 1 : -1
-	createArray(diff).forEach((_, i) => {
-		view = translateX(view, 21 + i * sens * 5 + from * 5, 3, 3, h, sens, 4)
-		views.push(view)
-	})
+const getDownPositions = (
+	data: string[][],
+	move: Move,
+	start: Position,
+	plus: number = 0
+): Position[] => {
+	const diff = getDiffStack(data, move, move.to) + 1 + plus
+	return createArray(diff).map((_, i) => ({
+		y: start.y - diff + i - 1 + plus,
+		x: start.x,
+	}))
+}
 
-	return views
+const createFil = (start: Position) => {
+	const baseFil = createArray(start.y - 3).map(() => "|")
+	const rotateFil = rotate90([baseFil])
+	return createView(rotateFil, false)
 }
 
 const nbCaseMax = 40
 
-const background = createCargoCrane(nbCaseMax, 9)
+const X = 16
+const Y = 7
+const SIZE_BLOCK = 5
 
 export const generateViews = (dataSize: number) => {
-	const moves = extractTab2(input, "\n", " ")
+	let stacks, viewBackGround, merge, save, moveBis
+
+	let moves = extractTab2(input, "\n", " ")
 		.map(item =>
 			item.map(item2 => parseInt(item2)).filter(item2 => !isNaN(item2))
 		)
@@ -117,44 +130,79 @@ export const generateViews = (dataSize: number) => {
 			}))
 		)
 		.flat()
-		.filter((_, i, tab) => i < Math.floor((tab.length * dataSize) / 100))
+		.filter(
+			(_, i, tab) => i < Math.floor((tab.length * dataSize) / 100)
+		) as Move[]
 
-	let data = listStack
+	let data = copy(listStack)
 	let views = []
 
-	const test = [
-		{ nbs: 1, from: 0, to: 4 },
-		{ nbs: 1, from: 6, to: 2 },
-	]
+	moves.forEach((move, i, tab) => {
+		moveBis = { nbs: 1, from: i > 0 ? tab[i - 1].to : 0, to: move.from }
 
-	moves.forEach((move, i) => {
-		const max = Math.max(
-			...data
-				.slice(
-					move.from < move.to ? move.from : move.to,
-					move.to > move.from ? move.to + 1 : move.from + 1
-				)
-				.map(item => item.length)
+		stacks = createView(drawStacks(data), true)
+		viewBackGround = createView(createCargoCrane(stacks.height, 9), true)
+		merge = mergeView(viewBackGround, stacks, {
+			x: X,
+			y: Y,
+		})
+
+		const startBis = getRealPosition(data, X, Y, SIZE_BLOCK, moveBis.from)
+
+		const endBis = getRealPosition(data, X, Y, SIZE_BLOCK, moveBis.to)
+		const UpositionsBis = getUpPositions(data, moveBis, startBis, 1)
+		const HpositionsBis = getHPositions(data, startBis, SIZE_BLOCK, moveBis)
+		const DpositionsBis = getDownPositions(data, moveBis, endBis, 2)
+
+		const blockBis = createView(` [ ] `, true)
+		blockBis.value = `${blockBis.value}`
+
+		const allBis = [...UpositionsBis, ...HpositionsBis, ...DpositionsBis].map(
+			(position, i, tab) => {
+				const fil = createFil(position)
+
+				const mergeT = mergeView(i < tab.length - 1 ? merge : merge, fil, {
+					x: position.x + 2,
+					y: position.y - fil.height,
+				})
+
+				const mergeV = mergeView(mergeT, blockBis, position)
+
+				return mergeV
+			}
 		)
-		const nUp = max - data[move.from].length + 3
-		const nDown = max - data[move.to].length + 1
 
-		const h = nbCaseMax - max + 3
-
-		//const a1 = new Date().getTime()
-		views.push(...up(data, nbCaseMax, move.from, nUp < 0 ? 0 : nUp))
-		//const a2 = new Date().getTime()
-
-		views.push(
-			...translateFromTo(views[views.length - 1], move.from, move.to, h)
-		)
-		//const a3 = new Date().getTime()
-		data[move.to] = [...data[move.to], ...data[move.from].slice(-move.nbs)]
+		save = data[move.from].slice(-move.nbs)[0]
 		data[move.from] = data[move.from].slice(0, -move.nbs)
-		//const a4 = new Date().getTime()
-		views.push(...down(data, nbCaseMax, move.to, nDown < 0 ? 0 : nDown))
-		//const a5 = new Date().getTime()
-		//console.log(a2 - a1, a3 - a2, a4 - a3, a5 - a4)
+
+		stacks = createView(drawStacks(data), true)
+		viewBackGround = createView(createCargoCrane(stacks.height, 9), true)
+		merge = mergeView(viewBackGround, stacks, {
+			x: X,
+			y: Y,
+		})
+
+		const start = getRealPosition(data, X, Y, SIZE_BLOCK, move.from)
+
+		const end = getRealPosition(data, X, Y, SIZE_BLOCK, move.to)
+		const Upositions = getUpPositions(data, move, start)
+		const Hpositions = getHPositions(data, start, SIZE_BLOCK, move)
+		const Dpositions = getDownPositions(data, move, end, 1)
+
+		const block = createView(` [${save}] `, true)
+
+		const all = [...Upositions, ...Hpositions, ...Dpositions].map(position => {
+			const fil = createFil(position)
+			const mergeV = mergeView(merge, block, position)
+			return mergeView(mergeV, fil, {
+				x: position.x + 2,
+				y: position.y - fil.height,
+			})
+		})
+
+		data[move.to] = [...data[move.to], save]
+
+		views = [...views, ...allBis, ...all]
 	})
 
 	return views

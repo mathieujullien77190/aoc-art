@@ -24,14 +24,16 @@ const Animation = () => {
 	const { HTML, stats } = useAnim({
 		viewsFn: () => generateViews(60, dataSize),
 		transform: ({ view, i }) => {
-			const item1 = view.substring(0, pos)
-			const item2 = view.substring(pos, pos + 6)
-			const item3 = view.substring(pos + 6)
+			const item1 = view.value.substring(0, pos)
+			const item2 = view.value.substring(pos, pos + 6)
+			const item3 = view.value.substring(pos + 6)
 
 			theBest = extractMax(item2, theBest)
 
 			return {
-				view: `${item1}<span style="color:red;">${item2}</span>${item3}\n\nScan : <span style="color:red;">${item2}</span>\nBest : ${theBest}`,
+				view: {
+					value: `${item1}<span style="color:red;">${item2}</span>${item3}\n\nScan : <span style="color:red;">${item2}</span>\nBest : ${theBest}`,
+				},
 				i,
 			}
 		},
