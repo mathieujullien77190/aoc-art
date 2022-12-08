@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react"
 
-import { read } from "../helpers"
+import { read, View } from "../view"
 
 const getStats = ({
 	countView,
@@ -60,9 +60,9 @@ const getStats = ({
 }
 
 type UseAnimProps = {
-	viewsFn: () => string[]
-	transform?: ({ view, i }: { view: string; i: number }) => {
-		view: string
+	viewsFn: () => View[]
+	transform?: ({ view, i }: { view: View; i: number }) => {
+		view: View
 		i: number
 	}
 	dataSize?: number
@@ -94,10 +94,10 @@ export const useAnim = ({
 
 		timer = read(views, calcSpeed, args => {
 			const { view, i } = transform(args)
-			countChar += view.length
+			countChar += view.value.length
 			countView++
 
-			setHTML(view)
+			setHTML(view.value)
 			setStats(
 				getStats({
 					nbsView: countView,

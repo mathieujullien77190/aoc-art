@@ -79,20 +79,22 @@ export const generateViews = () => {
 	return save.map(item => {
 		const style =
 			"width:50px;height:70px;margin:0;font-size: 10px;display: inline-flex;font-weight:bold;"
-		return item.arr
-			.map((item2, i) =>
-				item2
-					.map((item3, j) => {
-						if (item3 === -1)
-							return `<pre  style="${style}color:yellow;">${octopus}</pre>`
-						if (item3 > 9)
+		return {
+			value: item.arr
+				.map((item2, i) =>
+					item2
+						.map((item3, j) => {
+							if (item3 === -1)
+								return `<pre  style="${style}color:yellow;">${octopus}</pre>`
+							if (item3 > 9)
+								return `<pre style="${style}color:${colors[item3]};">${octopus}</pre>`
+							if (item3 === 0)
+								return `<pre  style="${style}color:${colors[item3]};">${octopus}</pre>`
 							return `<pre style="${style}color:${colors[item3]};">${octopus}</pre>`
-						if (item3 === 0)
-							return `<pre  style="${style}color:${colors[item3]};">${octopus}</pre>`
-						return `<pre style="${style}color:${colors[item3]};">${octopus}</pre>`
-					})
-					.join("")
-			)
-			.join("\n")
+						})
+						.join("")
+				)
+				.join("\n"),
+		}
 	})
 }

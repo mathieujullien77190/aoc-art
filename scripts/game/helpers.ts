@@ -58,28 +58,6 @@ export const sortString = str =>
 
 export const copy = objectOrArray => JSON.parse(JSON.stringify(objectOrArray))
 
-export const read = (
-	arr: string[],
-	timeStep: number,
-	fn: ({ view, i }: { view: string; i: number }) => void,
-	end?: () => void
-): number => {
-	const timer = window.setInterval(
-		initTime => {
-			const index = Math.floor((new Date().getTime() - initTime) / timeStep) - 1
-			if (arr[index]) fn.call(this, { view: arr[index], i: index }, timer)
-			else {
-				fn.call(this, { view: arr[arr.length - 1], i: arr.length - 1 }, timer)
-				clearInterval(timer)
-				if (end) end()
-			}
-		},
-		timeStep,
-		new Date().getTime()
-	)
-	return timer
-}
-
 export const getNeighbours = (arr, lineI, columnI, matrix) => {
 	return matrix
 		.map(item => {

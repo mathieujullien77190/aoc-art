@@ -13,8 +13,14 @@ const Game = styled.pre`
 	margin: 0;
 `
 
+const Container = styled.div`
+	height: 100%;
+	display: flex;
+	align-items: end;
+`
+
 const Animation = () => {
-	const [speed, setSpeed] = useState<number>(10)
+	const [speed, setSpeed] = useState<number>(40)
 	const [dataSize, setDataSize] = useState<number>(40)
 	const [reload, setReload] = useState<number>(0)
 	const { HTML, stats } = useAnim({
@@ -26,20 +32,27 @@ const Animation = () => {
 
 	return (
 		<>
-			<Game
-				style={{ fontSize: "12px" }}
-				dangerouslySetInnerHTML={{ __html: HTML }}
-			/>
+			<Container>
+				<Game
+					style={{ fontSize: "12px" }}
+					dangerouslySetInnerHTML={{ __html: HTML }}
+				/>
+			</Container>
 			{!isMobile && (
 				<Stats
 					stats={stats}
-					maxData={dataSize}
+					maxData={100}
 					onChangeSpeed={value =>
 						setSpeed(n =>
 							n + value > 1000 ? 1000 : n + value <= 0 ? 0 : n + value
 						)
 					}
 					onReload={() => setReload(n => n + 1)}
+					onChangeSize={value =>
+						setDataSize(n =>
+							n + value > 100 ? 100 : n + value <= 0 ? 0 : n + value
+						)
+					}
 				/>
 			)}
 		</>
