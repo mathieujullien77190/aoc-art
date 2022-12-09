@@ -7,7 +7,7 @@ import Game2021 from "./game/loading/2021"
 import GameDay1 from "./game/loading/day1"
 import GameDay4 from "./game/loading/day4"
 import GameDay5 from "./game/loading/day5"
-import GameOctopus from "./game/loading/octopus"
+
 import { colors } from "_components/constants"
 
 const Container = styled.div`
@@ -26,33 +26,28 @@ const Container = styled.div`
 
 export const scripts = [
 	{
-		day: "-1",
+		day: "0",
 		fn: () => {
-			return "Test d'une animation du AOC 2021"
+			return "2021 | Day 25: Sea Cucumber"
 		},
 	},
-	{
-		day: "-2",
-		fn: () => {
-			return "Test d'une animation du AOC 2021 : octopus"
-		},
-	},
+
 	{
 		day: "1",
 		fn: () => {
-			return "--- Day 1: Calorie Counting ---"
+			return "2022 | Day 1: Calorie Counting"
 		},
 	},
 	{
 		day: "4",
 		fn: () => {
-			return "--- Day 4: Camp Cleanup ---"
+			return "2022 | Day 4: Camp Cleanup"
 		},
 	},
 	{
 		day: "5",
 		fn: () => {
-			return "--- Day 5: Supply Stacks ---"
+			return "2022 | Day 5: Supply Stacks"
 		},
 	},
 ]
@@ -66,8 +61,7 @@ export const Games = ({ day }: { day: string }) => {
 		<>
 			{display && search.length === 1 && (
 				<Container onClick={() => setDisplay(false)}>
-					{day === "-1" && <Game2021 />}
-					{day === "-2" && <GameOctopus />}
+					{day === "0" && <Game2021 />}
 					{day === "1" && <GameDay1 />}
 					{day === "4" && <GameDay4 />}
 					{day === "5" && <GameDay5 />}

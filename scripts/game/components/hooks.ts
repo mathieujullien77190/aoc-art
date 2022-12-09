@@ -4,63 +4,23 @@ import { useEffect, useState, useMemo } from "react"
 
 import { read, View } from "../view"
 
-const getStats = ({
-	countView,
-	nbsView,
-	countChar,
-	totalView,
-	speed,
-	dataSize,
-}) => {
-	const size = 34
-	const add = "                                 "
+export const prepareViewsHelpers = (
+	fn: () => View[],
+	withTime?: boolean
+): { views: View[]; time1?: Date; time2?: Date } => {
+	const time1 = new Date()
+	const views = fn()
+	const time2 = new Date()
 
-	const totalFrame = (
-		"Total frame : " +
-		totalView.toLocaleString() +
-		add
-	).substring(0, size)
-	const currentFrame = (
-		"Current frame : " +
-		countView.toLocaleString() +
-		add
-	).substring(0, size)
-	const nbsFrame = (
-		"Frame displayed : " +
-		nbsView.toLocaleString() +
-		add
-	).substring(0, size)
-
-	const speedD = ("Speed : " + speed + add).substring(0, size)
-
-	const c = ("Char displayed : " + countChar.toLocaleString() + add).substring(
-		0,
-		size
-	)
-	const d = dataSize
-		? ("% data : " + dataSize + "%" + add).substring(0, size)
-		: ("% data : -" + add).substring(0, size)
-
-	return ` ------------------------------------  
-| Infos :                            | 
-|                                    | 
-| pour Arrêter cliquez n'importe où  |
-|                                    | 
-| Stats :                            | 
-|                                    | 
-| ${totalFrame} | 
-| ${currentFrame} |
-| ${nbsFrame} | 
-| ${speedD} | 
-| ${c} | 
-| ${d} | 
-|                                    | 
-------------------------------------  
-`
+	return {
+		time1: withTime ? time1 : null,
+		views,
+		time2: withTime ? time2 : null,
+	}
 }
 
 type UseAnimProps = {
-	viewsFn: () => View[]
+	viewsFn: () => { views: View[]; time1?: Date; time2?: Date }
 	transform?: ({ view, i }: { view: View; i: number }) => {
 		view: View
 		i: number
@@ -79,35 +39,41 @@ export const useAnim = ({
 }: UseAnimProps) => {
 	let timer
 	const [HTML, setHTML] = useState<string>("")
-	const [stats, setStats] = useState<string>("")
+	const [stats, setStats] = useState<Record<string, number>>({})
 
-	const views = useMemo(() => viewsFn(), [dataSize])
+	const viewsInfo = useMemo(() => viewsFn(), [dataSize])
 	const calcSpeed = useMemo(() => (speed === 0 ? 1 : speed), [speed])
 
 	useEffect(() => {
-		const totalView = views.length
+		const totalView = viewsInfo.views.length
+
+		const timeViews =
+			viewsInfo.time1 !== null && viewsInfo.time2 !== null
+				? (viewsInfo.time2.getTime() - viewsInfo.time1.getTime()) / 1000
+				: undefined
+		const nbViewSec = timeViews ? Math.floor(totalView / timeViews) : undefined
 
 		let countChar = 0
 		let countView = 0
 
 		clearInterval(timer)
 
-		timer = read(views, calcSpeed, args => {
+		timer = read(viewsInfo.views, calcSpeed, args => {
 			const { view, i } = transform(args)
 			countChar += view.value.length
 			countView++
 
 			setHTML(view.value)
-			setStats(
-				getStats({
-					nbsView: countView,
-					countView: i + 1,
-					countChar,
-					totalView,
-					dataSize,
-					speed: calcSpeed,
-				})
-			)
+			setStats({
+				timeViews,
+				nbViewSec,
+				nbsView: countView,
+				countView: i + 1,
+				countChar,
+				totalView,
+				dataSize,
+				speed: calcSpeed,
+			})
 		})
 
 		return () => {

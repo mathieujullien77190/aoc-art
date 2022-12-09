@@ -1,25 +1,42 @@
 /** @format */
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import styled from "styled-components"
 
 import { colors } from "_components/constants"
 
-const Container = styled.pre``
+import { isMobile } from "react-device-detect"
 
-const Wrapper = styled.div`
-	margin: 0;
-	position: absolute;
-	top: 0;
-	right: 0;
-	background: ${colors.aoc};
+let RELOAD = 0
 
+const Container = styled.div`
+	label {
+		width: 190px;
+		display: inline-block;
+	}
+`
+
+const Commands = styled.div`
 	label {
 		width: 95px;
 		display: inline-block;
 	}
 
+	> div {
+		margin: 5px;
+	}
+`
+
+const Wrapper = styled.div`
+	margin: 10px;
+	position: absolute;
+	top: 0;
+	right: 0;
+	background: ${colors.aoc};
+	border: dashed 2px;
+	padding: 10px;
+
 	p {
-		margin: 10px;
+		font-weight: bold;
 	}
 `
 
@@ -40,122 +57,198 @@ const Button = styled.button`
 `
 
 type StatsProps = {
-	stats: string
-	maxData?: number
+	stats: Record<string, number>
+	maxSpeed?: number
+	speed?: number
+	maxSizeData?: number
+	minSizeData?: number
+	sizeData?: number
 	onChangeSpeed?: (value: number) => void
 	onChangeSize?: (value: number) => void
-	onReload?: () => void
+	onReload?: (value: number) => void
 }
 
 const Stats = ({
 	stats,
-	maxData = 100,
+	maxSizeData = 100,
+	minSizeData = 0,
+	sizeData = 40,
+	maxSpeed = 1000,
+	speed = 50,
 	onChangeSpeed = () => {},
 	onChangeSize = null,
 	onReload = () => {},
 }: StatsProps) => {
 	const [statsVisibility, setStatsVisibility] = useState<boolean>(false)
 
-	return (
-		<Wrapper
-			onMouseOver={() => setStatsVisibility(true)}
-			onMouseOut={() => setStatsVisibility(false)}
-			style={{
-				opacity: statsVisibility ? 1 : 0.4,
-				zIndex: statsVisibility ? 10 : 0,
-			}}
-		>
-			<Container
-				dangerouslySetInnerHTML={{
-					__html: stats,
-				}}
-			/>
-			<p>Commands : </p>
+	const handleChangeSpeed = useCallback(
+		(value: number) => {
+			onChangeSpeed(
+				speed + value > maxSpeed
+					? maxSpeed
+					: speed + value <= 0
+					? 0
+					: speed + value
+			)
+		},
+		[speed, maxSpeed]
+	)
 
-			<p>
-				<label>Action</label>
-				<Button
-					onClick={e => {
-						e.stopPropagation()
-						onReload()
+	const handleChangeSize = useCallback(
+		(value: number) => {
+			onChangeSize(
+				sizeData + value > maxSizeData
+					? maxSizeData
+					: sizeData + value <= minSizeData
+					? minSizeData
+					: sizeData + value
+			)
+		},
+		[sizeData, maxSizeData]
+	)
+
+	return (
+		<>
+			{!isMobile && (
+				<Wrapper
+					onMouseOver={() => setStatsVisibility(true)}
+					onMouseOut={() => setStatsVisibility(false)}
+					style={{
+						opacity: statsVisibility ? 1 : 0.4,
+						zIndex: statsVisibility ? 10 : 0,
 					}}
 				>
-					Reload
-				</Button>
-			</p>
-			<p>
-				<label>Speed</label>
-				<Button
-					onClick={e => {
-						e.stopPropagation()
-						onChangeSpeed(5)
-					}}
-				>
-					-
-				</Button>
-				<Button
-					onClick={e => {
-						e.stopPropagation()
-						onChangeSpeed(-5)
-					}}
-				>
-					+
-				</Button>
-				<Button
-					onClick={e => {
-						e.stopPropagation()
-						onChangeSpeed(-1000)
-					}}
-				>
-					max
-				</Button>
-				<Button
-					onClick={e => {
-						e.stopPropagation()
-						onChangeSpeed(1000)
-					}}
-				>
-					min
-				</Button>
-			</p>
-			{onChangeSize && (
-				<p>
-					<label>Data size</label>
-					<Button
-						onClick={e => {
-							e.stopPropagation()
-							onChangeSize(-10)
-						}}
-					>
-						-
-					</Button>
-					<Button
-						onClick={e => {
-							e.stopPropagation()
-							onChangeSize(10)
-						}}
-					>
-						+
-					</Button>
-					<Button
-						onClick={e => {
-							e.stopPropagation()
-							onChangeSize(maxData)
-						}}
-					>
-						max
-					</Button>
-					<Button
-						onClick={e => {
-							e.stopPropagation()
-							onChangeSize(-maxData)
-						}}
-					>
-						min
-					</Button>
-				</p>
+					<Container>
+						<p>Informations</p>
+						{stats?.timeViews && (
+							<div>
+								<label>Time generation</label>
+								{stats?.timeViews}s
+							</div>
+						)}
+						{stats?.nbViewSec && (
+							<div>
+								<label>Generation frames/s</label>
+								{stats?.nbViewSec?.toLocaleString()}
+							</div>
+						)}
+						<div>
+							<label>Total frame</label>
+							{stats?.totalView?.toLocaleString()}
+						</div>
+						<div>
+							<label>Frame displayed</label>
+							{stats?.nbsView?.toLocaleString()}
+						</div>
+						<div>
+							<label>Current frame</label>
+							{stats?.countView?.toLocaleString()}
+						</div>
+						<div>
+							<label>Char displayed</label>
+							{stats?.countChar?.toLocaleString()}
+						</div>
+
+						{stats?.dataSize && (
+							<div>
+								<label>% data</label>
+								{stats?.dataSize}%
+							</div>
+						)}
+						<div>
+							<label>Speed</label>
+							{stats?.speed}
+						</div>
+					</Container>
+					<Commands>
+						<p>Commands : </p>
+						<div>
+							<label>Action</label>
+							<Button
+								onClick={e => {
+									e.stopPropagation()
+									onReload(RELOAD++)
+								}}
+							>
+								Reload
+							</Button>
+						</div>
+						<div>
+							<label>Speed</label>
+							<Button
+								onClick={e => {
+									e.stopPropagation()
+									handleChangeSpeed(5)
+								}}
+							>
+								-
+							</Button>
+							<Button
+								onClick={e => {
+									e.stopPropagation()
+									handleChangeSpeed(-5)
+								}}
+							>
+								+
+							</Button>
+							<Button
+								onClick={e => {
+									e.stopPropagation()
+									handleChangeSpeed(-maxSpeed)
+								}}
+							>
+								max
+							</Button>
+							<Button
+								onClick={e => {
+									e.stopPropagation()
+									handleChangeSpeed(maxSpeed)
+								}}
+							>
+								min
+							</Button>
+						</div>
+						{onChangeSize && (
+							<div>
+								<label>Data size</label>
+								<Button
+									onClick={e => {
+										e.stopPropagation()
+										handleChangeSize(-10)
+									}}
+								>
+									-
+								</Button>
+								<Button
+									onClick={e => {
+										e.stopPropagation()
+										handleChangeSize(10)
+									}}
+								>
+									+
+								</Button>
+								<Button
+									onClick={e => {
+										e.stopPropagation()
+										handleChangeSize(maxSizeData)
+									}}
+								>
+									max
+								</Button>
+								<Button
+									onClick={e => {
+										e.stopPropagation()
+										handleChangeSize(-maxSizeData)
+									}}
+								>
+									min
+								</Button>
+							</div>
+						)}
+					</Commands>
+				</Wrapper>
 			)}
-		</Wrapper>
+		</>
 	)
 }
 
