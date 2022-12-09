@@ -36,6 +36,17 @@ export const createView = (
 	}
 }
 
+export const mergeViews = (
+	back: View,
+	front: { view: View; position: Position }[]
+) => {
+	front.forEach(({ view, position }) => {
+		back = mergeView(back, view, position)
+	})
+
+	return back
+}
+
 export const mergeView = (back: View, front: View, position: Position) => {
 	let copy = { ...back }
 	let line, first, last
