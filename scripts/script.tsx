@@ -25,9 +25,25 @@ const Container = styled.div`
 	overflow: auto;
 `
 
+const Title = styled.p`
+	position: fixed;
+	padding: 8px;
+	top: -10px;
+	left: 40px;
+	z-index: 11;
+
+	background: ${colors.overlay};
+	border: solid 2px ${colors.textColor};
+
+	a {
+		color: white;
+	}
+`
+
 export const scripts = [
 	{
-		day: "0",
+		day: "25",
+		year: "2022",
 		fn: () => {
 			return "2021 | Day 25: Sea Cucumber"
 		},
@@ -35,24 +51,28 @@ export const scripts = [
 
 	{
 		day: "1",
+		year: "2022",
 		fn: () => {
 			return "2022 | Day 1: Calorie Counting"
 		},
 	},
 	{
 		day: "4",
+		year: "2022",
 		fn: () => {
 			return "2022 | Day 4: Camp Cleanup"
 		},
 	},
 	{
 		day: "5",
+		year: "2022",
 		fn: () => {
 			return "2022 | Day 5: Supply Stacks"
 		},
 	},
 	{
 		day: "9",
+		year: "2022",
 		fn: () => {
 			return "2022 | Day 9: Rope Bridge"
 		},
@@ -63,12 +83,27 @@ export const Games = ({ day }: { day: string }) => {
 	const [display, setDisplay] = useState<boolean>(true)
 
 	const search = scripts.filter(script => script.day === day)
+	const link =
+		search.length === 1
+			? `https://adventofcode.com/${search[0].year}/day/${search[0].day}`
+			: ""
 
 	return (
 		<>
 			{display && search.length === 1 && (
 				<Container onClick={() => setDisplay(false)}>
-					{day === "0" && <Game2021 />}
+					<Title
+						onClick={e => {
+							e.stopPropagation()
+						}}
+					>
+						{search[0].fn()} [{" "}
+						<a href={link} target="_blank">
+							voir l'exercice
+						</a>{" "}
+						]
+					</Title>
+					{day === "25" && <Game2021 />}
 					{day === "1" && <GameDay1 />}
 					{day === "4" && <GameDay4 />}
 					{day === "5" && <GameDay5 />}
