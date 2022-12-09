@@ -2,12 +2,10 @@
 import { useState } from "react"
 import styled from "styled-components"
 
-import { useAnim } from "./hooks"
+import { useAnim, prepareViewsHelpers } from "./hooks"
 import { generateViews, extractMax } from "../core/day1"
 
 import Stats from "./Stats"
-
-import { isMobile } from "react-device-detect"
 
 const Game = styled.pre`
 	margin: 0;
@@ -22,7 +20,7 @@ const Animation = () => {
 	const [dataSize, setDataSize] = useState<number>(100)
 
 	const { HTML, stats } = useAnim({
-		viewsFn: () => generateViews(60, dataSize),
+		viewsFn: () => prepareViewsHelpers(() => generateViews(60, dataSize), true),
 		transform: ({ view, i }) => {
 			const item1 = view.value.substring(0, pos)
 			const item2 = view.value.substring(pos, pos + 6)
@@ -45,22 +43,14 @@ const Animation = () => {
 	return (
 		<>
 			<Game dangerouslySetInnerHTML={{ __html: HTML }} />
-			{!isMobile && (
-				<Stats
-					stats={stats}
-					onChangeSpeed={value =>
-						setSpeed(n =>
-							n + value > 1000 ? 1000 : n + value <= 0 ? 0 : n + value
-						)
-					}
-					onReload={() => setReload(n => n + 1)}
-					onChangeSize={value =>
-						setDataSize(n =>
-							n + value > 100 ? 100 : n + value <= 0 ? 0 : n + value
-						)
-					}
-				/>
-			)}
+			<Stats
+				speed={speed}
+				sizeData={dataSize}
+				stats={stats}
+				onChangeSpeed={setSpeed}
+				onReload={setReload}
+				onChangeSize={setDataSize}
+			/>
 		</>
 	)
 }

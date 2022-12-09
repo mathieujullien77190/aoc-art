@@ -1,13 +1,11 @@
 /** @format */
 import { useState } from "react"
 import styled from "styled-components"
-import { useAnim } from "./hooks"
+import { useAnim, prepareViewsHelpers } from "./hooks"
 
 import { data } from "../data/2021"
 
 import Stats from "./Stats"
-
-import { isMobile } from "react-device-detect"
 
 const Game = styled.pre`
 	margin: 0;
@@ -19,7 +17,8 @@ const Animation = () => {
 	const [reload, setReload] = useState<number>(0)
 
 	const { HTML, stats } = useAnim({
-		viewsFn: () => data.map(item => ({ value: item })),
+		viewsFn: () =>
+			prepareViewsHelpers(() => data.map(item => ({ value: item })), false),
 		speed,
 		reload,
 	})
@@ -27,17 +26,13 @@ const Animation = () => {
 	return (
 		<>
 			<Game style={{ fontSize: "10px", lineHeight: "6px" }}>{HTML}</Game>
-			{!isMobile && (
-				<Stats
-					stats={stats}
-					onChangeSpeed={value =>
-						setSpeed(n =>
-							n + value > 1000 ? 1000 : n + value <= 0 ? 0 : n + value
-						)
-					}
-					onReload={() => setReload(n => n + 1)}
-				/>
-			)}
+
+			<Stats
+				stats={stats}
+				speed={speed}
+				onChangeSpeed={setSpeed}
+				onReload={setReload}
+			/>
 		</>
 	)
 }

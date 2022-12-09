@@ -2,12 +2,10 @@
 import { useState } from "react"
 import styled from "styled-components"
 
-import { useAnim } from "./hooks"
+import { useAnim, prepareViewsHelpers } from "./hooks"
 import { generateViews } from "../core/day5"
 
 import Stats from "./Stats"
-
-import { isMobile } from "react-device-detect"
 
 const Game = styled.pre`
 	margin: 0;
@@ -20,11 +18,11 @@ const Container = styled.div`
 `
 
 const Animation = () => {
-	const [speed, setSpeed] = useState<number>(40)
+	const [speed, setSpeed] = useState<number>(30)
 	const [dataSize, setDataSize] = useState<number>(40)
 	const [reload, setReload] = useState<number>(0)
 	const { HTML, stats } = useAnim({
-		viewsFn: () => generateViews(dataSize),
+		viewsFn: () => prepareViewsHelpers(() => generateViews(dataSize), true),
 		speed,
 		reload,
 		dataSize: dataSize,
@@ -38,23 +36,16 @@ const Animation = () => {
 					dangerouslySetInnerHTML={{ __html: HTML }}
 				/>
 			</Container>
-			{!isMobile && (
-				<Stats
-					stats={stats}
-					maxData={100}
-					onChangeSpeed={value =>
-						setSpeed(n =>
-							n + value > 1000 ? 1000 : n + value <= 0 ? 0 : n + value
-						)
-					}
-					onReload={() => setReload(n => n + 1)}
-					onChangeSize={value =>
-						setDataSize(n =>
-							n + value > 100 ? 100 : n + value <= 0 ? 0 : n + value
-						)
-					}
-				/>
-			)}
+			<Stats
+				stats={stats}
+				maxSizeData={100}
+				minSizeData={10}
+				sizeData={dataSize}
+				speed={speed}
+				onChangeSpeed={setSpeed}
+				onReload={setReload}
+				onChangeSize={setDataSize}
+			/>
 		</>
 	)
 }

@@ -161,14 +161,14 @@ export const generateViews = (dataSize: number) => {
 			(position, i, tab) => {
 				const fil = createFil(position)
 
-				const mergeT = mergeView(i < tab.length - 1 ? merge : merge, fil, {
+				const mergeV = mergeView(merge, blockBis, position)
+
+				const mergeT = mergeView(i < tab.length - 1 ? mergeV : merge, fil, {
 					x: position.x + 2,
 					y: position.y - fil.height,
 				})
 
-				const mergeV = mergeView(mergeT, blockBis, position)
-
-				return mergeV
+				return mergeT
 			}
 		)
 
