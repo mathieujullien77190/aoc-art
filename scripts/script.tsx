@@ -7,6 +7,7 @@ import Game2021 from "./game/loading/2021"
 import GameDay1 from "./game/loading/day1"
 import GameDay4 from "./game/loading/day4"
 import GameDay5 from "./game/loading/day5"
+import GameDay9 from "./game/loading/day9"
 
 import { colors } from "_components/constants"
 
@@ -50,6 +51,12 @@ export const scripts = [
 			return "2022 | Day 5: Supply Stacks"
 		},
 	},
+	{
+		day: "9",
+		fn: () => {
+			return "2022 | Day 9: Rope Bridge"
+		},
+	},
 ]
 
 export const Games = ({ day }: { day: string }) => {
@@ -65,6 +72,7 @@ export const Games = ({ day }: { day: string }) => {
 					{day === "1" && <GameDay1 />}
 					{day === "4" && <GameDay4 />}
 					{day === "5" && <GameDay5 />}
+					{day === "9" && <GameDay9 />}
 				</Container>
 			)}
 		</>
