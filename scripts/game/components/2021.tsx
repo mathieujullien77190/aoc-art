@@ -19,8 +19,7 @@ const Animation = () => {
 	const { HTML, stats } = useAnim({
 		viewsFn: () =>
 			prepareViewsHelpers(() => data.map(item => ({ value: item })), false),
-		speed,
-		reload,
+		data: { speed, reload },
 	})
 
 	return (
