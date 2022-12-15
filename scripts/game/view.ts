@@ -38,6 +38,10 @@ export const createView = (
 	}
 }
 
+export const areEqual = (view1: View, view2: View) => {
+	return view1.value === view2.value
+}
+
 export const clipView = (
 	view: View,
 	pos: Position,

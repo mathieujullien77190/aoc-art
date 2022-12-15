@@ -27,6 +27,7 @@ const Container = styled.div`
 
 const Animation = () => {
 	const [speed, setSpeed] = useState<number>(5)
+
 	const [dataSize] = useState<number>(100)
 	const [reload] = useState<number>(0)
 	const { HTML, stats } = useAnim({
@@ -46,9 +47,7 @@ const Animation = () => {
 			}
 		},
 
-		speed,
-		reload,
-		dataSize: dataSize,
+		data: { speed, reload, dataSize: dataSize },
 	})
 
 	return (

@@ -40,9 +40,10 @@ const Wrapper = styled.div`
 	}
 `
 
-const Button = styled.button`
-	border: solid 2px white;
-	color: white;
+const Button = styled.button<{ active?: boolean }>`
+	border: solid 2px;
+	color: ${({ active }) => (active ? colors.importantColor : "white")};
+	border-color: ${({ active }) => (active ? colors.importantColor : "white")};
 	background: ${colors.aoc};
 	margin-right: 10px;
 	min-width: 40px;
@@ -58,6 +59,7 @@ const Button = styled.button`
 
 type StatsProps = {
 	stats: Record<string, number>
+	part?: 1 | 2
 	maxSpeed?: number
 	speed?: number
 	maxSizeData?: number
@@ -66,10 +68,12 @@ type StatsProps = {
 	onChangeSpeed?: (value: number) => void
 	onChangeSize?: (value: number) => void
 	onReload?: (value: number) => void
+	onPart?: (value: 1 | 2) => void
 }
 
 const Stats = ({
 	stats,
+	part = 1,
 	maxSizeData = 100,
 	minSizeData = 0,
 	sizeData = 40,
@@ -78,6 +82,7 @@ const Stats = ({
 	onChangeSpeed = () => {},
 	onChangeSize = null,
 	onReload = null,
+	onPart = null,
 }: StatsProps) => {
 	const [statsVisibility, setStatsVisibility] = useState<boolean>(false)
 
@@ -172,6 +177,29 @@ const Stats = ({
 									}}
 								>
 									Reload
+								</Button>
+							</div>
+						)}
+						{onPart && (
+							<div>
+								<label>Partie</label>
+								<Button
+									active={part === 1}
+									onClick={e => {
+										e.stopPropagation()
+										onPart(1)
+									}}
+								>
+									1
+								</Button>
+								<Button
+									active={part === 2}
+									onClick={e => {
+										e.stopPropagation()
+										onPart(2)
+									}}
+								>
+									2
 								</Button>
 							</div>
 						)}

@@ -17,9 +17,7 @@ const Animation = () => {
 	const [reload, setReload] = useState<number>(0)
 	const { HTML, stats } = useAnim({
 		viewsFn: () => prepareViewsHelpers(() => generateViews(25, dataSize), true),
-		speed,
-		reload,
-		dataSize,
+		data: { speed, reload, dataSize },
 	})
 
 	return (

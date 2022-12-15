@@ -25,24 +25,28 @@ type UseAnimProps = {
 		view: View
 		i: number
 	}
-	dataSize?: number
-	speed: number
-	reload: number
+	data: {
+		dataSize?: number
+		part?: 1 | 2
+		speed: number
+		reload: number
+	}
 }
 
 export const useAnim = ({
 	viewsFn,
 	transform = ({ view, i }) => ({ view, i }),
-	dataSize,
-	speed,
-	reload,
+	data,
 }: UseAnimProps) => {
 	let timer
 	const [HTML, setHTML] = useState<string>("")
 	const [stats, setStats] = useState<Record<string, number>>({})
 
-	const viewsInfo = useMemo(() => viewsFn(), [dataSize])
-	const calcSpeed = useMemo(() => (speed === 0 ? 1 : speed), [speed])
+	const viewsInfo = useMemo(() => viewsFn(), [data.dataSize, data.part])
+	const calcSpeed = useMemo(
+		() => (data.speed === 0 ? 1 : data.speed),
+		[data.speed]
+	)
 
 	useEffect(() => {
 		const totalView = viewsInfo.views.length
@@ -71,7 +75,7 @@ export const useAnim = ({
 				countView: i + 1,
 				countChar,
 				totalView,
-				dataSize,
+				dataSize: data.dataSize,
 				speed: calcSpeed,
 			})
 		})
@@ -79,7 +83,7 @@ export const useAnim = ({
 		return () => {
 			clearInterval(timer)
 		}
-	}, [calcSpeed, reload, dataSize])
+	}, [calcSpeed, data.reload, data.dataSize, data.part])
 
 	return { HTML, stats }
 }
