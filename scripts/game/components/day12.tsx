@@ -56,6 +56,7 @@ const Animation = () => {
 				e.stopPropagation()
 			}}
 		>
+			<h1 style={{ fontSize: "60px" }}>PAS FINIIIIIIII!!!!!!!</h1>
 			<Help>
 				<li>
 					Vous êtes le point rouge{" "}
