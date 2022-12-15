@@ -1,5 +1,7 @@
 /** @format */
 
+import { createArray } from "./helpers"
+
 export type View = { width?: number; height?: number; value: string }
 
 export type Position = { x: number; y: number }
@@ -33,6 +35,57 @@ export const createView = (
 			data.map(item => item.join("")),
 			complete
 		)
+	}
+}
+
+export const clipView = (
+	view: View,
+	pos: Position,
+	size: number,
+	debug: string = " "
+): View => {
+	const realSize = size * 2 + 1
+
+	let clipView = ""
+	let emptyLineFirst = ""
+	let emptyLineSecond = ""
+	let emptyColFirst = ""
+	let emptyColSecond = ""
+
+	const xStart = pos.x - size < 0 ? 0 : pos.x - size
+	const yStart = pos.y - size < 0 ? 0 : pos.y - size
+
+	const firstSizeX = Math.min(size, pos.x)
+	const secondSizeX = Math.min(size, view.width - pos.x - 1)
+	const firstSizeY = Math.min(size, pos.y)
+	const secondSizeY = Math.min(size, view.height - pos.y - 1)
+
+	if (firstSizeY < size) {
+		for (let i = 0; i < size - firstSizeY; i++) {
+			emptyLineFirst += debug.repeat(realSize) + "\n"
+		}
+	}
+	if (secondSizeY < size) {
+		for (let i = 0; i < size - secondSizeY; i++) {
+			emptyLineSecond += "\n" + debug.repeat(realSize)
+		}
+	}
+	if (firstSizeX < size) emptyColFirst = debug.repeat(size - firstSizeX)
+	if (secondSizeX < size) emptyColSecond = debug.repeat(size - secondSizeX)
+
+	const calcSize = firstSizeY + secondSizeY
+
+	for (let i = 0; i < calcSize + 1; i++) {
+		const X = (i + yStart) * (view.width + 1) + xStart
+		const Y = X + (firstSizeX + secondSizeX + 1)
+		clipView += emptyColFirst + view.value.substring(X, Y) + emptyColSecond
+		if (i < calcSize) clipView += "\n"
+	}
+
+	return {
+		value: emptyLineFirst + clipView + emptyLineSecond,
+		width: size,
+		height: size,
 	}
 }
 

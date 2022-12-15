@@ -77,7 +77,7 @@ const Stats = ({
 	speed = 50,
 	onChangeSpeed = () => {},
 	onChangeSize = null,
-	onReload = () => {},
+	onReload = null,
 }: StatsProps) => {
 	const [statsVisibility, setStatsVisibility] = useState<boolean>(false)
 
@@ -162,17 +162,19 @@ const Stats = ({
 					</Container>
 					<Commands>
 						<p>Commands : </p>
-						<div>
-							<label>Action</label>
-							<Button
-								onClick={e => {
-									e.stopPropagation()
-									onReload(RELOAD++)
-								}}
-							>
-								Reload
-							</Button>
-						</div>
+						{onReload && (
+							<div>
+								<label>Action</label>
+								<Button
+									onClick={e => {
+										e.stopPropagation()
+										onReload(RELOAD++)
+									}}
+								>
+									Reload
+								</Button>
+							</div>
+						)}
 						<div>
 							<label>Speed</label>
 							<Button
