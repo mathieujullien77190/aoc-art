@@ -112,7 +112,7 @@ export const generateViews = () => {
 		{ x: start.x - boundary.xMin, y: 0 }
 	)
 
-	views.push(backView)
+	views.push(clipView(backView, posClip, sizeClip, " "))
 
 	sand1(
 		back,
