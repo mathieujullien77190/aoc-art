@@ -11,6 +11,7 @@ const Game = styled.pre`
 	margin: 0;
 	font-size: 12px;
 	line-height: 8px;
+	color: lightgray;
 
 	span {
 		font-size: 12px;
@@ -30,6 +31,20 @@ const Animation = () => {
 	const [reload] = useState<number>(0)
 	const { HTML, stats } = useAnim({
 		viewsFn: () => prepareViewsHelpers(() => generateViews(), true),
+		transform: ({ view, i }) => {
+			const newView = {
+				...view,
+				value: view.value.replace(
+					/([o]+)/g,
+					'<span style="color:#ffa600">$1</span>'
+				),
+			}
+
+			return {
+				view: newView,
+				i,
+			}
+		},
 
 		speed,
 		reload,
