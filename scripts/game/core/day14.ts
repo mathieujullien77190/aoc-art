@@ -2,7 +2,7 @@
 
 import { input } from "../data/day14"
 import { createArray, extractTab2 } from "../helpers"
-import { createView, mergeView, mergeViews, Position, clipView } from "../view"
+import { createView, mergeView, areEqual, clipView } from "../view"
 
 type Boundary = { xMin: number; xMax: number; yMin: number; yMax: number }
 
@@ -69,20 +69,18 @@ const construct = (data, boundary) => {
 	return back
 }
 
-const sand = (back, start, boundary, cb, cbEnd) => {
+const sand1 = (back, start, boundary, cb, cbEnd) => {
 	let f, F
 	const { xMin } = boundary
-	let cpt = 0
 	const posStart = { y: start.y, x: start.x - xMin }
 
 	do {
 		f = { ...posStart }
 		F = { ...f }
 		do {
-			cpt++
 			f = { ...F }
 			F = fall(back, f)
-			if (F !== false && F !== true && cpt % 2 === 0) cb(F)
+			if (F !== false && F !== true) cb(F)
 		} while (F !== false && F !== true)
 		setSand(back, f)
 		cbEnd(f)
@@ -97,9 +95,9 @@ export const generateViews = () => {
 		})
 	)
 
+	const boundary = { xMin: 464, xMax: 537, yMin: 0, yMax: 179 }
 	const views = []
 	const start = { x: 500, y: 0 }
-	const boundary = { xMin: 464, xMax: 537, yMin: 0, yMax: 179 }
 
 	let posClip = { x: start.x - boundary.xMin, y: 12 }
 	const sizeClip = 38
@@ -114,7 +112,9 @@ export const generateViews = () => {
 		{ x: start.x - boundary.xMin, y: 0 }
 	)
 
-	sand(
+	views.push(backView)
+
+	sand1(
 		back,
 		start,
 		boundary,
@@ -123,7 +123,9 @@ export const generateViews = () => {
 
 			const sandMergeClip = clipView(sandMergeView, posClip, sizeClip, " ")
 
-			views.push(sandMergeClip)
+			if (!areEqual(sandMergeClip, views[views.length - 1])) {
+				views.push(sandMergeClip)
+			}
 		},
 		pos => {
 			backView = mergeView(backView, sandView, pos)

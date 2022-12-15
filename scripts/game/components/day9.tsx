@@ -44,9 +44,7 @@ const Animation = () => {
 				i,
 			}
 		},
-		speed,
-		reload,
-		dataSize: dataSize,
+		data: { speed, reload, dataSize: dataSize },
 	})
 
 	return (
