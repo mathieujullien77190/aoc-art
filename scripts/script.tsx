@@ -8,6 +8,7 @@ import GameDay1 from "./game/loading/day1"
 import GameDay4 from "./game/loading/day4"
 import GameDay5 from "./game/loading/day5"
 import GameDay9 from "./game/loading/day9"
+import GameDay12 from "./game/loading/day12"
 import GameDay14 from "./game/loading/day14"
 
 import { colors } from "_components/constants"
@@ -79,6 +80,13 @@ export const scripts = [
 		},
 	},
 	{
+		day: "12",
+		year: "2022",
+		fn: () => {
+			return "2022 | Day 12: Hill Climbing Algorithm"
+		},
+	},
+	{
 		day: "14",
 		year: "2022",
 		fn: () => {
@@ -116,6 +124,7 @@ export const Games = ({ day }: { day: string }) => {
 					{day === "4" && <GameDay4 />}
 					{day === "5" && <GameDay5 />}
 					{day === "9" && <GameDay9 />}
+					{day === "12" && <GameDay12 />}
 					{day === "14" && <GameDay14 />}
 				</Container>
 			)}
