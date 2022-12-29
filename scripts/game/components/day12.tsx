@@ -40,13 +40,29 @@ const Container = styled.div`
 	flex-direction: column;
 `
 
+const Case = ({ color }: { color?: string }) => (
+	<div
+		style={{
+			border: "solid 1px white",
+			display: "inline-block",
+			background: color,
+
+			width: "10px",
+			height: "10px",
+		}}
+	></div>
+)
+
 const Animation = () => {
 	const [HTML, setHTML] = useState<string>(generateGame())
 	const refGame = useRef<HTMLDivElement>(null)
+	const [nb, setNb] = useState<number>(0)
 
 	useEffect(() => {
 		if (refGame.current) {
-			init(2, 18, refGame.current)
+			init(0, 20, refGame.current, listPass => {
+				setNb(listPass.length - 1)
+			})
 		}
 	}, [])
 
@@ -59,41 +75,17 @@ const Animation = () => {
 			<h1 style={{ fontSize: "60px" }}>PAS FINIIIIIIII!!!!!!!</h1>
 			<Help>
 				<li>
-					Vous êtes le point rouge{" "}
-					<div
-						style={{
-							display: "inline-block",
-							background: "red",
-							width: "10px",
-							height: "10px",
-						}}
-					></div>
+					Vous êtes le point rouge <Case color="red" />
 				</li>
 
 				<li>
-					Vous devez rejoindre la case verte{" "}
-					<div
-						style={{
-							display: "inline-block",
-							background: "#58f716",
-							width: "10px",
-							height: "10px",
-						}}
-					></div>{" "}
-					en 380 coups
+					Vous devez rejoindre la case verte <Case color={colors.appColor} /> en
+					380 coups maximum
 				</li>
 
 				<li>
-					Les case blanches{" "}
-					<div
-						style={{
-							display: "inline-block",
-							background: "white",
-							width: "10px",
-							height: "10px",
-						}}
-					></div>{" "}
-					sont au même niveau que vous, les oranges{" "}
+					Les case blanches <Case color="white" /> sont au même niveau que vous,
+					les oranges{" "}
 					<div
 						style={{
 							display: "inline-block",
@@ -103,29 +95,14 @@ const Animation = () => {
 						}}
 					></div>{" "}
 					sont à un niveau inférieur, les bleues claire{" "}
-					<div
-						style={{
-							display: "inline-block",
-							background: "#7eb2ff",
-							width: "10px",
-							height: "10px",
-						}}
-					></div>{" "}
-					juste au dessus de vous et les bleues foncées{" "}
-					<div
-						style={{
-							display: "inline-block",
-							border: "solid 1px white",
-							width: "10px",
-							height: "10px",
-						}}
-					></div>{" "}
-					sont inaccessibles
+					<Case color={colors.infoColor} /> juste au dessus de vous et les
+					bleues foncées <Case /> sont inaccessibles
 				</li>
 
 				<li>Appuyez sur les flèches de direction ← ↓ ↑ → pour vous déplacer</li>
 			</Help>
 			<Game dangerouslySetInnerHTML={{ __html: HTML }} ref={refGame} />
+			<p>Coups : {nb}</p>
 		</Container>
 	)
 }

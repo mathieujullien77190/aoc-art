@@ -8,8 +8,8 @@ const color = (code, parent) => {
 	;[...parent.querySelectorAll("div")].forEach(element => {
 		const charCode = getCode(element)
 
-		if (charCode === 123) element.style.background = "#58f716"
-		else if (charCode === code + 1) element.style.background = "#7eb2ff"
+		if (charCode === 123) element.style.background = colors.appColor
+		else if (charCode === code + 1) element.style.background = colors.infoColor
 		else if (charCode > code + 1)
 			element.style.background = calcColorHight(charCode)
 		else if (charCode < code) element.style.background = calcColorLow(charCode)
@@ -108,7 +108,7 @@ export const generateGame = () => {
 	return strHTML
 }
 
-export const init = (x, y, parent) => {
+export const init = (x, y, parent, cb) => {
 	//const nbHTML = document.body.querySelector(`#nb`)
 
 	let current = setCase({ x, y })
@@ -119,7 +119,7 @@ export const init = (x, y, parent) => {
 
 	document.body.addEventListener("keyup", e => {
 		listPass = handlerKeyUp(e, listPass[listPass.length - 1], listPass, parent)
-
+		cb(listPass)
 		colorPass(listPass)
 	})
 }
