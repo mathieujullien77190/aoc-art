@@ -10,6 +10,7 @@ import GameDay5 from "./game/loading/day5"
 import GameDay9 from "./game/loading/day9"
 import GameDay12 from "./game/loading/day12"
 import GameDay14 from "./game/loading/day14"
+import GameDay18 from "./game/loading/day18"
 
 import { colors } from "_components/constants"
 
@@ -93,6 +94,13 @@ export const scripts = [
 			return "2022 | Day 14: Regolith Reservoir"
 		},
 	},
+	{
+		day: "18",
+		year: "2022",
+		fn: () => {
+			return "2022 | Day 18: Boiling Boulders"
+		},
+	},
 ]
 
 export const Games = ({ day }: { day: string }) => {
@@ -126,6 +134,7 @@ export const Games = ({ day }: { day: string }) => {
 					{day === "9" && <GameDay9 />}
 					{day === "12" && <GameDay12 />}
 					{day === "14" && <GameDay14 />}
+					{day === "18" && <GameDay18 />}
 				</Container>
 			)}
 		</>
