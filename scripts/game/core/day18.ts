@@ -46,3 +46,19 @@ export const getAllPlan = (): string[] => {
 
 	return draw
 }
+
+export const volcano = [
+	"<span>                      ooO",
+	"                     ooOOOo",
+	"                   oOOOOOOoooo",
+	"                 ooOOOooo  oooo",
+	'                /vvv\\\\              </span><span class="text">Scanning...</span><span>',
+	'               /V V V\\\\            </span><span class="text">/</span><span>',
+	'              /V  V  V\\\\         </span><span class="text">[</span><span class="target">@</span><span class="text">]</span><span> ',
+	"             /         \\\\                          ",
+	"            /           \\\\                             __",
+	"          /               \\\\       o          o    .--()° .'",
+	"         /                 \\\\     /-   o     /-  '|, . ,'",
+	"       /                     \\\\  /\\\\  -/-   /\\\\   !_-(_\\",
+	"                                      /\\\\</span>",
+].join("\n")
