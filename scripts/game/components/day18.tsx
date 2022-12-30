@@ -38,6 +38,7 @@ const Volcano = styled.pre`
 `
 
 const Control = styled.div`
+	margin-top: -40px;
 	display: flex;
 	flex-direction: column;
 	justify-content: start;
