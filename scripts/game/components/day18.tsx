@@ -1,6 +1,6 @@
 /** @format */
 
-import { useState } from "react"
+import { useState, useEffect, useCallback } from "react"
 import styled from "styled-components"
 import { colors } from "_components/constants"
 
@@ -23,6 +23,11 @@ const Control = styled.div`
 	align-items: start;
 	width: 100%;
 	z-index: 10;
+
+	p {
+		padding: 5px;
+		background: black;
+	}
 `
 
 const Container = styled.div<{ size: number; X: number; Y: number; Z: number }>`
@@ -94,6 +99,26 @@ const Animation = () => {
 	const [plan, setPlan] = useState<number>(max.z)
 	const [color, setColor] = useState<number>(7)
 
+	const control = useCallback((e: KeyboardEvent) => {
+		if (e.code === "ArrowUp") setV(prev => (prev + 10 > 360 ? 360 : prev + 10))
+		if (e.code === "ArrowDown") setV(prev => (prev - 10 < 0 ? 0 : prev - 10))
+		if (e.code === "ArrowRight")
+			setH(prev => (prev + 10 > 360 ? 360 : prev + 10))
+		if (e.code === "ArrowLeft") setH(prev => (prev - 10 < 0 ? 0 : prev - 10))
+		if (e.code === "Enter") setZ(prev => (prev + 10 > 250 ? 250 : prev + 10))
+		if (e.code === "Backspace")
+			setZ(prev => (prev - 10 < 100 ? 100 : prev - 10))
+	}, [])
+
+	useEffect(() => {
+		document.body.addEventListener("keydown", control)
+		document.body.focus()
+
+		return () => {
+			document.body.removeEventListener("keydown", control)
+		}
+	}, [])
+
 	return (
 		<Wrapper
 			onClick={e => {
@@ -116,6 +141,7 @@ const Animation = () => {
 				</div>
 			</Container>
 			<Control>
+				<p>Contrôle clavier : [→] [←] [↑] [↓] [Enter] [Backspace]</p>
 				<Slider
 					label="Zoom               "
 					min={100}
@@ -158,7 +184,7 @@ const Animation = () => {
 				<Slider
 					label="Mettre en évidence   "
 					min={-1}
-					max={max.z}
+					max={max.z - 1}
 					step={1}
 					unit=""
 					value={color}

@@ -12,7 +12,12 @@ const ContainerSlider = styled.pre`
 	background: black;
 `
 
-const ActionContainer = styled.span`
+const ActionContainer = styled.span<{ highlight: boolean }>`
+	background-color: ${({ highlight }) =>
+		highlight ? colors.importantColor : "transparent"};
+	color: ${({ highlight }) => (highlight ? colors.background : "inherited")};
+	font-weight: ${({ highlight }) => (highlight ? "bold" : "normal")};
+
 	&:hover {
 		color: ${colors.background};
 		font-weight: bold;
@@ -34,13 +39,21 @@ type SliderProps = {
 type ActionProps = {
 	value: string
 	space?: boolean
+	highlight: boolean
 	onClick: () => void
 }
 
-const Action = ({ value, space = false, onClick }: ActionProps) => {
+const Action = ({
+	value,
+	space = false,
+	highlight = false,
+	onClick,
+}: ActionProps) => {
 	return (
 		<>
-			<ActionContainer onClick={onClick}>{value}</ActionContainer>
+			<ActionContainer onClick={onClick} highlight={highlight}>
+				{value}
+			</ActionContainer>
 			{space && <> </>}
 		</>
 	)
@@ -66,8 +79,9 @@ export const Slider = ({
 				key={i}
 				value={i * step + min === value ? "O" : "-"}
 				onClick={() => {
-					onChange(i * step)
+					onChange(i * step + min)
 				}}
+				highlight={i * step + min === value}
 			/>
 		))
 	}, [nb, value, step])
