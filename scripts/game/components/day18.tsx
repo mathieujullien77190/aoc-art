@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react"
 import styled from "styled-components"
 import { colors } from "_components/constants"
 
-import { getAllPlan, max } from "../core/day18"
+import { getAllPlan, max, volcano } from "../core/day18"
 import { Slider } from "./Slider"
 
 const Wrapper = styled.div`
@@ -14,6 +14,27 @@ const Wrapper = styled.div`
 	align-items: center;
 	height: 100%;
 	overflow: hidden;
+`
+
+const Volcano = styled.pre`
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+
+	margin: 0;
+
+	span {
+		opacity: 0.4;
+	}
+
+	span.text {
+		opacity: 1;
+	}
+
+	span.target {
+		opacity: 1;
+		color: ${colors.importantColor};
+	}
 `
 
 const Control = styled.div`
@@ -191,6 +212,7 @@ const Animation = () => {
 					onChange={setColor}
 				/>
 			</Control>
+			<Volcano dangerouslySetInnerHTML={{ __html: volcano }} />
 		</Wrapper>
 	)
 }
