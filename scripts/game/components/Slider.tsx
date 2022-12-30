@@ -39,7 +39,7 @@ type SliderProps = {
 type ActionProps = {
 	value: string
 	space?: boolean
-	highlight: boolean
+	highlight?: boolean
 	onClick: () => void
 }
 
