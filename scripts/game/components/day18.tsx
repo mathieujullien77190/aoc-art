@@ -1,10 +1,10 @@
 /** @format */
 
 import { useState, useEffect, useCallback } from "react"
-import styled from "styled-components"
+import styled, { css } from "styled-components"
 import { colors } from "_components/constants"
 
-import { getAllPlan, max, volcano } from "../core/day18"
+import { data, getAllPlan, max, volcano, searchInsideCube } from "../core/day18"
 import { Slider } from "./Slider"
 
 const Wrapper = styled.div`
@@ -71,7 +71,7 @@ const Container = styled.div<{ size: number; X: number; Y: number; Z: number }>`
 		transform: ${({ size }) => `translateZ(-${size / 2}px)`};
 		transition: transform 1s;
 		transform: ${({ X, Y, Z }) =>
-			`translateZ(${300 + Z}px) rotateX(${X}deg) rotateY(${Y}deg)`};
+			`translateZ(${100 + Z}px) rotateX(${X}deg) rotateY(${Y}deg)`};
 	}
 `
 
@@ -89,15 +89,50 @@ const PlanContainer = styled.div<{
 	width: ${max.x * 10}px;
 	height: ${max.y * 16}px;
 
-	opacity: ${({ highlight }) =>
-		highlight ? 1 : highlight === false ? 0.1 : 1};
-	color: ${({ highlight }) => (highlight ? colors.importantColor : "white")};
+	border-top: ${({ highlight }) => (highlight ? "solid 1px white" : "none")};
+	border-left: ${({ highlight }) => (highlight ? "solid 1px white" : "none")};
+
+	${({ highlight }) =>
+		highlight &&
+		css`
+			&:after {
+				position: absolute;
+				content: "Y";
+				width: 20px;
+				height: 20px;
+				top: 0;
+				left: -30px;
+				transform: rotateZ(180deg);
+			}
+
+			&:before {
+				position: absolute;
+				content: "X";
+				width: 20px;
+				height: 20px;
+				top: -20px;
+				left: 0px;
+				transform: rotateZ(90deg);
+			}
+		`}
 
 	transform: ${({ size, z }) =>
 		`rotateX(90deg) translateZ(${-size / 4 + z * 10}px)`};
 
 	pre {
 		margin: 0;
+		opacity: ${({ highlight }) =>
+			highlight ? 1 : highlight === false ? 0.1 : 1};
+		color: ${({ highlight }) =>
+			highlight ? colors.importantColor : colors.textColor};
+
+		span.in {
+			color: ${colors.infoColor};
+		}
+
+		span.out {
+			color: ${colors.restrictedColor};
+		}
 	}
 `
 
@@ -109,9 +144,13 @@ type PlanProps = {
 }
 
 const Plan = ({ draw, size, z, highlight }: PlanProps) => {
+	const formatDraw = draw
+		.replace(/(x+)/g, '<span class="in">$1</span>')
+		.replace(/(\.+)/g, '<span class="out">$1</span>')
+
 	return (
 		<PlanContainer size={size} z={z} highlight={highlight}>
-			<pre>{draw}</pre>
+			<pre dangerouslySetInnerHTML={{ __html: formatDraw }}></pre>
 		</PlanContainer>
 	)
 }
@@ -122,6 +161,7 @@ const Animation = () => {
 	const [Z, setZ] = useState<number>(100)
 	const [plan, setPlan] = useState<number>(max.z)
 	const [color, setColor] = useState<number>(7)
+	const [basePlan, setBasePlan] = useState<string[]>([])
 
 	const control = useCallback((e: KeyboardEvent) => {
 		if (e.code === "ArrowUp") setV(prev => (prev + 10 > 360 ? 360 : prev + 10))
@@ -138,6 +178,10 @@ const Animation = () => {
 		document.body.addEventListener("keydown", control)
 		document.body.focus()
 
+		const test = searchInsideCube(data, max)
+
+		setBasePlan(getAllPlan(data, test.inside, test.notInside))
+
 		return () => {
 			document.body.removeEventListener("keydown", control)
 		}
@@ -151,7 +195,7 @@ const Animation = () => {
 		>
 			<Container size={400} X={V} Y={H} Z={Z}>
 				<div className="cube">
-					{getAllPlan()
+					{basePlan
 						.filter((_, i) => i <= plan)
 						.map((draw, i) => (
 							<Plan
