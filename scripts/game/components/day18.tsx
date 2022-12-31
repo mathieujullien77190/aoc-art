@@ -38,12 +38,13 @@ const Volcano = styled.pre`
 `
 
 const Control = styled.div`
-	margin-top: -40px;
+	position: absolute;
+	bottom: 10px;
+	left: 10px;
 	display: flex;
 	flex-direction: column;
 	justify-content: start;
 	align-items: start;
-	width: 100%;
 	z-index: 10;
 
 	p {
@@ -58,6 +59,7 @@ const Container = styled.div<{ size: number; X: number; Y: number; Z: number }>`
 	perspective: ${({ size }) => `${size * 2}px`};
 
 	.cube {
+		margin-top: -50px;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
