@@ -2,15 +2,13 @@
 
 import React, { useCallback, useEffect } from "react"
 
-import { commands as baseCommands } from "_commands/commands"
-import { createCommand, findCommand } from "_commands/terminalEngine"
+import { sendRestrictedCommand, sendCommand } from "_commands/helpers"
 
 import Layout from "_components/Layout"
 import Terminal from "_components/Terminal"
 
 import { useAppDispatch } from "_store/hooks"
 import {
-	addCommand,
 	moveCursor,
 	setIsRendered,
 	useGetCommands,
@@ -43,66 +41,11 @@ const Home = () => {
 		[dispatch]
 	)
 
-	const handleSendRestrictedCommand = useCallback(
-		(commandPattern: string) => {
-			const cmd = createCommand({
-				commands: baseCommands,
-				commandPattern,
-				restricted: true,
-			})
-			const baseCmd = findCommand({
-				commands: baseCommands,
-				name: cmd.name,
-				restricted: true,
-			})
-
-			if (baseCmd?.redux && cmd.canExecute)
-				dispatch(baseCmd.redux({ args: cmd.args }))
-
-			dispatch(
-				addCommand(
-					createCommand({
-						commands: baseCommands,
-						commandPattern,
-						restricted: true,
-					})
-				)
-			)
-		},
-		[dispatch]
-	)
-
 	const handleClick = useCallback(() => {
 		if (isMobile) {
 			handleSetCursor(-1)
 		}
 	}, [isMobile])
-
-	const handleSendCommand = useCallback(
-		(commandPattern: string) => {
-			const cmd = createCommand({
-				commands: baseCommands,
-				commandPattern,
-				restricted: false,
-			})
-			const baseCmd = findCommand({
-				commands: baseCommands,
-				name: cmd.name,
-				restricted: false,
-			})
-
-			if (baseCmd?.redux && cmd.canExecute)
-				dispatch(baseCmd.redux({ args: cmd.args }))
-
-			if (cmd.name === "clear" && cmd.canExecute) {
-				handleSendRestrictedCommand("title")
-				handleSendRestrictedCommand("welcome")
-			}
-
-			dispatch(addCommand(cmd))
-		},
-		[dispatch]
-	)
 
 	const handleSetCursor = useCallback(
 		(direction: number) => {
@@ -112,13 +55,13 @@ const Home = () => {
 	)
 
 	useEffect(() => {
-		handleSendRestrictedCommand("title")
-		handleSendRestrictedCommand("welcome")
-	}, [handleSendRestrictedCommand, handleSendCommand])
+		sendRestrictedCommand("title", dispatch)
+		sendRestrictedCommand("welcome", dispatch)
+	}, [sendRestrictedCommand])
 
 	useEffect(() => {
 		if (start === true && location.hash.includes("#")) {
-			handleSendCommand(location.hash.substring(1).split("_").join(" "))
+			sendCommand(location.hash.substring(1).split("_").join(" "), dispatch)
 		}
 	}, [start])
 
@@ -128,8 +71,10 @@ const Home = () => {
 				options={options}
 				commands={commands}
 				currentCommand={currentCommand}
-				onSendCommand={handleSendCommand}
-				onSendRestrictedCommand={handleSendRestrictedCommand}
+				onSendCommand={commandPattern => sendCommand(commandPattern, dispatch)}
+				onSendRestrictedCommand={commandPattern =>
+					sendRestrictedCommand(commandPattern, dispatch)
+				}
 				onSendPreviousCommand={() => handleSetCursor(-1)}
 				onSendNextCommand={() => handleSetCursor(1)}
 				onRendered={handleRendered}

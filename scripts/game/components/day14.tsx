@@ -22,7 +22,8 @@ const Game = styled.pre`
 const Container = styled.div`
 	height: 100%;
 	display: flex;
-	align-items: end;
+	align-items: center;
+	justify-content: center;
 `
 
 const Animation = () => {

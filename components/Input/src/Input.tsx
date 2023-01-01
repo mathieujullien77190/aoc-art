@@ -78,7 +78,7 @@ export const Input = ({
 
 	useEffect(() => {
 		ref?.current?.focus()
-	}, [])
+	}, [options.keyboardOnFocus])
 
 	useEffect(() => {
 		setInputValue(value)

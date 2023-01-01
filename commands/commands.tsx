@@ -6,7 +6,8 @@ import { colors, app } from "_components/constants"
 
 import { title, highlightFlower, plantFlowers } from "./asciArt"
 
-import { scripts, Games } from "_scripts/script"
+import { Games } from "_scripts/Games"
+import { gamesConfig } from "_scripts/constants"
 
 import { setProperties } from "_store/global/"
 import { clear } from "_store/history/"
@@ -138,26 +139,27 @@ export const commands: BaseCommand[] = [
 			if (args[0] === "list") {
 				return (
 					"\n" +
-					scripts
-						.map(script => ` > +day ${script.day}+ : ${script.fn()}`)
+					gamesConfig
+						.map(script => ` > +day ${script.day}+ : ${script.title}`)
 						.join("\n")
 				)
 			}
 
-			const search = scripts.filter(script => script.day === args[0])
+			const search = gamesConfig.filter(script => script.day === args[0])
 
 			if (search.length === 1) {
-				return `§Jour : ${search[0].day}§\n\n${search[0].fn()}`
+				return `§Jour : ${search[0].day}§\n\n${search[0].title}`
 			} else {
 				return `Aucun script pour ce jour `
 			}
 		},
-		redux: ({ args }) => {
+		redux: () => {
 			return setProperties({
 				key: "keyboardOnFocus",
-				value: args[0] === "18" ? false : true, //TODO quick fix
+				value: false,
 			})
 		},
+
 		JSX: ({ args }) => {
 			return <Games day={args[0]} />
 		},
@@ -177,6 +179,24 @@ export const commands: BaseCommand[] = [
 		},
 		display: {
 			animation: false,
+		},
+	},
+	{
+		restricted: true,
+		name: "closeday",
+		action: ({ args }) => {
+			return "script close"
+		},
+		redux: () => {
+			return setProperties({
+				key: "keyboardOnFocus",
+				value: true,
+			})
+		},
+		help: {
+			description:
+				"Ceci est une commande à accès restreint, vous ne pouvez pas l'utiliser",
+			patterns: [],
 		},
 	},
 	{
