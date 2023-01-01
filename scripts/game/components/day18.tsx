@@ -16,6 +16,7 @@ const Wrapper = styled.div`
 	align-items: center;
 	height: 100%;
 	overflow: hidden;
+	user-select: none;
 `
 
 const Volcano = styled.pre`
