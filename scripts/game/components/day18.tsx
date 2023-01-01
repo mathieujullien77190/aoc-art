@@ -137,6 +137,8 @@ const Plan = ({ draw, size, z, highlight }: PlanProps) => {
 
 let timer
 
+const zoomMax = 500
+
 const Animation = () => {
 	const [mouseH, setMouseH] = useState<{ x: number; H: number } | null>(null)
 	const [mouseV, setMouseV] = useState<{ y: number; V: number } | null>(null)
@@ -151,7 +153,8 @@ const Animation = () => {
 		if (e.code === "ArrowDown") setV(prev => prev - 10)
 		if (e.code === "ArrowRight") setH(prev => prev + 10)
 		if (e.code === "ArrowLeft") setH(prev => prev - 10)
-		if (e.code === "Enter") setZ(prev => (prev + 10 > 250 ? 250 : prev + 10))
+		if (e.code === "Enter")
+			setZ(prev => (prev + 10 > zoomMax ? zoomMax : prev + 10))
 		if (e.code === "Backspace")
 			setZ(prev => (prev - 10 < 100 ? 100 : prev - 10))
 	}, [])
@@ -186,6 +189,17 @@ const Animation = () => {
 		setMouseV(null)
 	}, [])
 
+	const handleMouseWheel = useCallback(e => {
+		if (e.nativeEvent.wheelDelta > 0)
+			setZ(prev => (prev + 30 > zoomMax ? zoomMax : prev + 30))
+		else setZ(prev => (prev - 30 < 100 ? 100 : prev - 30))
+	}, [])
+
+	const handleClick = useCallback(e => {
+		e.preventDefault()
+		setColor(prev => (prev + 1 > 19 ? -1 : prev + 1))
+	}, [])
+
 	useEffect(() => {
 		document.body.addEventListener("keydown", control)
 
@@ -202,12 +216,11 @@ const Animation = () => {
 
 	return (
 		<Wrapper
-			onClick={e => {
-				e.stopPropagation()
-			}}
+			onContextMenu={handleClick}
 			onMouseDown={handleMouseDown}
 			onMouseMove={handleMouseMove}
 			onMouseUp={handleMouseUp}
+			onWheel={handleMouseWheel}
 		>
 			<Container size={400} X={V} Y={H} Z={Z}>
 				<div className="cube">
@@ -226,7 +239,7 @@ const Animation = () => {
 			<Control>
 				{!isMobile && (
 					<p>
-						Contrôle souris : click + drag
+						Contrôle souris : click + drag + wheel + right click
 						<br />
 						Contrôle clavier : [→] [←] [↑] [↓] [Enter] [Backspace]
 					</p>
@@ -235,7 +248,7 @@ const Animation = () => {
 					width={isMobile ? "auto" : "300px"}
 					label="Zoom"
 					min={isMobile ? -100 : 100}
-					max={250}
+					max={zoomMax}
 					step={10}
 					bigStep={50}
 					unit="%"
