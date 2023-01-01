@@ -3,6 +3,8 @@
 import React, { useMemo } from "react"
 import styled from "styled-components"
 
+import { isMobile } from "react-device-detect"
+
 import { colors } from "_components/constants"
 import { createArray } from "../helpers"
 
@@ -11,7 +13,7 @@ const modulo = (value, max) => {
 	return value % max
 }
 
-const ContainerSlider = styled.pre`
+const ContainerSlider = styled.div`
 	margin: 5px 0;
 	padding: 5px;
 	background: black;
@@ -39,6 +41,7 @@ const ActionContainer = styled.span<{ highlight: boolean }>`
 type SliderProps = {
 	label: string
 	max: number
+	width?: string
 	value?: number
 	min?: number
 	loop?: boolean
@@ -75,6 +78,7 @@ const Action = ({
 export const Slider = ({
 	label,
 	max,
+	width = "auto",
 	value = 0,
 	min = 0,
 	loop = false,
@@ -108,8 +112,11 @@ export const Slider = ({
 	return (
 		<ContainerSlider>
 			<>
-				{label} ({formatValue}
-				{unit}) : <Action value="[Min]" onClick={() => onChange(min)} space />
+				<span style={{ width, display: "inline-block" }}>
+					{label} ({formatValue}
+					{unit}) :
+				</span>
+				<Action value="[Min]" onClick={() => onChange(min)} space />
 				<Action
 					value="<<"
 					onClick={() =>
@@ -124,7 +131,7 @@ export const Slider = ({
 					}
 					space
 				/>
-				{line}{" "}
+				{!isMobile && <>{line} </>}
 				<Action
 					value=">"
 					onClick={() => {
