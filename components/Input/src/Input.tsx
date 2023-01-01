@@ -20,6 +20,7 @@ import { cleanCommand } from "./helpers"
 
 export const Input = ({
 	value = "",
+	options,
 	onValidate = () => {},
 	onCallPrevious = () => {},
 	onCallNext = () => {},
@@ -99,7 +100,9 @@ export const Input = ({
 				autoComplete="false"
 				autoCapitalize="off"
 				autoCorrect="off"
-				//onBlur={() => ref?.current?.focus()}
+				onBlur={() => {
+					if (options.keyboardOnFocus) ref?.current?.focus()
+				}}
 				onKeyDown={handleKeyDown}
 				onKeyUp={handleKeyUp}
 				onChange={e => {

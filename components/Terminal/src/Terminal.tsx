@@ -51,6 +51,7 @@ export const Terminal = ({
 				})}
 
 			<Input
+				options={options}
 				value={currentCommand?.pattern}
 				onValidate={onSendCommand}
 				onCallPrevious={onSendPreviousCommand}

@@ -17,14 +17,22 @@ import {
 	useGetCurrentCommand,
 	useGetStart,
 } from "_store/history/"
-import { useGetLanguage, useGetAnimation } from "_store/global/"
+import {
+	useGetLanguage,
+	useGetAnimation,
+	useGetKeyboardOnFocus,
+} from "_store/global/"
 
 import { isMobile } from "react-device-detect"
 
 const Home = () => {
 	const dispatch = useAppDispatch()
 	const commands = useGetCommands()
-	const options = { animation: useGetAnimation(), lang: useGetLanguage() }
+	const options = {
+		animation: useGetAnimation(),
+		lang: useGetLanguage(),
+		keyboardOnFocus: useGetKeyboardOnFocus(),
+	}
 	const currentCommand = useGetCurrentCommand()
 	const start = useGetStart()
 
