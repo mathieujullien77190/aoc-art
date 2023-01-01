@@ -1,69 +1,96 @@
 /** @format */
 
-import { stringify } from "querystring"
 import { input } from "../data/day18"
 import { createArray, extractTab2 } from "../helpers"
 
 type Position = { x: number; y: number; z: number }
-type Type = "base" | "search"
-type Cube = Position & { type: Type }
+
+type LPosition = Record<string, Position>
+
+type MinMax = { min: number; max: number }
+
+type Limits = {
+	xMax: number
+	yMax: number
+	zMax: number
+	xMin: number
+	yMin: number
+	zMin: number
+}
 
 type Blocks = {
-	blockYMax: Cube
-	blockYMin: Cube
-	blockXMax: Cube
-	blockXMin: Cube
-	blockZMax: Cube
-	blockZMin: Cube
+	x: MinMax
+	y: MinMax
+	z: MinMax
 }
 
 type SearchBlocks = { blocks: Blocks; inside: boolean }
 
-const createCube = (pos: Position, type: Type): Cube => ({
-	...pos,
-	type,
-})
+type Data = { base: LPosition; limits: Limits }
 
 const createKey = (pos: Position): string => `x${pos.x}y${pos.y}z${pos.z}`
 
-export const data = extractTab2(input, "\n", ",").map(line => {
-	return createCube({ x: +line[0], y: +line[1], z: +line[2] }, "base")
-}) as Cube[]
-
-export const max = {
-	x: Math.max(...data.map(cube => cube.x)) + 1,
-	y: Math.max(...data.map(cube => cube.y)) + 1,
-	z: Math.max(...data.map(cube => cube.z)) + 1,
+const iterator = (
+	data: LPosition,
+	cb: (position: Position) => void,
+	filter: (pos: Position) => boolean = () => true
+) => {
+	for (const i in data) {
+		if (filter(data[i])) cb(data[i])
+	}
 }
 
-const isInData = (data: Cube[], pos: Position): boolean => {
-	return (
-		data.filter(
-			cube => cube.x === pos.x && cube.y === pos.y && cube.z === pos.z
-		).length > 0
-	)
+const add = (data: LPosition, addData: LPosition) => {
+	for (let i in addData) {
+		data[createKey(addData[i])] = addData[i]
+	}
 }
 
-const inOutside = (
-	outside: Record<string, Position>,
-	direction: Cube[]
-): boolean => {
-	return (
-		direction
-			.map(pos => (outside[createKey(pos)] ? true : false))
-			.filter(item => !!item).length > 0
-	)
+export const data = extractTab2(input, "\n", ",").reduce(
+	(acc, line) => {
+		const pos = { x: +line[0], y: +line[1], z: +line[2] }
+		acc.base[createKey(pos)] = pos
+
+		if (pos.x >= acc.limits.xMax) acc.limits.xMax = pos.x + 1
+		if (pos.y >= acc.limits.yMax) acc.limits.yMax = pos.y + 1
+		if (pos.z >= acc.limits.zMax) acc.limits.zMax = pos.z + 1
+		if (pos.x <= acc.limits.xMin) acc.limits.xMin = pos.x - 1
+		if (pos.y <= acc.limits.yMin) acc.limits.yMin = pos.y - 1
+		if (pos.z <= acc.limits.zMin) acc.limits.zMin = pos.z - 1
+		return acc
+	},
+	{
+		base: {},
+		limits: {
+			xMax: -Number.MAX_VALUE,
+			yMax: -Number.MAX_VALUE,
+			zMax: -Number.MAX_VALUE,
+			xMin: Number.MAX_VALUE,
+			yMin: Number.MAX_VALUE,
+			zMin: Number.MAX_VALUE,
+		},
+	}
+) as Data
+
+const isInData = (data: LPosition, pos: Position): boolean =>
+	!!data[createKey(pos)]
+
+const inOutside = (outside: LPosition, direction: LPosition): boolean => {
+	let isIn = false
+	iterator(direction, pos => {
+		if (outside[createKey(pos)]) isIn = true
+	})
+	return isIn
 }
 
 const searchBlockDirection = (
-	data: Cube[],
-	max: Position,
+	data: LPosition,
+	limits: Limits,
 	pos: Position
 ): SearchBlocks => {
 	let blockYMax, blockYMin, blockXMax, blockXMin, blockZMax, blockZMin
 
-	for (let i = 0; i < data.length; i++) {
-		const scan = data[i]
+	iterator(data, scan => {
 		if (
 			scan.z === pos.z &&
 			scan.x === pos.x &&
@@ -106,147 +133,140 @@ const searchBlockDirection = (
 			(!blockZMin || scan.z > blockZMin.z)
 		)
 			blockZMin = scan
-	}
+	})
 
 	return {
 		inside: isBetween({
-			blockYMax,
-			blockYMin,
-			blockXMax,
-			blockXMin,
-			blockZMax,
-			blockZMin,
+			x: {
+				min: blockXMin,
+				max: blockXMax,
+			},
+			y: {
+				min: blockYMin,
+				max: blockYMax,
+			},
+			z: {
+				min: blockZMin,
+				max: blockZMax,
+			},
 		}),
 		blocks: {
-			blockYMax: blockYMax || { x: pos.x, z: pos.z, y: max.y + 1 },
-			blockYMin: blockYMin || { x: pos.x, z: pos.z, y: -1 },
-			blockXMax: blockXMax || { x: max.x + 1, z: pos.z, y: pos.y },
-			blockXMin: blockXMin || { x: -1, z: pos.z, y: pos.y },
-			blockZMax: blockZMax || { x: pos.x, z: max.z + 1, y: pos.y },
-			blockZMin: blockZMin || { x: pos.x, z: -1, y: pos.y },
+			x: {
+				min: blockXMin || { x: limits.xMin, z: pos.z, y: pos.y },
+				max: blockXMax || { x: limits.xMax, z: pos.z, y: pos.y },
+			},
+			y: {
+				min: blockYMin || { x: pos.x, z: pos.z, y: limits.yMin },
+				max: blockYMax || { x: pos.x, z: pos.z, y: limits.yMax },
+			},
+			z: {
+				min: blockZMin || { x: pos.x, z: limits.zMin, y: pos.y },
+				max: blockZMax || { x: pos.x, z: limits.zMax, y: pos.y },
+			},
 		},
 	}
 }
 
-const isBetween = (blocks: Blocks): boolean => {
-	return (
-		!!blocks.blockYMin &&
-		!!blocks.blockYMax &&
-		!!blocks.blockXMax &&
-		!!blocks.blockXMin &&
-		!!blocks.blockZMax &&
-		!!blocks.blockZMin
-	)
+const isBetween = (blocks: Blocks): boolean =>
+	!!blocks.y.min &&
+	!!blocks.y.max &&
+	!!blocks.x.min &&
+	!!blocks.x.max &&
+	!!blocks.z.min &&
+	!!blocks.z.max
+
+const allCubesDirection = (blocks: Blocks): LPosition => {
+	const dim = ["x", "y", "z"]
+	let cubes: LPosition = {}
+
+	for (let j in blocks) {
+		const otherDim = dim.filter(item => item !== j)
+		const start = blocks[j].min[j]
+		const stop = blocks[j].max[j]
+		for (let i = start + 1; i <= stop - 1; i++) {
+			const pos = {
+				[j]: i,
+				[otherDim[0]]: blocks[j].min[otherDim[0]],
+				[otherDim[1]]: blocks[j].min[otherDim[1]],
+			} as Position
+			cubes[createKey(pos)] = pos
+		}
+	}
+
+	return cubes
 }
 
-const allCubesDirection = (blocks: Blocks): Cube[] => {
-	const startX = blocks.blockXMin.x
-	const stopX = blocks.blockXMax.x
-	const cubesX = createArray(stopX - startX - 1).map((_, i) =>
-		createCube(
-			{ x: startX + i + 1, y: blocks.blockXMin.y, z: blocks.blockXMin.z },
-			"search"
-		)
-	)
-	const startY = blocks.blockYMin.y
-	const stopY = blocks.blockYMax.y
-	const cubesY = createArray(stopY - startY - 1).map((_, i) =>
-		createCube(
-			{ y: startY + i + 1, x: blocks.blockYMin.x, z: blocks.blockYMin.z },
-			"search"
-		)
-	)
-	const startZ = blocks.blockZMin.z
-	const stopZ = blocks.blockZMax.z
-	const cubesZ = createArray(stopZ - startZ - 1).map((_, i) =>
-		createCube(
-			{ z: startZ + i + 1, y: blocks.blockZMin.y, x: blocks.blockZMin.x },
-			"search"
-		)
-	)
-	return [...cubesX, ...cubesY, ...cubesZ]
-}
-
-export const searchInsideCube = (data: Cube[], max: Position) => {
-	let notInside: Record<string, Position> = {}
-	let inside: Record<string, Position> = {}
+export const searchInsideCube = (data: Data) => {
+	let outside: LPosition = {}
+	let inside: LPosition = {}
 	let searchBlocks, badPos, potentialGood
 
-	let x = 0,
-		y = 1,
-		z = 7
-
-	for (let x = 0; x <= max.x; x++) {
-		for (let y = 0; y <= max.y; y++) {
-			for (let z = 0; z < max.z; z++) {
+	for (let x = data.limits.xMin + 1; x < data.limits.xMax; x++) {
+		for (let y = data.limits.yMin + 1; y < data.limits.yMax; y++) {
+			for (let z = data.limits.zMin + 1; z < data.limits.zMax; z++) {
 				const scan = { x, y, z }
-				if (!isInData(data, scan) && !notInside[createKey(scan)]) {
-					searchBlocks = searchBlockDirection(data, max, scan)
+				debugger
+				if (!isInData(data.base, scan) && !outside[createKey(scan)]) {
+					debugger
+					searchBlocks = searchBlockDirection(data.base, data.limits, scan)
 					if (searchBlocks.inside) {
 						potentialGood = allCubesDirection(searchBlocks.blocks)
-						if (inOutside(notInside, potentialGood)) {
-							for (let i = 0; i < potentialGood.length; i++) {
-								notInside[createKey(potentialGood[i])] = potentialGood[i]
-							}
-						} else {
-							inside[createKey(scan)] = scan
-						}
+						if (inOutside(outside, potentialGood)) add(outside, potentialGood)
+						else inside[createKey(scan)] = scan
 					} else {
 						badPos = allCubesDirection(searchBlocks.blocks)
-						for (let i = 0; i < badPos.length; i++) {
-							notInside[createKey(badPos[i])] = badPos[i]
-						}
+						add(outside, badPos)
 					}
 				}
 			}
 		}
 	}
 
-	return { notInside, inside }
+	return { outside, inside }
 }
 
 export const getPlan = (
-	data: Cube[],
-	inside: Record<string, Position>,
-	notInside: Record<string, Position>,
+	data: LPosition,
+	inside: LPosition,
+	outside: LPosition,
+	limits: Limits,
 	z: Number
 ): string => {
-	const drawZ = createArray(max.y + 1).map(() =>
-		createArray(max.x + 1).map(() => " ")
+	const drawZ = createArray(limits.yMax - limits.yMin - 1).map(() =>
+		createArray(limits.xMax - limits.xMin - 1).map(() => " ")
 	)
 
-	data
-		.filter(item => item.z === z)
-		.forEach(cube => {
-			drawZ[cube.y][cube.x] = "#"
-		})
+	iterator(
+		data,
+		pos => (drawZ[pos.y][pos.x] = "#"),
+		pos => pos.z === z
+	)
 
-	Object.values(inside).forEach(pos => {
-		if (pos.z === z) {
-			drawZ[pos.y][pos.x] = "x"
-		}
-	})
+	iterator(
+		inside,
+		pos => (drawZ[pos.y][pos.x] = "x"),
+		pos => pos.z === z
+	)
 
-	Object.values(notInside).forEach(pos => {
-		if (pos.z === z) {
-			drawZ[pos.y][pos.x] = "."
-		}
-	})
-
-	console.log(Object.values(inside).length, Object.values(notInside).length)
+	iterator(
+		outside,
+		pos => (drawZ[pos.y][pos.x] = "."),
+		pos => pos.z === z
+	)
 
 	return drawZ.map(line => line.join("")).join("\n")
 }
 
 export const getAllPlan = (
-	data: Cube[],
-	inside: Record<string, Position>,
-	notInside: Record<string, Position>
+	data: LPosition,
+	inside: LPosition,
+	outside: LPosition,
+	limits: Limits
 ): string[] => {
 	const draw = []
 
-	for (let z = 0; z < max.z; z++) {
-		draw[z] = getPlan(data, inside, notInside, z)
+	for (let z = 0; z < limits.zMax; z++) {
+		draw[z] = getPlan(data, inside, outside, limits, z)
 	}
 
 	return draw
