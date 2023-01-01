@@ -66,14 +66,12 @@ type SliderProps = {
 
 type ActionProps = {
 	value: string
-
 	highlight?: boolean
 	onClick?: () => void
 }
 
 const Action = ({
 	value,
-
 	highlight = false,
 	onClick = () => {},
 }: ActionProps) => {
@@ -146,7 +144,6 @@ export const Slider = ({
 				<Action
 					value=">"
 					onClick={() => {
-						console.log(loop)
 						onChange(value + step > max && !loop ? max : value + step)
 					}}
 				/>
