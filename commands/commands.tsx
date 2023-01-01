@@ -152,6 +152,12 @@ export const commands: BaseCommand[] = [
 				return `Aucun script pour ce jour `
 			}
 		},
+		redux: ({ args }) => {
+			return setProperties({
+				key: "keyboardOnFocus",
+				value: args[0] === "18" ? false : true, //TODO quick fix
+			})
+		},
 		JSX: ({ args }) => {
 			return <Games day={args[0]} />
 		},

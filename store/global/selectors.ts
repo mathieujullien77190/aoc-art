@@ -8,3 +8,6 @@ export const useGetLanguage = () =>
 
 export const useGetAnimation = () =>
 	useAppSelector((state: RootState) => state.global.animation)
+
+export const useGetKeyboardOnFocus = () =>
+	useAppSelector((state: RootState) => state.global.keyboardOnFocus)

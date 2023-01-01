@@ -5,11 +5,13 @@ import { createSlice } from "@reduxjs/toolkit"
 type Global = {
 	lang: string
 	animation: boolean
+	keyboardOnFocus: boolean
 }
 
 const initialState: Global = {
 	lang: "fr",
 	animation: true,
+	keyboardOnFocus: true,
 }
 
 const folderSlice = createSlice({
