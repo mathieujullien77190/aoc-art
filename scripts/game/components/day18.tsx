@@ -1,8 +1,10 @@
 /** @format */
 
 import { useState, useEffect, useCallback } from "react"
-import styled, { css } from "styled-components"
+import styled from "styled-components"
 import { colors } from "_components/constants"
+
+import { isMobile } from "react-device-detect"
 
 import { data, getAllPlan, volcano, searchInsideCube } from "../core/day18"
 import { Slider } from "./Slider"
@@ -138,7 +140,7 @@ const Animation = () => {
 	const [mouseV, setMouseV] = useState<{ y: number; V: number } | null>(null)
 	const [H, setH] = useState<number>(330)
 	const [V, setV] = useState<number>(140)
-	const [Z, setZ] = useState<number>(100)
+	const [Z, setZ] = useState<number>(isMobile ? -100 : 100)
 	const [color, setColor] = useState<number>(9)
 	const [basePlan, setBasePlan] = useState<string[]>([])
 
@@ -218,15 +220,19 @@ const Animation = () => {
 					))}
 				</div>
 			</Container>
+
 			<Control>
-				<p>
-					Contrôle souris : click + drag
-					<br />
-					Contrôle clavier : [→] [←] [↑] [↓] [Enter] [Backspace]
-				</p>
+				{!isMobile && (
+					<p>
+						Contrôle souris : click + drag
+						<br />
+						Contrôle clavier : [→] [←] [↑] [↓] [Enter] [Backspace]
+					</p>
+				)}
 				<Slider
-					label="Zoom               "
-					min={100}
+					width={isMobile ? "auto" : "300px"}
+					label="Zoom"
+					min={isMobile ? -100 : 100}
 					max={250}
 					step={10}
 					bigStep={50}
@@ -235,6 +241,7 @@ const Animation = () => {
 					onChange={setZ}
 				/>
 				<Slider
+					width={isMobile ? "auto" : "300px"}
 					label="Rotation horyzontal"
 					min={0}
 					max={360}
@@ -246,7 +253,8 @@ const Animation = () => {
 					onChange={setH}
 				/>
 				<Slider
-					label="Rotation vertical  "
+					width={isMobile ? "auto" : "300px"}
+					label="Rotation vertical"
 					min={0}
 					max={360}
 					loop
@@ -257,7 +265,8 @@ const Animation = () => {
 					onChange={setV}
 				/>
 				<Slider
-					label="Mettre en évidence   "
+					width={isMobile ? "auto" : "300px"}
+					label="Mettre en évidence"
 					min={-1}
 					max={data.limits.zMax - 1}
 					step={1}
@@ -266,6 +275,7 @@ const Animation = () => {
 					onChange={setColor}
 				/>
 			</Control>
+
 			<Volcano dangerouslySetInnerHTML={{ __html: volcano }} />
 		</Wrapper>
 	)
