@@ -17,6 +17,7 @@ const Wrapper = styled.div`
 	height: 100%;
 	overflow: hidden;
 	user-select: none;
+	cursor: move;
 `
 
 const Volcano = styled.pre`

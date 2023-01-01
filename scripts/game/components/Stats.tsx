@@ -27,7 +27,7 @@ const Commands = styled.div`
 `
 
 const Wrapper = styled.div`
-	margin: 10px;
+	margin: 30px 10px;
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -119,7 +119,7 @@ const Stats = ({
 					onMouseOver={() => setStatsVisibility(true)}
 					onMouseOut={() => setStatsVisibility(false)}
 					style={{
-						opacity: statsVisibility ? 1 : 0.4,
+						opacity: statsVisibility ? 1 : 0.2,
 						zIndex: statsVisibility ? 10 : 0,
 					}}
 				>
