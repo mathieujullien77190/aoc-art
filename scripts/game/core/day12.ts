@@ -97,8 +97,6 @@ export const generateGame = () => {
 		line.map(item => (item === "E" ? "{" : item === "S" ? "a" : item))
 	)
 
-	console.log(data[0].length)
-
 	const tabHTML = data.map((line, y) =>
 		line.map((item, x) => `<div id="x${x}y${y}" data-item="${item}"></div>`)
 	)

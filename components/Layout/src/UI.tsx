@@ -14,6 +14,7 @@ export const GlobalStyles = createGlobalStyle<{
   }
 
   *, input {
+	-webkit-tap-highlight-color: transparent;
     font-size: ${({ isMobile }) => (isMobile ? "10px" : "17px")};
   }
 `
