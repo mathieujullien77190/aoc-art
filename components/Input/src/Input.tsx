@@ -99,7 +99,7 @@ export const Input = ({
 				autoComplete="false"
 				autoCapitalize="off"
 				autoCorrect="off"
-				onBlur={() => ref?.current?.focus()}
+				//onBlur={() => ref?.current?.focus()}
 				onKeyDown={handleKeyDown}
 				onKeyUp={handleKeyUp}
 				onChange={e => {
