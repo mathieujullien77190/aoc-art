@@ -205,9 +205,7 @@ export const searchInsideCube = (data: Data) => {
 		for (let y = data.limits.yMin + 1; y < data.limits.yMax; y++) {
 			for (let z = data.limits.zMin + 1; z < data.limits.zMax; z++) {
 				const scan = { x, y, z }
-				debugger
 				if (!isInData(data.base, scan) && !outside[createKey(scan)]) {
-					debugger
 					searchBlocks = searchBlockDirection(data.base, data.limits, scan)
 					if (searchBlocks.inside) {
 						potentialGood = allCubesDirection(searchBlocks.blocks)

@@ -50,6 +50,7 @@ const Control = styled.div`
 	p {
 		padding: 5px;
 		background: black;
+		line-height: 25px;
 	}
 `
 
@@ -89,37 +90,7 @@ const PlanContainer = styled.div<{
 	width: ${data.limits.xMax * 10}px;
 	height: ${data.limits.yMax * 15}px;
 
-	//border-top: ${({ highlight }) => (highlight ? "solid 1px white" : "none")};
-	//border-left: ${({ highlight }) => (highlight ? "solid 1px white" : "none")};
-
-	${({ highlight }) =>
-		highlight &&
-		css`
-			&:after {
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				position: absolute;
-				content: "Y---------------------------------->";
-				width: ${data.limits.yMax * 15}px;
-				height: 20px;
-				top: 0;
-				left: -20px;
-				transform: rotateZ(90deg) translateX(145px) translateY(140px);
-			}
-
-			&:before {
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				position: absolute;
-				content: "X---------------------->";
-				width: ${data.limits.xMax * 10}px;
-				height: 20px;
-				top: -20px;
-				left: 0px;
-			}
-		`}
+	border: ${({ highlight }) => (highlight ? "solid 1px white" : "none")};
 
 	transform: ${({ size, z }) =>
 		`rotateX(90deg) translateZ(${-z * 10 + size / 4}px)`};
@@ -160,7 +131,11 @@ const Plan = ({ draw, size, z, highlight }: PlanProps) => {
 	)
 }
 
+let timer
+
 const Animation = () => {
+	const [mouseH, setMouseH] = useState<{ x: number; H: number } | null>(null)
+	const [mouseV, setMouseV] = useState<{ y: number; V: number } | null>(null)
 	const [H, setH] = useState<number>(330)
 	const [V, setV] = useState<number>(140)
 	const [Z, setZ] = useState<number>(100)
@@ -177,8 +152,39 @@ const Animation = () => {
 			setZ(prev => (prev - 10 < 100 ? 100 : prev - 10))
 	}, [])
 
+	const handleMouseDown = useCallback(
+		e => {
+			setMouseH({ x: e.clientX, H: H })
+			setMouseV({ y: e.clientY, V: V })
+		},
+		[H, V]
+	)
+
+	const handleMouseMove = useCallback(
+		e => {
+			if (mouseH) {
+				clearTimeout(timer)
+				timer = setTimeout(() => {
+					setH(
+						() => mouseH.H - Math.floor((e.clientX - mouseH.x) / 2 / 10) * 10
+					)
+					setV(
+						() => mouseV.V - Math.floor((e.clientY - mouseV.y) / 2 / 10) * 10
+					)
+				}, 5)
+			}
+		},
+		[H, mouseH]
+	)
+
+	const handleMouseUp = useCallback(() => {
+		setMouseH(null)
+		setMouseV(null)
+	}, [])
+
 	useEffect(() => {
 		document.body.addEventListener("keydown", control)
+
 		document.body.focus()
 
 		const test = searchInsideCube(data)
@@ -195,6 +201,9 @@ const Animation = () => {
 			onClick={e => {
 				e.stopPropagation()
 			}}
+			onMouseDown={handleMouseDown}
+			onMouseMove={handleMouseMove}
+			onMouseUp={handleMouseUp}
 		>
 			<Container size={400} X={V} Y={H} Z={Z}>
 				<div className="cube">
@@ -210,7 +219,11 @@ const Animation = () => {
 				</div>
 			</Container>
 			<Control>
-				<p>Contrôle clavier : [→] [←] [↑] [↓] [Enter] [Backspace]</p>
+				<p>
+					Contrôle souris : click + drag
+					<br />
+					Contrôle clavier : [→] [←] [↑] [↓] [Enter] [Backspace]
+				</p>
 				<Slider
 					label="Zoom               "
 					min={100}
