@@ -33,6 +33,7 @@ const Title = styled.p`
 	padding: 8px;
 	top: -10px;
 	left: 40px;
+	right: 40px;
 	z-index: 11;
 
 	background: ${colors.overlay};

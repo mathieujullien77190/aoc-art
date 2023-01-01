@@ -25,11 +25,23 @@ const ContainerSlider = styled.div`
 	}
 `
 
-const ActionContainer = styled.span<{ highlight: boolean }>`
+const ActionContainer = styled.button<{ highlight: boolean }>`
 	background-color: ${({ highlight }) =>
 		highlight ? colors.importantColor : "transparent"};
-	color: ${({ highlight }) => (highlight ? colors.background : "inherited")};
+	color: ${({ highlight }) =>
+		highlight ? colors.background : colors.textColor};
 	font-weight: ${({ highlight }) => (highlight ? "bold" : "normal")};
+
+	padding: 0;
+	margin: 0 2px;
+	cursor: pointer;
+	font-family: monospace;
+	border: none;
+	height: 25px;
+	min-width: 30px;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
 
 	&:hover {
 		color: ${colors.background};
@@ -54,14 +66,14 @@ type SliderProps = {
 
 type ActionProps = {
 	value: string
-	space?: boolean
+
 	highlight?: boolean
 	onClick?: () => void
 }
 
 const Action = ({
 	value,
-	space = false,
+
 	highlight = false,
 	onClick = () => {},
 }: ActionProps) => {
@@ -70,7 +82,6 @@ const Action = ({
 			<ActionContainer onClick={onClick} highlight={highlight}>
 				{value}
 			</ActionContainer>
-			{space && <> </>}
 		</>
 	)
 }
@@ -114,40 +125,40 @@ export const Slider = ({
 			<>
 				<span style={{ width, display: "inline-block" }}>
 					{label} ({formatValue}
-					{unit}) :
+					{unit})&nbsp;:&nbsp;
 				</span>
-				<Action value="[Min]" onClick={() => onChange(min)} space />
-				<Action
-					value="<<"
-					onClick={() =>
-						onChange(value - bigStep < min && !loop ? min : value - bigStep)
-					}
-					space
-				/>
+				{!isMobile && <Action value="[Min]" onClick={() => onChange(min)} />}
+				{!isMobile && (
+					<Action
+						value="<<"
+						onClick={() =>
+							onChange(value - bigStep < min && !loop ? min : value - bigStep)
+						}
+					/>
+				)}
 				<Action
 					value="<"
 					onClick={() =>
 						onChange(value - step < min && !loop ? min : value - step)
 					}
-					space
 				/>
-				{!isMobile && <>{line} </>}
+				{!isMobile && <>{line}</>}
 				<Action
 					value=">"
 					onClick={() => {
 						console.log(loop)
 						onChange(value + step > max && !loop ? max : value + step)
 					}}
-					space
 				/>
-				<Action
-					value=">>"
-					onClick={() =>
-						onChange(value + bigStep > max && !loop ? max : value + bigStep)
-					}
-					space
-				/>
-				<Action value="[Max]" onClick={() => onChange(max)} space />
+				{!isMobile && (
+					<Action
+						value=">>"
+						onClick={() =>
+							onChange(value + bigStep > max && !loop ? max : value + bigStep)
+						}
+					/>
+				)}
+				{!isMobile && <Action value="[Max]" onClick={() => onChange(max)} />}
 			</>
 		</ContainerSlider>
 	)
