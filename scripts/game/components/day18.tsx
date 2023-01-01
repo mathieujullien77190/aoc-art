@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react"
 import styled, { css } from "styled-components"
 import { colors } from "_components/constants"
 
-import { data, getAllPlan, max, volcano, searchInsideCube } from "../core/day18"
+import { data, getAllPlan, volcano, searchInsideCube } from "../core/day18"
 import { Slider } from "./Slider"
 
 const Wrapper = styled.div`
@@ -54,8 +54,8 @@ const Control = styled.div`
 `
 
 const Container = styled.div<{ size: number; X: number; Y: number; Z: number }>`
-	width: ${({ size }) => `${size}px`};
-	height: ${({ size }) => `${size}px`};
+	width: ${data.limits.xMax * 10}px;
+	height: ${data.limits.zMax * 15}px;
 	perspective: ${({ size }) => `${size * 2}px`};
 
 	.cube {
@@ -64,8 +64,8 @@ const Container = styled.div<{ size: number; X: number; Y: number; Z: number }>`
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-		width: ${({ size }) => `${size}px`};
-		height: ${({ size }) => `${size}px`};
+		width: ${data.limits.xMax * 10}px;
+		height: ${data.limits.zMax * 15}px;
 		position: relative;
 		transform-style: preserve-3d;
 		transform: ${({ size }) => `translateZ(-${size / 2}px)`};
@@ -86,38 +86,43 @@ const PlanContainer = styled.div<{
 	font-size: 15px;
 	line-height: 15px;
 	position: absolute;
-	width: ${max.x * 10}px;
-	height: ${max.y * 16}px;
+	width: ${data.limits.xMax * 10}px;
+	height: ${data.limits.yMax * 15}px;
 
-	border-top: ${({ highlight }) => (highlight ? "solid 1px white" : "none")};
-	border-left: ${({ highlight }) => (highlight ? "solid 1px white" : "none")};
+	//border-top: ${({ highlight }) => (highlight ? "solid 1px white" : "none")};
+	//border-left: ${({ highlight }) => (highlight ? "solid 1px white" : "none")};
 
 	${({ highlight }) =>
 		highlight &&
 		css`
 			&:after {
+				display: flex;
+				justify-content: center;
+				align-items: center;
 				position: absolute;
-				content: "Y";
-				width: 20px;
+				content: "Y---------------------------------->";
+				width: ${data.limits.yMax * 15}px;
 				height: 20px;
 				top: 0;
-				left: -30px;
-				transform: rotateZ(180deg);
+				left: -20px;
+				transform: rotateZ(90deg) translateX(145px) translateY(140px);
 			}
 
 			&:before {
+				display: flex;
+				justify-content: center;
+				align-items: center;
 				position: absolute;
-				content: "X";
-				width: 20px;
+				content: "X---------------------->";
+				width: ${data.limits.xMax * 10}px;
 				height: 20px;
 				top: -20px;
 				left: 0px;
-				transform: rotateZ(90deg);
 			}
 		`}
 
 	transform: ${({ size, z }) =>
-		`rotateX(90deg) translateZ(${-size / 4 + z * 10}px)`};
+		`rotateX(90deg) translateZ(${-z * 10 + size / 4}px)`};
 
 	pre {
 		margin: 0;
@@ -156,19 +161,17 @@ const Plan = ({ draw, size, z, highlight }: PlanProps) => {
 }
 
 const Animation = () => {
-	const [H, setH] = useState<number>(110)
+	const [H, setH] = useState<number>(330)
 	const [V, setV] = useState<number>(140)
 	const [Z, setZ] = useState<number>(100)
-	const [plan, setPlan] = useState<number>(max.z)
-	const [color, setColor] = useState<number>(7)
+	const [color, setColor] = useState<number>(9)
 	const [basePlan, setBasePlan] = useState<string[]>([])
 
 	const control = useCallback((e: KeyboardEvent) => {
-		if (e.code === "ArrowUp") setV(prev => (prev + 10 > 360 ? 360 : prev + 10))
-		if (e.code === "ArrowDown") setV(prev => (prev - 10 < 0 ? 0 : prev - 10))
-		if (e.code === "ArrowRight")
-			setH(prev => (prev + 10 > 360 ? 360 : prev + 10))
-		if (e.code === "ArrowLeft") setH(prev => (prev - 10 < 0 ? 0 : prev - 10))
+		if (e.code === "ArrowUp") setV(prev => prev + 10)
+		if (e.code === "ArrowDown") setV(prev => prev - 10)
+		if (e.code === "ArrowRight") setH(prev => prev + 10)
+		if (e.code === "ArrowLeft") setH(prev => prev - 10)
 		if (e.code === "Enter") setZ(prev => (prev + 10 > 250 ? 250 : prev + 10))
 		if (e.code === "Backspace")
 			setZ(prev => (prev - 10 < 100 ? 100 : prev - 10))
@@ -178,9 +181,9 @@ const Animation = () => {
 		document.body.addEventListener("keydown", control)
 		document.body.focus()
 
-		const test = searchInsideCube(data, max)
+		const test = searchInsideCube(data)
 
-		setBasePlan(getAllPlan(data, test.inside, test.notInside))
+		setBasePlan(getAllPlan(data.base, test.inside, test.outside, data.limits))
 
 		return () => {
 			document.body.removeEventListener("keydown", control)
@@ -195,17 +198,15 @@ const Animation = () => {
 		>
 			<Container size={400} X={V} Y={H} Z={Z}>
 				<div className="cube">
-					{basePlan
-						.filter((_, i) => i <= plan)
-						.map((draw, i) => (
-							<Plan
-								draw={draw}
-								size={400}
-								z={i}
-								key={i}
-								highlight={color === i ? true : color === -1 ? null : false}
-							/>
-						))}
+					{basePlan.map((draw, i) => (
+						<Plan
+							draw={draw}
+							size={400}
+							z={i}
+							key={i}
+							highlight={color === i ? true : color === -1 ? null : false}
+						/>
+					))}
 				</div>
 			</Container>
 			<Control>
@@ -224,6 +225,7 @@ const Animation = () => {
 					label="Rotation horyzontal"
 					min={0}
 					max={360}
+					loop
 					step={10}
 					bigStep={90}
 					unit="°"
@@ -234,6 +236,7 @@ const Animation = () => {
 					label="Rotation vertical  "
 					min={0}
 					max={360}
+					loop
 					step={10}
 					bigStep={90}
 					unit="°"
@@ -241,18 +244,9 @@ const Animation = () => {
 					onChange={setV}
 				/>
 				<Slider
-					label="Afficher plan        "
-					min={0}
-					max={max.z}
-					step={1}
-					unit=""
-					value={plan}
-					onChange={setPlan}
-				/>
-				<Slider
 					label="Mettre en évidence   "
 					min={-1}
-					max={max.z - 1}
+					max={data.limits.zMax - 1}
 					step={1}
 					unit=""
 					value={color}

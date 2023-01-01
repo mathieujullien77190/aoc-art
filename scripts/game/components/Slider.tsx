@@ -1,15 +1,26 @@
 /** @format */
 
-import { useMemo } from "react"
+import React, { useMemo } from "react"
 import styled from "styled-components"
 
 import { colors } from "_components/constants"
 import { createArray } from "../helpers"
 
+const modulo = (value, max) => {
+	if (value < 0) return (max - (Math.abs(value) % max)) % max
+	return value % max
+}
+
 const ContainerSlider = styled.pre`
 	margin: 5px 0;
 	padding: 5px;
 	background: black;
+
+	.highlight {
+		color: ${colors.background};
+		font-weight: bold;
+		background-color: ${colors.importantColor};
+	}
 `
 
 const ActionContainer = styled.span<{ highlight: boolean }>`
@@ -27,12 +38,14 @@ const ActionContainer = styled.span<{ highlight: boolean }>`
 
 type SliderProps = {
 	label: string
+	max: number
 	value?: number
 	min?: number
-	max: number
+	loop?: boolean
 	step?: number
 	bigStep?: number
 	unit?: string
+
 	onChange?: (value: number) => void
 }
 
@@ -40,14 +53,14 @@ type ActionProps = {
 	value: string
 	space?: boolean
 	highlight?: boolean
-	onClick: () => void
+	onClick?: () => void
 }
 
 const Action = ({
 	value,
 	space = false,
 	highlight = false,
-	onClick,
+	onClick = () => {},
 }: ActionProps) => {
 	return (
 		<>
@@ -61,9 +74,10 @@ const Action = ({
 
 export const Slider = ({
 	label,
+	max,
 	value = 0,
 	min = 0,
-	max,
+	loop = false,
 	step = 1,
 	bigStep = 10,
 	unit = "",
@@ -74,19 +88,22 @@ export const Slider = ({
 		[min, max, step]
 	)
 	const line = useMemo(() => {
-		return createArray(nb + 1).map((_, i) => (
-			<Action
-				key={i}
-				value={i * step + min === value ? "O" : "-"}
-				onClick={() => {
-					onChange(i * step + min)
-				}}
-				highlight={i * step + min === value}
-			/>
-		))
+		return createArray(nb + (loop ? 0 : 1)).map((_, i) => {
+			const highlight = i * step + min === (loop ? modulo(value, max) : value)
+
+			return highlight ? (
+				<span key={i} className="highlight">
+					0
+				</span>
+			) : (
+				<React.Fragment key={i}>-</React.Fragment>
+			)
+		})
 	}, [nb, value, step])
+
 	const formatValue = (
-		" ".repeat(max.toString().length) + value.toString()
+		" ".repeat(max.toString().length) +
+		(loop ? modulo(value, max) : value).toString()
 	).substr(-max.toString().length)
 	return (
 		<ContainerSlider>
@@ -96,25 +113,30 @@ export const Slider = ({
 				<Action
 					value="<<"
 					onClick={() =>
-						onChange(value - bigStep < min ? min : value - bigStep)
+						onChange(value - bigStep < min && !loop ? min : value - bigStep)
 					}
 					space
 				/>
 				<Action
 					value="<"
-					onClick={() => onChange(value - step < min ? min : value - step)}
+					onClick={() =>
+						onChange(value - step < min && !loop ? min : value - step)
+					}
 					space
 				/>
 				{line}{" "}
 				<Action
 					value=">"
-					onClick={() => onChange(value + step > max ? max : value + step)}
+					onClick={() => {
+						console.log(loop)
+						onChange(value + step > max && !loop ? max : value + step)
+					}}
 					space
 				/>
 				<Action
 					value=">>"
 					onClick={() =>
-						onChange(value + bigStep > max ? max : value + bigStep)
+						onChange(value + bigStep > max && !loop ? max : value + bigStep)
 					}
 					space
 				/>
