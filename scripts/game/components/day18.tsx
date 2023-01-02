@@ -2,22 +2,18 @@
 
 import { useState, useEffect, useCallback } from "react"
 import styled from "styled-components"
-import { colors } from "_components/constants"
-
 import { isMobile } from "react-device-detect"
 
+import { colors } from "_components/constants"
+
 import { data, getAllPlan, volcano, searchInsideCube } from "../core/day18"
+
+import { D3Element } from "./D3Element"
 import { Slider } from "./Slider"
 
 const Wrapper = styled.div`
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	height: 100%;
 	overflow: hidden;
-	user-select: none;
-	cursor: move;
+	height: 100%;
 `
 
 const Volcano = styled.pre`
@@ -38,45 +34,6 @@ const Volcano = styled.pre`
 	span.target {
 		opacity: 1;
 		color: ${colors.importantColor};
-	}
-`
-
-const Control = styled.div`
-	position: absolute;
-	bottom: 10px;
-	left: 10px;
-	display: flex;
-	flex-direction: column;
-	justify-content: start;
-	align-items: start;
-	z-index: 10;
-
-	p {
-		padding: 5px;
-		background: black;
-		line-height: 25px;
-	}
-`
-
-const Container = styled.div<{ size: number; X: number; Y: number; Z: number }>`
-	width: ${data.limits.xMax * 10}px;
-	height: ${data.limits.zMax * 15}px;
-	perspective: ${({ size }) => `${size * 2}px`};
-
-	.cube {
-		margin-top: -50px;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		width: ${data.limits.xMax * 10}px;
-		height: ${data.limits.zMax * 15}px;
-		position: relative;
-		transform-style: preserve-3d;
-		transform: ${({ size }) => `translateZ(-${size / 2}px)`};
-		transition: transform 1s;
-		transform: ${({ X, Y, Z }) =>
-			`translateZ(${100 + Z}px) rotateX(${X}deg) rotateY(${Y}deg)`};
 	}
 `
 
@@ -135,65 +92,11 @@ const Plan = ({ draw, size, z, highlight }: PlanProps) => {
 	)
 }
 
-let timer
-
 const zoomMax = 500
 
 const Animation = () => {
-	const [mouseH, setMouseH] = useState<{ x: number; H: number } | null>(null)
-	const [mouseV, setMouseV] = useState<{ y: number; V: number } | null>(null)
-	const [H, setH] = useState<number>(330)
-	const [V, setV] = useState<number>(140)
-	const [Z, setZ] = useState<number>(isMobile ? -100 : 100)
 	const [color, setColor] = useState<number>(9)
 	const [basePlan, setBasePlan] = useState<string[]>([])
-
-	const control = useCallback((e: KeyboardEvent) => {
-		if (e.code === "ArrowUp") setV(prev => prev + 10)
-		if (e.code === "ArrowDown") setV(prev => prev - 10)
-		if (e.code === "ArrowRight") setH(prev => prev + 10)
-		if (e.code === "ArrowLeft") setH(prev => prev - 10)
-		if (e.code === "Enter")
-			setZ(prev => (prev + 10 > zoomMax ? zoomMax : prev + 10))
-		if (e.code === "Backspace")
-			setZ(prev => (prev - 10 < 100 ? 100 : prev - 10))
-	}, [])
-
-	const handleMouseDown = useCallback(
-		e => {
-			setMouseH({ x: e.clientX, H: H })
-			setMouseV({ y: e.clientY, V: V })
-		},
-		[H, V]
-	)
-
-	const handleMouseMove = useCallback(
-		e => {
-			if (mouseH) {
-				clearTimeout(timer)
-				timer = setTimeout(() => {
-					setH(
-						() => mouseH.H - Math.floor((e.clientX - mouseH.x) / 2 / 10) * 10
-					)
-					setV(
-						() => mouseV.V - Math.floor((e.clientY - mouseV.y) / 2 / 10) * 10
-					)
-				}, 5)
-			}
-		},
-		[H, mouseH]
-	)
-
-	const handleMouseUp = useCallback(() => {
-		setMouseH(null)
-		setMouseV(null)
-	}, [])
-
-	const handleMouseWheel = useCallback(e => {
-		if (e.nativeEvent.wheelDelta > 0)
-			setZ(prev => (prev + 30 > zoomMax ? zoomMax : prev + 30))
-		else setZ(prev => (prev - 30 < 100 ? 100 : prev - 30))
-	}, [])
 
 	const handleClick = useCallback(e => {
 		e.preventDefault()
@@ -201,29 +104,33 @@ const Animation = () => {
 	}, [])
 
 	useEffect(() => {
-		document.body.addEventListener("keydown", control)
-
-		document.body.focus()
-
 		const test = searchInsideCube(data)
 
 		setBasePlan(getAllPlan(data.base, test.inside, test.outside, data.limits))
-
-		return () => {
-			document.body.removeEventListener("keydown", control)
-		}
 	}, [])
 
 	return (
-		<Wrapper
-			onContextMenu={handleClick}
-			onMouseDown={handleMouseDown}
-			onMouseMove={handleMouseMove}
-			onMouseUp={handleMouseUp}
-			onWheel={handleMouseWheel}
-		>
-			<Container size={400} X={V} Y={H} Z={Z}>
-				<div className="cube">
+		<Wrapper onContextMenu={handleClick}>
+			<D3Element
+				size={400}
+				margin={-100}
+				control={{ mouse: true, keyboard: true, UI: true }}
+				start={{ horizontal: 330, vertical: 140, zoom: 0 }}
+				zoomMax={zoomMax}
+				addControl={
+					<Slider
+						width={isMobile ? "auto" : "280px"}
+						label="Mettre en évidence"
+						min={-1}
+						max={data.limits.zMax - 1}
+						step={1}
+						unit=""
+						value={color}
+						onChange={setColor}
+					/>
+				}
+			>
+				<>
 					{basePlan.map((draw, i) => (
 						<Plan
 							draw={draw}
@@ -233,63 +140,8 @@ const Animation = () => {
 							highlight={color === i ? true : color === -1 ? null : false}
 						/>
 					))}
-				</div>
-			</Container>
-
-			<Control>
-				{!isMobile && (
-					<p>
-						Contrôle souris : click + drag + wheel + right click
-						<br />
-						Contrôle clavier : [→] [←] [↑] [↓] [Enter] [Backspace]
-					</p>
-				)}
-				<Slider
-					width={isMobile ? "auto" : "300px"}
-					label="Zoom"
-					min={isMobile ? -100 : 100}
-					max={zoomMax}
-					step={10}
-					bigStep={50}
-					unit="%"
-					value={Z}
-					onChange={setZ}
-				/>
-				<Slider
-					width={isMobile ? "auto" : "300px"}
-					label="Rotation horyzontal"
-					min={0}
-					max={360}
-					loop
-					step={10}
-					bigStep={90}
-					unit="°"
-					value={H}
-					onChange={setH}
-				/>
-				<Slider
-					width={isMobile ? "auto" : "300px"}
-					label="Rotation vertical"
-					min={0}
-					max={360}
-					loop
-					step={10}
-					bigStep={90}
-					unit="°"
-					value={V}
-					onChange={setV}
-				/>
-				<Slider
-					width={isMobile ? "auto" : "300px"}
-					label="Mettre en évidence"
-					min={-1}
-					max={data.limits.zMax - 1}
-					step={1}
-					unit=""
-					value={color}
-					onChange={setColor}
-				/>
-			</Control>
+				</>
+			</D3Element>
 
 			<Volcano dangerouslySetInnerHTML={{ __html: volcano }} />
 		</Wrapper>

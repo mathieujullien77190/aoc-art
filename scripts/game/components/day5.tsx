@@ -5,6 +5,8 @@ import styled from "styled-components"
 import { useAnim, prepareViewsHelpers } from "./hooks"
 import { generateViews } from "../core/day5"
 
+import { View } from "../view"
+
 import Stats from "./Stats"
 
 const Game = styled.pre`
@@ -21,7 +23,7 @@ const Animation = () => {
 	const [speed, setSpeed] = useState<number>(30)
 	const [dataSize, setDataSize] = useState<number>(40)
 	const [reload, setReload] = useState<number>(0)
-	const { HTML, stats } = useAnim({
+	const { out, stats } = useAnim<View>({
 		viewsFn: () => prepareViewsHelpers(() => generateViews(dataSize), true),
 		data: { speed, reload, dataSize: dataSize },
 	})
@@ -31,7 +33,7 @@ const Animation = () => {
 			<Container>
 				<Game
 					style={{ fontSize: "12px" }}
-					dangerouslySetInnerHTML={{ __html: HTML }}
+					dangerouslySetInnerHTML={{ __html: out?.value }}
 				/>
 			</Container>
 			<Stats

@@ -2,12 +2,12 @@
 
 import { useEffect, useState, useMemo } from "react"
 
-import { read, View } from "../view"
+import { read } from "../view"
 
-export const prepareViewsHelpers = (
-	fn: () => View[],
+export const prepareViewsHelpers = <T>(
+	fn: () => T[],
 	withTime?: boolean
-): { views: View[]; time1?: Date; time2?: Date } => {
+): { views: T[]; time1?: Date; time2?: Date } => {
 	const time1 = new Date()
 	const views = fn()
 	const time2 = new Date()
@@ -19,12 +19,13 @@ export const prepareViewsHelpers = (
 	}
 }
 
-type UseAnimProps = {
-	viewsFn: () => { views: View[]; time1?: Date; time2?: Date }
-	transform?: ({ view, i }: { view: View; i: number }) => {
-		view: View
+type UseAnimProps<T> = {
+	viewsFn: () => { views: T[]; time1?: Date; time2?: Date }
+	transform?: ({ view, i }: { view: T; i: number }) => {
+		view: T
 		i: number
 	}
+	action?: ({ view, i }: { view: T; i: number }) => void
 	data: {
 		dataSize?: number
 		part?: 1 | 2
@@ -33,13 +34,14 @@ type UseAnimProps = {
 	}
 }
 
-export const useAnim = ({
+export const useAnim = <T>({
 	viewsFn,
+	action = () => {},
 	transform = ({ view, i }) => ({ view, i }),
 	data,
-}: UseAnimProps) => {
+}: UseAnimProps<T>) => {
 	let timer
-	const [HTML, setHTML] = useState<string>("")
+	const [out, setOut] = useState<T>(undefined)
 	const [stats, setStats] = useState<Record<string, number>>({})
 
 	const viewsInfo = useMemo(() => viewsFn(), [data.dataSize, data.part])
@@ -57,23 +59,21 @@ export const useAnim = ({
 				: undefined
 		const nbViewSec = timeViews ? Math.floor(totalView / timeViews) : undefined
 
-		let countChar = 0
 		let countView = 0
 
 		clearInterval(timer)
 
-		timer = read(viewsInfo.views, calcSpeed, args => {
+		timer = read<T>(viewsInfo.views, calcSpeed, args => {
 			const { view, i } = transform(args)
-			countChar += view.value.length
+			action(args)
 			countView++
 
-			setHTML(view.value)
+			setOut(view)
 			setStats({
 				timeViews,
 				nbViewSec,
 				nbsView: countView,
 				countView: i + 1,
-				countChar,
 				totalView,
 				dataSize: data.dataSize,
 				speed: calcSpeed,
@@ -85,5 +85,5 @@ export const useAnim = ({
 		}
 	}, [calcSpeed, data.reload, data.dataSize, data.part])
 
-	return { HTML, stats }
+	return { out, stats }
 }

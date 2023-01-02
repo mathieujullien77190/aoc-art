@@ -5,6 +5,8 @@ import styled from "styled-components"
 import { useAnim, prepareViewsHelpers } from "./hooks"
 import { generateViews } from "../core/day4"
 
+import { View } from "../view"
+
 import Stats from "./Stats"
 
 const Game = styled.pre`
@@ -15,14 +17,14 @@ const Animation = () => {
 	const [speed, setSpeed] = useState<number>(20)
 	const [dataSize, setDataSize] = useState<number>(20)
 	const [reload, setReload] = useState<number>(0)
-	const { HTML, stats } = useAnim({
+	const { out, stats } = useAnim<View>({
 		viewsFn: () => prepareViewsHelpers(() => generateViews(25, dataSize), true),
 		data: { speed, reload, dataSize },
 	})
 
 	return (
 		<>
-			<Game dangerouslySetInnerHTML={{ __html: HTML }} />
+			<Game dangerouslySetInnerHTML={{ __html: out?.value }} />
 			<Stats
 				stats={stats}
 				speed={speed}

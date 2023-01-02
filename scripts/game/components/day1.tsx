@@ -5,6 +5,8 @@ import styled from "styled-components"
 import { useAnim, prepareViewsHelpers } from "./hooks"
 import { generateViews, extractMax } from "../core/day1"
 
+import { View } from "../view"
+
 import Stats from "./Stats"
 
 const Game = styled.pre`
@@ -19,7 +21,7 @@ const Animation = () => {
 	const [reload, setReload] = useState<number>(0)
 	const [dataSize, setDataSize] = useState<number>(100)
 
-	const { HTML, stats } = useAnim({
+	const { out, stats } = useAnim<View>({
 		viewsFn: () => prepareViewsHelpers(() => generateViews(60, dataSize), true),
 		transform: ({ view, i }) => {
 			const item1 = view.value.substring(0, pos)
@@ -40,7 +42,7 @@ const Animation = () => {
 
 	return (
 		<>
-			<Game dangerouslySetInnerHTML={{ __html: HTML }} />
+			<Game dangerouslySetInnerHTML={{ __html: out?.value }} />
 			<Stats
 				speed={speed}
 				sizeData={dataSize}

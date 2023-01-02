@@ -93,7 +93,7 @@ export const Games = ({ day }: { day: string }) => {
 							</div>
 						</Title>
 
-						{search[0].component}
+						{search[0].component()}
 					</>
 				</Container>
 			)}
