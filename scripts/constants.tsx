@@ -8,8 +8,16 @@ import GameDay9 from "./game/loading/day9"
 import GameDay12 from "./game/loading/day12"
 import GameDay14 from "./game/loading/day14"
 import GameDay18 from "./game/loading/day18"
+import GameDay22 from "./game/loading/day22"
 
-export const gamesConfig = [
+type GameConfig = {
+	day: string
+	year: string
+	title: string
+	component: () => JSX.Element
+}
+
+export const gamesConfig: GameConfig[] = [
 	{
 		day: "25",
 		year: "2022",
@@ -20,42 +28,48 @@ export const gamesConfig = [
 		day: "1",
 		year: "2022",
 		title: "2022 | Day 1: Calorie Counting",
-		component: <GameDay1 />,
+		component: () => <GameDay1 />,
 	},
 	{
 		day: "4",
 		year: "2022",
 		title: "2022 | Day 4: Camp Cleanup",
-		component: <GameDay4 />,
+		component: () => <GameDay4 />,
 	},
 	{
 		day: "5",
 		year: "2022",
 		title: "2022 | Day 5: Supply Stacks",
-		component: <GameDay5 />,
+		component: () => <GameDay5 />,
 	},
 	{
 		day: "9",
 		year: "2022",
 		title: "2022 | Day 9: Rope Bridge",
-		component: <GameDay9 />,
+		component: () => <GameDay9 />,
 	},
 	{
 		day: "12",
 		year: "2022",
 		title: "2022 | Day 12: Hill Climbing Algorithm",
-		component: <GameDay12 />,
+		component: () => <GameDay12 />,
 	},
 	{
 		day: "14",
 		year: "2022",
 		title: "2022 | Day 14: Regolith Reservoir",
-		component: <GameDay14 />,
+		component: () => <GameDay14 />,
 	},
 	{
 		day: "18",
 		year: "2022",
 		title: "2022 | Day 18: Boiling Boulders",
-		component: <GameDay18 />,
+		component: () => <GameDay18 />,
+	},
+	{
+		day: "22",
+		year: "2022",
+		title: "2022 | Day 22: Monkey Map",
+		component: () => <GameDay22 />,
 	},
 ]

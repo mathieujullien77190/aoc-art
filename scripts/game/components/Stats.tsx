@@ -149,10 +149,6 @@ const Stats = ({
 							<label>Current frame</label>
 							{stats?.countView?.toLocaleString()}
 						</div>
-						<div>
-							<label>Char displayed</label>
-							{stats?.countChar?.toLocaleString()}
-						</div>
 
 						{stats?.dataSize && (
 							<div>

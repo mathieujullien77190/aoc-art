@@ -131,10 +131,10 @@ export const mergeView = (back: View, front: View, position: Position) => {
 	return copy
 }
 
-export const read = (
-	arr: View[],
+export const read = <T>(
+	arr: T[],
 	timeStep: number,
-	fn: ({ view, i }: { view: View; i: number }) => void,
+	fn: ({ view, i }: { view: T; i: number }) => void,
 	end?: () => void
 ): number => {
 	const timer = window.setInterval(

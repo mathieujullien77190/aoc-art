@@ -5,6 +5,8 @@ import { useAnim, prepareViewsHelpers } from "./hooks"
 
 import { data } from "../data/2021"
 
+import { View } from "../view"
+
 import Stats from "./Stats"
 
 const Game = styled.pre`
@@ -16,7 +18,7 @@ const Animation = () => {
 
 	const [reload, setReload] = useState<number>(0)
 
-	const { HTML, stats } = useAnim({
+	const { out, stats } = useAnim<View>({
 		viewsFn: () =>
 			prepareViewsHelpers(() => data.map(item => ({ value: item })), false),
 		data: { speed, reload },
@@ -24,7 +26,7 @@ const Animation = () => {
 
 	return (
 		<>
-			<Game style={{ fontSize: "10px", lineHeight: "6px" }}>{HTML}</Game>
+			<Game style={{ fontSize: "10px", lineHeight: "6px" }}>{out?.value}</Game>
 
 			<Stats
 				stats={stats}
