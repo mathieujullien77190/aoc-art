@@ -1,17 +1,15 @@
 /** @format */
 
-import React, { useMemo } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 import styled from "styled-components"
 
 import { isMobile } from "react-device-detect"
 
 import { colors } from "_components/constants"
 import { createArray } from "../helpers"
+import { Action } from "./Action"
 
-const modulo = (value, max) => {
-	if (value < 0) return (max - (Math.abs(value) % max)) % max
-	return value % max
-}
+import { modulo } from "./Math"
 
 const ContainerSlider = styled.div`
 	margin: 5px 0;
@@ -19,31 +17,6 @@ const ContainerSlider = styled.div`
 	background: black;
 
 	.highlight {
-		color: ${colors.background};
-		font-weight: bold;
-		background-color: ${colors.importantColor};
-	}
-`
-
-const ActionContainer = styled.button<{ highlight: boolean }>`
-	background-color: ${({ highlight }) =>
-		highlight ? colors.importantColor : "transparent"};
-	color: ${({ highlight }) =>
-		highlight ? colors.background : colors.textColor};
-	font-weight: ${({ highlight }) => (highlight ? "bold" : "normal")};
-
-	padding: 0;
-	margin: 0 2px;
-	cursor: pointer;
-	font-family: monospace;
-	border: none;
-	height: 25px;
-	min-width: 30px;
-	display: inline-flex;
-	justify-content: center;
-	align-items: center;
-
-	&:hover {
 		color: ${colors.background};
 		font-weight: bold;
 		background-color: ${colors.importantColor};
@@ -61,27 +34,7 @@ type SliderProps = {
 	bigStep?: number
 	unit?: string
 
-	onChange?: (value: number) => void
-}
-
-type ActionProps = {
-	value: string
-	highlight?: boolean
-	onClick?: () => void
-}
-
-const Action = ({
-	value,
-	highlight = false,
-	onClick = () => {},
-}: ActionProps) => {
-	return (
-		<>
-			<ActionContainer onClick={onClick} highlight={highlight}>
-				{value}
-			</ActionContainer>
-		</>
-	)
+	onChange?: ({ value, diff }: { value: number; diff: number }) => void
 }
 
 export const Slider = ({
@@ -96,13 +49,18 @@ export const Slider = ({
 	unit = "",
 	onChange = () => {},
 }: SliderProps) => {
+	const [localValue, setLocalValue] = useState<number>(
+		Math.floor(value / step) * step
+	)
+
 	const nb = useMemo(
 		() => Math.floor(Math.abs(max - min) / step),
 		[min, max, step]
 	)
+
 	const line = useMemo(() => {
 		return createArray(nb + (loop ? 0 : 1)).map((_, i) => {
-			const highlight = i * step + min === (loop ? modulo(value, max) : value)
+			const highlight = i * step + min === localValue
 
 			return highlight ? (
 				<span key={i} className="highlight">
@@ -112,12 +70,25 @@ export const Slider = ({
 				<React.Fragment key={i}>-</React.Fragment>
 			)
 		})
-	}, [nb, value, step])
+	}, [nb, localValue, step])
+
+	const handleChange = useCallback(
+		newValue => {
+			onChange({ value: newValue, diff: newValue - localValue })
+			setLocalValue(newValue)
+		},
+		[localValue]
+	)
 
 	const formatValue = (
 		" ".repeat(max.toString().length) +
-		(loop ? modulo(value, max) : value).toString()
+		(loop ? modulo(localValue, max) : localValue).toString()
 	).substr(-max.toString().length)
+
+	useEffect(() => {
+		setLocalValue(Math.floor(value / step) * step)
+	}, [value])
+
 	return (
 		<ContainerSlider>
 			<>
@@ -125,37 +96,60 @@ export const Slider = ({
 					{label} ({formatValue}
 					{unit})&nbsp;:&nbsp;
 				</span>
-				{!isMobile && <Action value="[Min]" onClick={() => onChange(min)} />}
+
 				{!isMobile && (
 					<Action
 						value="<<"
 						onClick={() =>
-							onChange(value - bigStep < min && !loop ? min : value - bigStep)
+							handleChange(
+								loop
+									? modulo(localValue - bigStep, max)
+									: localValue - bigStep < min
+									? min
+									: localValue - bigStep
+							)
 						}
 					/>
 				)}
 				<Action
 					value="<"
 					onClick={() =>
-						onChange(value - step < min && !loop ? min : value - step)
+						handleChange(
+							loop
+								? modulo(localValue - step, max)
+								: localValue - step < min
+								? min
+								: localValue - step
+						)
 					}
 				/>
 				{!isMobile && <>{line}</>}
 				<Action
 					value=">"
 					onClick={() => {
-						onChange(value + step > max && !loop ? max : value + step)
+						handleChange(
+							loop
+								? modulo(localValue + step, max)
+								: localValue + step > max
+								? max
+								: localValue + step
+						)
 					}}
 				/>
 				{!isMobile && (
 					<Action
 						value=">>"
 						onClick={() =>
-							onChange(value + bigStep > max && !loop ? max : value + bigStep)
+							handleChange(
+								loop
+									? modulo(localValue + bigStep, max)
+									: localValue + bigStep > max
+									? max
+									: localValue + bigStep
+							)
 						}
 					/>
 				)}
-				{!isMobile && <Action value="[Max]" onClick={() => onChange(max)} />}
 			</>
 		</ContainerSlider>
 	)
