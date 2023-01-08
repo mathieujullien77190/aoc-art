@@ -8,7 +8,7 @@ import { colors } from "_components/constants"
 
 import { data, getAllPlan, volcano, searchInsideCube } from "../core/day18"
 
-import { D3Element } from "./D3Element"
+import D3 from "./D3"
 import { Slider } from "./Slider"
 
 const Wrapper = styled.div`
@@ -92,8 +92,6 @@ const Plan = ({ draw, size, z, highlight }: PlanProps) => {
 	)
 }
 
-const zoomMax = 500
-
 const Animation = () => {
 	const [color, setColor] = useState<number>(9)
 	const [basePlan, setBasePlan] = useState<string[]>([])
@@ -111,12 +109,15 @@ const Animation = () => {
 
 	return (
 		<Wrapper onContextMenu={handleClick}>
-			<D3Element
+			<D3
 				size={400}
 				margin={-100}
-				control={{ mouse: true, keyboard: true, UI: true }}
-				start={{ horizontal: 330, vertical: 140, zoom: 0 }}
-				zoomMax={zoomMax}
+				control={{
+					mouse: { activate: true, smoothing: 400, speed: 3 },
+					keyboard: true,
+					UI: true,
+				}}
+				start={{ H: 20, V: 130 }}
 				addControl={
 					<Slider
 						width={isMobile ? "auto" : "280px"}
@@ -126,7 +127,9 @@ const Animation = () => {
 						step={1}
 						unit=""
 						value={color}
-						onChange={setColor}
+						onChange={({ value }) => {
+							setColor(value)
+						}}
 					/>
 				}
 			>
@@ -141,7 +144,7 @@ const Animation = () => {
 						/>
 					))}
 				</>
-			</D3Element>
+			</D3>
 
 			<Volcano dangerouslySetInnerHTML={{ __html: volcano }} />
 		</Wrapper>
