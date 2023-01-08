@@ -30,41 +30,41 @@ export const draw = extractTab1(input, "\n\n")[0]
 export const sizes = calcSize(draw)
 
 export const map = {
-	"02": {
-		right: { name: "23", dir: "<", inv: true },
-		left: { name: "11", dir: "v", inv: false },
-		up: { name: "10", dir: "v", inv: true },
-		down: { name: "12", dir: "v", inv: false },
+	"01": {
+		right: { name: "02", dir: ">", inv: false },
+		left: { name: "20", dir: ">", inv: true },
+		up: { name: "30", dir: ">", inv: false },
+		down: { name: "11", dir: "v", inv: false },
 	},
-	"10": {
-		right: { name: "11", dir: ">", inv: false },
-		left: { name: "23", dir: "^", inv: true },
-		up: { name: "02", dir: "v", inv: true },
-		down: { name: "22", dir: "^", inv: true },
+	"02": {
+		right: { name: "21", dir: "<", inv: true },
+		left: { name: "01", dir: "<", inv: false },
+		up: { name: "30", dir: "^", inv: false },
+		down: { name: "11", dir: "<", inv: false },
 	},
 	"11": {
-		right: { name: "12", dir: ">", inv: false },
-		left: { name: "10", dir: "<", inv: false },
-		up: { name: "02", dir: ">", inv: false },
-		down: { name: "22", dir: ">", inv: true },
+		right: { name: "02", dir: "^", inv: false },
+		left: { name: "20", dir: "v", inv: false },
+		up: { name: "01", dir: "^", inv: false },
+		down: { name: "21", dir: "v", inv: false },
 	},
-	"12": {
-		right: { name: "23", dir: "v", inv: true },
-		left: { name: "11", dir: "<", inv: false },
-		up: { name: "02", dir: "^", inv: false },
-		down: { name: "22", dir: "v", inv: false },
+	"20": {
+		right: { name: "21", dir: ">", inv: false },
+		left: { name: "01", dir: ">", inv: true },
+		up: { name: "11", dir: ">", inv: false },
+		down: { name: "30", dir: "v", inv: false },
 	},
-	"22": {
-		right: { name: "23", dir: ">", inv: false },
-		left: { name: "11", dir: "^", inv: true },
-		up: { name: "12", dir: "^", inv: false },
-		down: { name: "10", dir: "^", inv: true },
-	},
-	"23": {
+	"21": {
 		right: { name: "02", dir: "<", inv: true },
-		left: { name: "22", dir: "<", inv: false },
-		up: { name: "12", dir: "<", inv: true },
-		down: { name: "10", dir: ">", inv: true },
+		left: { name: "20", dir: "<", inv: false },
+		up: { name: "11", dir: "^", inv: false },
+		down: { name: "30", dir: "<", inv: false },
+	},
+	"30": {
+		right: { name: "21", dir: "^", inv: false },
+		left: { name: "01", dir: "v", inv: false },
+		up: { name: "20", dir: "^", inv: false },
+		down: { name: "02", dir: "v", inv: false },
 	},
 }
 
