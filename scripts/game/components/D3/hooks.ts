@@ -51,16 +51,8 @@ export const useOrientation = (
 
 	const add = useCallback(
 		(add: AxesValue, withTransition: boolean = false) => {
-			const nextV = next(
-				axes.values.V,
-				{ min: 0, max: 350, loop: true, withTransition },
-				add.V
-			)
-			const nextH = next(
-				axes.values.H,
-				{ min: 0, max: 350, loop: true, withTransition },
-				add.H
-			)
+			const nextV = next(axes.values.V, { min: 0, max: 350 }, add.V)
+			const nextH = next(axes.values.H, { min: 0, max: 350 }, add.H)
 
 			setAxes({
 				values: { V: nextV.value, H: nextH.value },
