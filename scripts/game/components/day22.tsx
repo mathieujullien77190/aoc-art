@@ -27,6 +27,8 @@ const PlanContainer = styled.div<{
 	transform: ${({ size }) => `translateZ(${size}px)`};
 	background: black;
 
+	border: solid 1px gray;
+
 	pre {
 		margin: 0;
 		font-size: 14px;
@@ -39,20 +41,19 @@ const PlanContainer = styled.div<{
 		transform: ${({ size }) => `rotateY(0deg) translateZ(${size / 2}px)`};
 	}
 	&.right {
-		transform: ${({ size }) =>
-			`rotateY(90deg) translateZ(${size / 2}px) rotateZ(180deg)`};
+		transform: ${({ size }) => `rotateY(90deg) translateZ(${size / 2}px) `};
 	}
 	&.back {
 		transform: ${({ size }) =>
-			`rotateX(-180deg) translateZ(${size / 2}px) rotateZ(180deg)`};
+			`rotateX(-180deg) translateZ(${size / 2}px) rotateZ(0deg)`};
 	}
 	&.left {
 		transform: ${({ size }) =>
-			`rotateY(-90deg) translateZ(${size / 2}px) rotateZ(90deg)`};
+			`rotateY(-90deg) translateZ(${size / 2}px) rotateZ(180deg)`};
 	}
 	&.top {
 		transform: ${({ size }) =>
-			`rotateX(90deg) translateZ(${size / 2}px) rotateZ(180deg)`};
+			`rotateX(90deg) translateZ(${size / 2}px) rotateZ(-90deg)`};
 	}
 	&.bottom {
 		transform: ${({ size }) => `rotateX(-90deg) translateZ(${size / 2}px)`};
