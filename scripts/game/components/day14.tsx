@@ -2,17 +2,22 @@
 import { useState } from "react"
 import styled from "styled-components"
 
-import { useAnim, prepareViewsHelpers } from "./hooks"
-import { generateViews } from "../core/day14"
+import { useAnim, prepareViewsHelpers, useScale } from "./hooks"
+import { generateViews, clipSize } from "../core/day14"
 import { View } from "../view"
 
 import Stats from "./Stats"
+import Controller from "./Controls"
 
-const Game = styled.pre`
+const Game = styled.pre<{ scale: number }>`
 	margin: 0;
+
+	color: lightgray;
+
+	transform: ${({ scale }) => `scale(${scale})`};
+
 	font-size: 12px;
 	line-height: 8px;
-	color: lightgray;
 
 	span {
 		font-size: 12px;
@@ -28,10 +33,12 @@ const Container = styled.div`
 `
 
 const Animation = () => {
-	const [speed, setSpeed] = useState<number>(5)
-
+	const [speed, setSpeed] = useState<number>(20)
 	const [dataSize] = useState<number>(100)
 	const [reload] = useState<number>(0)
+
+	const scale = useScale(clipSize * 14)
+
 	const { out, stats } = useAnim<View>({
 		viewsFn: () => prepareViewsHelpers(() => generateViews(), true),
 		transform: ({ view, i }) => {
@@ -55,14 +62,15 @@ const Animation = () => {
 	return (
 		<>
 			<Container>
-				<Game dangerouslySetInnerHTML={{ __html: out?.value }} />
+				<Game scale={scale} dangerouslySetInnerHTML={{ __html: out?.value }} />
+				<Controller
+					controls={[{ name: "speed", min: 0, max: 1000, value: speed }]}
+					onChange={(name, value) => {
+						if (name === "speed") setSpeed(value as number)
+					}}
+				/>
 			</Container>
-			<Stats
-				stats={stats}
-				sizeData={100}
-				speed={speed}
-				onChangeSpeed={setSpeed}
-			/>
+			<Stats stats={stats} />
 		</>
 	)
 }

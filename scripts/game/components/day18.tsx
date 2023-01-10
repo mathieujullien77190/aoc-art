@@ -9,7 +9,7 @@ import { colors } from "_components/constants"
 import { data, getAllPlan, volcano, searchInsideCube } from "../core/day18"
 
 import D3 from "./D3"
-import { Slider } from "./Slider"
+import Slider from "./Slider"
 
 const Wrapper = styled.div`
 	overflow: hidden;

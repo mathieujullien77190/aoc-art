@@ -6,6 +6,8 @@ import { createView, mergeView, areEqual, clipView } from "../view"
 
 type Boundary = { xMin: number; xMax: number; yMin: number; yMax: number }
 
+export const clipSize = 38
+
 const createBackground = (boundary: Boundary): string[][] => {
 	const { xMin, xMax, yMax } = boundary
 
@@ -100,7 +102,6 @@ export const generateViews = () => {
 	const start = { x: 500, y: 0 }
 
 	let posClip = { x: start.x - boundary.xMin, y: 12 }
-	const sizeClip = 38
 
 	const back = construct(data, boundary)
 
@@ -112,7 +113,7 @@ export const generateViews = () => {
 		{ x: start.x - boundary.xMin, y: 0 }
 	)
 
-	views.push(clipView(backView, posClip, sizeClip, " "))
+	views.push(clipView(backView, posClip, clipSize, " "))
 
 	sand1(
 		back,
@@ -121,7 +122,7 @@ export const generateViews = () => {
 		pos => {
 			const sandMergeView = mergeView(backView, sandView, pos)
 
-			const sandMergeClip = clipView(sandMergeView, posClip, sizeClip, " ")
+			const sandMergeClip = clipView(sandMergeView, posClip, clipSize, " ")
 
 			if (!areEqual(sandMergeClip, views[views.length - 1])) {
 				views.push(sandMergeClip)

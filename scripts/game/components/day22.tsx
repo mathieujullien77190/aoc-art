@@ -1,12 +1,9 @@
 /** @format */
 
-import { useState, useEffect, useCallback } from "react"
+import { useState } from "react"
 import styled from "styled-components"
-import { colors } from "_components/constants"
 
-import { isMobile } from "react-device-detect"
-
-import { organize, goN, map, actions, draw, setPosition } from "../core/day22"
+import { organize, goN, map, actions, draw } from "../core/day22"
 import { useAnim, prepareViewsHelpers } from "./hooks"
 
 import D3 from "./D3"
@@ -115,12 +112,7 @@ const Animation = () => {
 					</>
 				)}
 			</D3>
-			<Stats
-				stats={stats}
-				sizeData={100}
-				speed={speed}
-				onChangeSpeed={setSpeed}
-			/>
+			<Stats stats={stats} />
 		</>
 	)
 }

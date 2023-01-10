@@ -1,46 +1,20 @@
 /** @format */
 
 import React, { useCallback, useEffect, useMemo, useState } from "react"
-import styled from "styled-components"
 
 import { isMobile } from "react-device-detect"
 
-import { colors } from "_components/constants"
-import { createArray } from "../helpers"
-import { Action } from "./Action"
+import { createArray } from "../../helpers"
+import { Action } from "../Action"
 
-import { modulo } from "./Math"
+import { modulo } from "../Math"
 
-const ContainerSlider = styled.div`
-	margin: 5px 0;
-	padding: 5px;
-	background: black;
-
-	.highlight {
-		color: ${colors.background};
-		font-weight: bold;
-		background-color: ${colors.importantColor};
-	}
-`
-
-type SliderProps = {
-	label: string
-	max: number
-	width?: string
-	value?: number
-	min?: number
-	loop?: boolean
-	step?: number
-	bigStep?: number
-	unit?: string
-
-	onChange?: ({ value, diff }: { value: number; diff: number }) => void
-}
+import * as S from "./UI"
+import { SliderProps } from "./types"
 
 export const Slider = ({
 	label,
 	max,
-	width = "auto",
 	value = 0,
 	min = 0,
 	loop = false,
@@ -80,23 +54,20 @@ export const Slider = ({
 		[localValue]
 	)
 
-	const formatValue = (
-		" ".repeat(max.toString().length) +
-		(loop ? modulo(localValue, max) : localValue).toString()
-	).substr(-max.toString().length)
+	const formatValue = (loop ? modulo(localValue, max) : localValue).toString()
 
 	useEffect(() => {
 		setLocalValue(Math.floor(value / step) * step)
 	}, [value])
 
 	return (
-		<ContainerSlider>
-			<>
-				<span style={{ width, display: "inline-block" }}>
-					{label} ({formatValue}
-					{unit})&nbsp;:&nbsp;
-				</span>
+		<S.ContainerSlider>
+			<S.Label>
+				{label} ({formatValue}
+				{unit})&nbsp;:&nbsp;
+			</S.Label>
 
+			<S.Actions>
 				{!isMobile && (
 					<Action
 						value="<<"
@@ -150,7 +121,7 @@ export const Slider = ({
 						}
 					/>
 				)}
-			</>
-		</ContainerSlider>
+			</S.Actions>
+		</S.ContainerSlider>
 	)
 }
