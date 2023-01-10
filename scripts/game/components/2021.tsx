@@ -28,12 +28,7 @@ const Animation = () => {
 		<>
 			<Game style={{ fontSize: "10px", lineHeight: "6px" }}>{out?.value}</Game>
 
-			<Stats
-				stats={stats}
-				speed={speed}
-				onChangeSpeed={setSpeed}
-				onReload={setReload}
-			/>
+			<Stats stats={stats} />
 		</>
 	)
 }

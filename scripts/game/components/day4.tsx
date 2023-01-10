@@ -25,14 +25,7 @@ const Animation = () => {
 	return (
 		<>
 			<Game dangerouslySetInnerHTML={{ __html: out?.value }} />
-			<Stats
-				stats={stats}
-				speed={speed}
-				sizeData={dataSize}
-				onChangeSpeed={setSpeed}
-				onReload={setReload}
-				onChangeSize={setDataSize}
-			/>
+			<Stats stats={stats} />
 		</>
 	)
 }
