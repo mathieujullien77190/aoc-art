@@ -4,14 +4,11 @@ import { useState, useCallback, useEffect, useRef } from "react"
 import { D3Props } from "./types"
 
 import { isMobile } from "react-device-detect"
-
 import * as S from "./UI"
-import { Slider } from "../Slider"
-import { Action } from "../Action"
 
-import { modulo } from "../Math"
-import { next } from "./helpers"
 import { useOrientation } from "./hooks"
+
+import Controller from "../Controls"
 
 let timer = null
 
@@ -176,64 +173,29 @@ export const D3 = ({
 			</S.Container>
 
 			{control.UI && (
-				<S.Control>
-					{!isMobile && (
-						<>
-							<p>
-								Contrôle souris : click + drag + wheel + right click
-								<br />
-								Contrôle clavier : [→] [←] [↑] [↓] [Enter] [Backspace]
-							</p>
-							<S.Line>
-								<label>Réinitialiser : </label>
-								<Action onClick={handleReset} value="[Reset]" />
-							</S.Line>
-						</>
-					)}
-
-					<Slider
-						width={isMobile ? "auto" : "280px"}
-						label="Zoom"
-						min={zoom.min}
-						max={zoom.max}
-						step={zoom.step}
-						bigStep={zoom.bigStep}
-						unit=""
-						value={Z}
-						onChange={({ value }) => setZ(value)}
-					/>
-					<Slider
-						width={isMobile ? "auto" : "280px"}
-						label="Rotation horyzontal"
-						min={0}
-						max={360}
-						loop
-						step={10}
-						bigStep={90}
-						unit="°"
-						value={axes.values.H}
-						onChange={({ diff }) => {
+				<Controller
+					controls={[
+						!isMobile ? { name: "help" } : null,
+						{ name: "reset" },
+						{ name: "zoom", min: zoom.min, max: zoom.max, value: Z },
+						{ name: "rotation", type: "H", value: axes.values.H },
+						{ name: "rotation", type: "V", value: axes.values.V },
+					]}
+					onChange={(name, value) => {
+						if (name === "zoom") setZ(value as number)
+						if (name === "rotationH") {
 							fixed()
-							add({ H: diff, V: 0 }, false)
-						}}
-					/>
-					<Slider
-						width={isMobile ? "auto" : "280px"}
-						label="Rotation vertical"
-						min={0}
-						max={360}
-						loop
-						step={10}
-						bigStep={90}
-						unit="°"
-						value={axes.values.V}
-						onChange={({ diff }) => {
+							add({ H: (value as { diff: number }).diff, V: 0 }, false)
+						}
+						if (name === "rotationV") {
 							fixed()
-							add({ V: diff, H: 0 }, false)
-						}}
-					/>
+							add({ V: (value as { diff: number }).diff, H: 0 }, false)
+						}
+						if (name === "reset") handleReset()
+					}}
+				>
 					{addControl}
-				</S.Control>
+				</Controller>
 			)}
 		</S.Wrapper>
 	)

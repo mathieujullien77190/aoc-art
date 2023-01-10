@@ -10,7 +10,7 @@ import GameDay14 from "./game/loading/day14"
 import GameDay18 from "./game/loading/day18"
 import GameDay22 from "./game/loading/day22"
 
-type GameConfig = {
+export type GameConfig = {
 	day: string
 	year: string
 	title: string
@@ -21,55 +21,55 @@ export const gamesConfig: GameConfig[] = [
 	{
 		day: "25",
 		year: "2022",
-		title: "2021 | Day 25: Sea Cucumber",
+		title: "Sea Cucumber",
 		component: () => <Game2021 />,
 	},
 	{
 		day: "1",
 		year: "2022",
-		title: "2022 | Day 1: Calorie Counting",
+		title: "Calorie Counting",
 		component: () => <GameDay1 />,
 	},
 	{
 		day: "4",
 		year: "2022",
-		title: "2022 | Day 4: Camp Cleanup",
+		title: "Camp Cleanup",
 		component: () => <GameDay4 />,
 	},
 	{
 		day: "5",
 		year: "2022",
-		title: "2022 | Day 5: Supply Stacks",
+		title: "Supply Stacks",
 		component: () => <GameDay5 />,
 	},
 	{
 		day: "9",
 		year: "2022",
-		title: "2022 | Day 9: Rope Bridge",
+		title: "Rope Bridge",
 		component: () => <GameDay9 />,
 	},
-	{
-		day: "12",
-		year: "2022",
-		title: "2022 | Day 12: Hill Climbing Algorithm",
-		component: () => <GameDay12 />,
-	},
+	// {
+	// 	day: "12",
+	// 	year: "2022",
+	// 	title: "Hill Climbing Algorithm",
+	// 	component: () => <GameDay12 />,
+	// },
 	{
 		day: "14",
 		year: "2022",
-		title: "2022 | Day 14: Regolith Reservoir",
+		title: "Regolith Reservoir",
 		component: () => <GameDay14 />,
 	},
 	{
 		day: "18",
 		year: "2022",
-		title: "2022 | Day 18: Boiling Boulders",
+		title: "Boiling Boulders",
 		component: () => <GameDay18 />,
 	},
 	{
 		day: "22",
 		year: "2022",
-		title: "2022 | Day 22: Monkey Map",
+		title: "Monkey Map",
 		component: () => <GameDay22 />,
 	},
 ]

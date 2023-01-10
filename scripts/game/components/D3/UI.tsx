@@ -35,31 +35,3 @@ export const Cube = styled.div<{
 	justify-content: center;
 	align-items: center;
 `
-
-export const Control = styled.div`
-	position: absolute;
-	bottom: 0px;
-	left: 0px;
-	display: flex;
-	flex-direction: column;
-	justify-content: start;
-	align-items: start;
-	z-index: 10;
-
-	p {
-		padding: 5px;
-		background: black;
-		line-height: 25px;
-	}
-`
-
-export const Line = styled.div`
-	padding: 5px;
-	background: black;
-	line-height: 25px;
-
-	label {
-		display: inline-block;
-		width: 280px;
-	}
-`
