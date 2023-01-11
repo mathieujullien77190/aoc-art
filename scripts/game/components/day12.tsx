@@ -103,8 +103,8 @@ const Animation = () => {
 		if (out) {
 			for (let key in out) {
 				document.querySelector(`.${key} pre`).innerHTML = out[key]
-				// .replace(/(\*+)/g, '<span class="s">$1</span>')
-				// .replace(/(@+)/g, '<span class="t">$1</span>')
+					.replace(/(\*+)/g, '<span class="s">$1</span>')
+					.replace(/(@+)/g, '<span class="t">$1</span>')
 			}
 		}
 	}, [out])
