@@ -77,8 +77,8 @@ type PlanProps = {
 const Plan = ({ draw, z, className }: PlanProps) => {
 	const formatDraw = draw
 
-		.replace(/(\*+)/g, '<span class="s">$1</span>')
-		.replace(/(@+)/g, '<span class="t">$1</span>')
+	//.replace(/(\*+)/g, '<span class="s">$1</span>')
+	//.replace(/(@+)/g, '<span class="t">$1</span>')
 
 	return (
 		<PlanContainer z={z} className={className}>
