@@ -10,9 +10,6 @@ type Size = { width: number; height: number }
 
 export const data = input.replace("S", "`").replace("E", "{")
 
-const W = data.split("\n")[0].length
-const H = (data.match(/\n/g) || []).length + 1
-
 const getSize = (data: string): Size => {
 	return {
 		width: data.split("\n")[0].length,
@@ -36,27 +33,27 @@ const setStr = (
 	return data.slice(0, index) + str + data.slice(index + 1)
 }
 
-const getNeighbours = (data, pos) => {
-	let current = data[pos.y * (W + 1) + pos.x]
+const getNeighbours = (data, pos, size) => {
+	let current = data[pos.y * (size.width + 1) + pos.x]
 	let matrix = [
 		{
 			cond: pos.y - 1 >= 0,
-			pos: (pos.y - 1) * (W + 1) + pos.x,
+			pos: (pos.y - 1) * (size.width + 1) + pos.x,
 			id: `${pos.x};${pos.y - 1}`,
 		},
 		{
-			cond: pos.y + 1 < H,
-			pos: (pos.y + 1) * (W + 1) + pos.x,
+			cond: pos.y + 1 < size.height,
+			pos: (pos.y + 1) * (size.width + 1) + pos.x,
 			id: `${pos.x};${pos.y + 1}`,
 		},
 		{
 			cond: pos.x - 1 >= 0,
-			pos: pos.y * (W + 1) + pos.x - 1,
+			pos: pos.y * (size.width + 1) + pos.x - 1,
 			id: `${pos.x - 1};${pos.y}`,
 		},
 		{
-			cond: pos.x + 1 < W,
-			pos: pos.y * (W + 1) + pos.x + 1,
+			cond: pos.x + 1 < size.width,
+			pos: pos.y * (size.width + 1) + pos.x + 1,
 			id: `${pos.x + 1};${pos.y}`,
 		},
 	]
@@ -74,40 +71,45 @@ const extract = id => {
 }
 
 const canGo = name => {
-	return getNeighbours(data, extract(name)).map(item => ({
+	const size = getSize(data)
+	return getNeighbours(data, extract(name), size).map(item => ({
 		name: item.id,
 		value: 1,
 	}))
 }
 
-const searchEnd = data => {
+const searchEnd = (data: string, size: Size) => {
 	const realValue = data.indexOf("{")
-	const y = Math.floor(realValue / (W + 1))
-	const x = realValue - y * (W + 1)
+	const y = Math.floor(realValue / (size.width + 1))
+	const x = realValue - y * (size.width + 1)
 
 	return [x, y].join(";")
 }
 
-const searchStart = data => {
+const searchStart = (data: string, size: Size) => {
 	const realValue = data.indexOf("`")
-	const y = Math.floor(realValue / (W + 1))
-	const x = realValue - y * (W + 1)
+	const y = Math.floor(realValue / (size.width + 1))
+	const x = realValue - y * (size.width + 1)
 
 	return [x, y].join(";")
 }
 
 const createBasePlan = (altitude: number, size: Size) => {
-	return createArray(altitude).map(() =>
-		createArray(size.height)
+	let plans = {}
+
+	for (let i = 0; i < altitude; i++) {
+		plans[`z${i}`] = createArray(size.height)
 			.map(() => " ".repeat(size.width))
 			.join("\n")
-	)
+	}
+
+	return plans
 }
 
-export const init = (data): string[][] => {
+export const init = (data): Record<string, string>[] => {
 	const size = getSize(data)
-	const start = searchStart(data)
-	const end = searchEnd(data)
+	const start = searchStart(data, size)
+	const end = searchEnd(data, size)
 
 	let timePlans = []
 
@@ -116,20 +118,38 @@ export const init = (data): string[][] => {
 	const altitude = max - min + 1
 
 	const basePlan = getAllPlan(data, size, createBasePlan(altitude, size))
+	timePlans.push(basePlan)
+	let updateBase = { ...basePlan }
 
 	const res = findBestPath(start, end, canGo, (list, index) => {
-		if (index % 20 === 0)
-			timePlans.push(updateAllPlan(data, [...basePlan], list, size, "*"))
+		if (index % 20 === 0) {
+			updateBase = updateAllPlan(
+				data,
+				{ ...basePlan, ...updateBase },
+				list,
+				size,
+				"*"
+			)
+			timePlans.push(updateBase)
+		}
 	})
 
-	timePlans.push([...basePlan])
+	timePlans.push({ ...basePlan })
+	updateBase = { ...basePlan }
 
 	for (let i = 0; i < res.length; i++) {
 		const list = res.reduce((acc, curr, j) => {
 			if (j <= i) acc[curr] = true
 			return acc
 		}, {})
-		timePlans.push(updateAllPlan(data, [...basePlan], list, size, "@"))
+		updateBase = updateAllPlan(
+			data,
+			{ ...basePlan, ...updateBase },
+			list,
+			size,
+			"@"
+		)
+		timePlans.push(updateBase)
 	}
 
 	return timePlans
@@ -138,8 +158,8 @@ export const init = (data): string[][] => {
 export const getAllPlan = (
 	data: string,
 	size: Size,
-	plans: string[]
-): string[] => {
+	plans: Record<string, string>
+): Record<string, string> => {
 	const min = getCode("`")
 
 	for (let y = 0; y < size.height; y++) {
@@ -147,7 +167,7 @@ export const getAllPlan = (
 			const str = getStr(data, { x, y }, size)
 			const alt = getCode(str) - min
 
-			plans[alt] = setStr(plans[alt], { x, y }, size, "#")
+			plans[`z${alt}`] = setStr(plans[`z${alt}`], { x, y }, size, "#")
 		}
 	}
 
@@ -156,19 +176,25 @@ export const getAllPlan = (
 
 export const updateAllPlan = (
 	data: string,
-	plans: string[],
+	plans: Record<string, string>,
 	list: Record<string, any>,
 	size: Size,
 	strReplace: string
 ) => {
+	let newPlans = {}
 	const min = getCode("`")
 
 	for (let key in list) {
 		const pos = extract(key)
 		const str = getStr(data, pos, size)
 		const alt = getCode(str) - min
-		plans[alt] = setStr(plans[alt], pos, size, strReplace)
+		const testStr = getStr(plans[`z${alt}`], pos, size)
+
+		if (testStr !== strReplace) {
+			if (!newPlans[`z${alt}`]) newPlans[`z${alt}`] = plans[`z${alt}`]
+			newPlans[`z${alt}`] = setStr(newPlans[`z${alt}`], pos, size, strReplace)
+		}
 	}
 
-	return plans
+	return newPlans
 }

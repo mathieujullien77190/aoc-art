@@ -1,5 +1,5 @@
 /** @format */
-import { useState } from "react"
+import { useEffect, useRef, useState, memo } from "react"
 import styled from "styled-components"
 import { isMobile } from "react-device-detect"
 
@@ -8,6 +8,8 @@ import { useAnim, prepareViewsHelpers } from "./hooks"
 
 import D3 from "./D3"
 import Stats from "./Stats"
+
+import { createArray } from "../helpers"
 
 const Wrapper = styled.div`
 	margin: 0;
@@ -56,19 +58,30 @@ const Explain = styled.div`
 	}
 `
 
+const Plans = memo(() => {
+	return (
+		<>
+			{createArray(28).map((_, i) => (
+				<Plan className={`z${i}`} draw={""} z={i} key={i} />
+			))}
+		</>
+	)
+})
+
 type PlanProps = {
 	draw: string
 	z: number
+	className: string
 }
 
-const Plan = ({ draw, z }: PlanProps) => {
+const Plan = ({ draw, z, className }: PlanProps) => {
 	const formatDraw = draw
 
 		.replace(/(\*+)/g, '<span class="s">$1</span>')
 		.replace(/(@+)/g, '<span class="t">$1</span>')
 
 	return (
-		<PlanContainer z={z}>
+		<PlanContainer z={z} className={className}>
 			<pre dangerouslySetInnerHTML={{ __html: formatDraw }}></pre>
 		</PlanContainer>
 	)
@@ -78,13 +91,23 @@ const Animation = () => {
 	const [speed, setSpeed] = useState<number>(50)
 	const [reload] = useState<number>(0)
 
-	const { out, stats } = useAnim<string[]>({
+	const { out, stats } = useAnim<Record<string, string>>({
 		viewsFn: () =>
 			prepareViewsHelpers(() => {
 				return init(data)
 			}, true),
 		data: { speed, reload },
 	})
+
+	useEffect(() => {
+		if (out) {
+			for (let key in out) {
+				document.querySelector(`.${key} pre`).innerHTML = out[key]
+					.replace(/(\*+)/g, '<span class="s">$1</span>')
+					.replace(/(@+)/g, '<span class="t">$1</span>')
+			}
+		}
+	}, [out])
 
 	return (
 		<Wrapper>
@@ -100,7 +123,7 @@ const Animation = () => {
 				start={{ H: 10, V: 300 }}
 			>
 				<>
-					{out && out.map((draw, i) => <Plan draw={draw} z={i} key={i} />)}
+					<Plans />
 					<Explain>
 						<span>Résolution via de l'algorithme de dijkstra</span>
 					</Explain>
