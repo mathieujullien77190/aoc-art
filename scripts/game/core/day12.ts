@@ -1,125 +1,174 @@
 /** @format */
 
 import { input } from "../data/day12"
-import { extractTab2 } from "../helpers"
-import { colors } from "_components/constants"
+import { findBestPath } from "../graph"
+import { createArray } from "../helpers"
 
-const color = (code, parent) => {
-	;[...parent.querySelectorAll("div")].forEach(element => {
-		const charCode = getCode(element)
+type Position = { x: number; y: number }
 
-		if (charCode === 123) element.style.background = colors.appColor
-		else if (charCode === code + 1) element.style.background = colors.infoColor
-		else if (charCode > code + 1)
-			element.style.background = calcColorHight(charCode)
-		else if (charCode < code) element.style.background = calcColorLow(charCode)
-		else element.style.background = "white"
-	})
-}
+type Size = { width: number; height: number }
 
-const colorPass = positions => {
-	positions.forEach((item, i, tab) => {
-		if (i < tab.length - 1) {
-			item.element.style.background = "red"
-			item.element.style.color = "black"
-		} else {
-			//const rp = item.element.getBoundingClientRect()
-			//const end = item.letter === "{" ? "END : " : ""
-			item.element.style.background = "red"
-			//nbHTML.style.top = `${rp.y - 60}px`
-			//nbHTML.style.left = `${rp.x - 60}px`
-			//nbHTML.innerText = `${end}${positions.length - 1}`
-		}
-	})
-}
+export const data = input.replace("S", "`").replace("E", "{")
 
-const calcColorLow = code => colors.importantColor
+const W = data.split("\n")[0].length
+const H = (data.match(/\n/g) || []).length + 1
 
-const calcColorHight = code => colors.overlay
-
-const isOp = (currentCode, pos, listPass) => {
-	const nextCode = getCodeAt(pos)
-	return !!(
-		nextCode !== 0 &&
-		(currentCode === 83 ||
-			nextCode <= currentCode ||
-			nextCode === currentCode + 1) &&
-		listPass.filter(item => item.pos.x === pos.x && item.pos.y === pos.y)
-			.length === 0
-	)
-}
-
-const getCode = element => {
-	return element.dataset.item.charCodeAt()
-}
-
-const getCodeAt = pos => {
-	const el = getElement(pos)
-	return el ? getCode(el) : 0
-}
-
-const getElement = pos => document.body.querySelector(`#x${pos.x}y${pos.y}`)
-
-const newPos = (e, pos) => {
-	const { x, y } = pos
-	if (e.key === "ArrowRight") return { x: x + 1, y }
-	if (e.key === "ArrowLeft") return { x: x - 1, y }
-	if (e.key === "ArrowUp") return { y: y - 1, x }
-	if (e.key === "ArrowDown") return { y: y + 1, x }
-}
-
-const setCase = pos => {
+const getSize = (data: string): Size => {
 	return {
-		pos,
-		element: getElement(pos),
-		code: getCodeAt(pos),
+		width: data.split("\n")[0].length,
+		height: (data.match(/\n/g) || []).length + 1,
 	}
 }
 
-const handlerKeyUp = (e, current, listPass, parent) => {
-	if (e.keyCode >= 37 && e.keyCode <= 40) {
-		const POS = newPos(e, current.pos)
-		const next = setCase(POS)
+const getCode = c => c.charCodeAt(0)
 
-		if (isOp(current.code, POS, listPass)) {
-			if (next.code !== current.code) {
-				color(next.code, parent)
-			}
+const getStr = (data: string, pos: Position, size: Size): string => {
+	return data[pos.y * (size.width + 1) + pos.x]
+}
 
-			return [...listPass, next]
+const setStr = (
+	data: string,
+	pos: Position,
+	size: Size,
+	str: string
+): string => {
+	const index = pos.y * (size.width + 1) + pos.x
+	return data.slice(0, index) + str + data.slice(index + 1)
+}
+
+const getNeighbours = (data, pos) => {
+	let current = data[pos.y * (W + 1) + pos.x]
+	let matrix = [
+		{
+			cond: pos.y - 1 >= 0,
+			pos: (pos.y - 1) * (W + 1) + pos.x,
+			id: `${pos.x};${pos.y - 1}`,
+		},
+		{
+			cond: pos.y + 1 < H,
+			pos: (pos.y + 1) * (W + 1) + pos.x,
+			id: `${pos.x};${pos.y + 1}`,
+		},
+		{
+			cond: pos.x - 1 >= 0,
+			pos: pos.y * (W + 1) + pos.x - 1,
+			id: `${pos.x - 1};${pos.y}`,
+		},
+		{
+			cond: pos.x + 1 < W,
+			pos: pos.y * (W + 1) + pos.x + 1,
+			id: `${pos.x + 1};${pos.y}`,
+		},
+	]
+
+	return matrix
+		.filter(
+			item => item.cond && getCode(data[item.pos]) <= getCode(current) + 1
+		)
+		.map(item => ({ value: data[item.pos], id: item.id }))
+}
+
+const extract = id => {
+	const arr = id.split(";")
+	return { x: +arr[0], y: +arr[1] }
+}
+
+const canGo = name => {
+	return getNeighbours(data, extract(name)).map(item => ({
+		name: item.id,
+		value: 1,
+	}))
+}
+
+const searchEnd = data => {
+	const realValue = data.indexOf("{")
+	const y = Math.floor(realValue / (W + 1))
+	const x = realValue - y * (W + 1)
+
+	return [x, y].join(";")
+}
+
+const searchStart = data => {
+	const realValue = data.indexOf("`")
+	const y = Math.floor(realValue / (W + 1))
+	const x = realValue - y * (W + 1)
+
+	return [x, y].join(";")
+}
+
+const createBasePlan = (altitude: number, size: Size) => {
+	return createArray(altitude).map(() =>
+		createArray(size.height)
+			.map(() => " ".repeat(size.width))
+			.join("\n")
+	)
+}
+
+export const init = (data): string[][] => {
+	const size = getSize(data)
+	const start = searchStart(data)
+	const end = searchEnd(data)
+
+	let timePlans = []
+
+	const min = getCode("`")
+	const max = getCode("{")
+	const altitude = max - min + 1
+
+	const basePlan = getAllPlan(data, size, createBasePlan(altitude, size))
+
+	const res = findBestPath(start, end, canGo, (list, index) => {
+		if (index % 20 === 0)
+			timePlans.push(updateAllPlan(data, [...basePlan], list, size, "*"))
+	})
+
+	timePlans.push([...basePlan])
+
+	for (let i = 0; i < res.length; i++) {
+		const list = res.reduce((acc, curr, j) => {
+			if (j <= i) acc[curr] = true
+			return acc
+		}, {})
+		timePlans.push(updateAllPlan(data, [...basePlan], list, size, "@"))
+	}
+
+	return timePlans
+}
+
+export const getAllPlan = (
+	data: string,
+	size: Size,
+	plans: string[]
+): string[] => {
+	const min = getCode("`")
+
+	for (let y = 0; y < size.height; y++) {
+		for (let x = 0; x < size.width; x++) {
+			const str = getStr(data, { x, y }, size)
+			const alt = getCode(str) - min
+
+			plans[alt] = setStr(plans[alt], { x, y }, size, "#")
 		}
 	}
-	return listPass
+
+	return plans
 }
 
-export const generateGame = () => {
-	const data = extractTab2(input, "\n", "").map(line =>
-		line.map(item => (item === "E" ? "{" : item === "S" ? "a" : item))
-	)
+export const updateAllPlan = (
+	data: string,
+	plans: string[],
+	list: Record<string, any>,
+	size: Size,
+	strReplace: string
+) => {
+	const min = getCode("`")
 
-	const tabHTML = data.map((line, y) =>
-		line.map((item, x) => `<div id="x${x}y${y}" data-item="${item}"></div>`)
-	)
+	for (let key in list) {
+		const pos = extract(key)
+		const str = getStr(data, pos, size)
+		const alt = getCode(str) - min
+		plans[alt] = setStr(plans[alt], pos, size, strReplace)
+	}
 
-	const strHTML = tabHTML.map(item => item.join("")).join("<br/>")
-
-	return strHTML
+	return plans
 }
-
-export const init = (x, y, parent, cb) => {
-	//const nbHTML = document.body.querySelector(`#nb`)
-
-	let current = setCase({ x, y })
-	let listPass = [current]
-
-	color(current.code, parent)
-	colorPass(listPass)
-
-	document.body.addEventListener("keyup", e => {
-		listPass = handlerKeyUp(e, listPass[listPass.length - 1], listPass, parent)
-		cb(listPass)
-		colorPass(listPass)
-	})
-}
-
-// init(0, 20)

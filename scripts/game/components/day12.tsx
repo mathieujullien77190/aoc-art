@@ -1,109 +1,114 @@
 /** @format */
-import { useState, useRef, useEffect } from "react"
+import { useState } from "react"
 import styled from "styled-components"
-import { colors } from "_components/constants"
+import { isMobile } from "react-device-detect"
 
-import { generateGame, init } from "../core/day12"
+import { data, init } from "../core/day12"
+import { useAnim, prepareViewsHelpers } from "./hooks"
 
-const Game = styled.div`
+import D3 from "./D3"
+import Stats from "./Stats"
+
+const Wrapper = styled.div`
 	margin: 0;
-	font-size: 0;
-	min-width: 1135px;
-	padding: 10px;
-
-	div {
-		display: inline-block;
-		width: 8px;
-		height: 8px;
-		margin: 1px;
-	}
-
-	#nb {
-		font-weight: bold;
-		position: absolute;
-		z-index: 10;
-		background: white;
-		padding: 5px;
-		border: solid 1px black;
-	}
-`
-
-const Help = styled.ul`
-	max-width: 1135px;
-`
-
-const Container = styled.div`
 	height: 100%;
+	overflow: hidden;
+`
+
+const PlanContainer = styled.div<{
+	z: number
+}>`
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	flex-direction: column;
+	font-size: 15px;
+	line-height: 15px;
+	position: absolute;
+
+	transform: ${({ z }) => `rotateX(90deg) translateZ(${z * 3}px)`};
+	color: ${({ z }) => `hsl(28deg, 100%, ${Math.abs((z - 27) * 3 - 19)}%)`};
+
+	pre {
+		margin: 0;
+
+		span.s {
+			color: ${({ z }) => `hsl(0deg, 55%, ${Math.abs((z - 27) * 3 - 19)}%)`};
+		}
+		span.t {
+			color: red;
+			font-weight: bold;
+		}
+	}
 `
 
-const Case = ({ color }: { color?: string }) => (
-	<div
-		style={{
-			border: "solid 1px white",
-			display: "inline-block",
-			background: color,
+const Explain = styled.div`
+	width: 100%;
+	height: 100%;
+	transform: rotateX(90deg) rotateZ(0deg) translateZ(90px);
+	display: flex;
+	justify-content: center;
+	align-items: end;
 
-			width: "10px",
-			height: "10px",
-		}}
-	></div>
-)
+	span {
+		background-color: black;
+		padding: 10px;
+		font-weight: bold;
+	}
+`
 
-const Animation = () => {
-	const [HTML, setHTML] = useState<string>(generateGame())
-	const refGame = useRef<HTMLDivElement>(null)
-	const [nb, setNb] = useState<number>(0)
+type PlanProps = {
+	draw: string
+	z: number
+}
 
-	useEffect(() => {
-		if (refGame.current) {
-			init(0, 20, refGame.current, listPass => {
-				setNb(listPass.length - 1)
-			})
-		}
-	}, [])
+const Plan = ({ draw, z }: PlanProps) => {
+	const formatDraw = draw
+
+		.replace(/(\*+)/g, '<span class="s">$1</span>')
+		.replace(/(@+)/g, '<span class="t">$1</span>')
 
 	return (
-		<Container
-			onClick={e => {
-				e.stopPropagation()
-			}}
-		>
-			<h1 style={{ fontSize: "60px" }}>PAS FINIIIIIIII!!!!!!!</h1>
-			<Help>
-				<li>
-					Vous êtes le point rouge <Case color="red" />
-				</li>
+		<PlanContainer z={z}>
+			<pre dangerouslySetInnerHTML={{ __html: formatDraw }}></pre>
+		</PlanContainer>
+	)
+}
 
-				<li>
-					Vous devez rejoindre la case verte <Case color={colors.appColor} /> en
-					380 coups maximum
-				</li>
+const Animation = () => {
+	const [speed, setSpeed] = useState<number>(50)
+	const [reload] = useState<number>(0)
 
-				<li>
-					Les case blanches <Case color="white" /> sont au même niveau que vous,
-					les oranges{" "}
-					<div
-						style={{
-							display: "inline-block",
-							background: colors.importantColor,
-							width: "10px",
-							height: "10px",
-						}}
-					></div>{" "}
-					sont à un niveau inférieur, les bleues claire{" "}
-					<Case color={colors.infoColor} /> juste au dessus de vous et les
-					bleues foncées <Case /> sont inaccessibles
-				</li>
+	const { out, stats } = useAnim<string[]>({
+		viewsFn: () =>
+			prepareViewsHelpers(() => {
+				return init(data)
+			}, true),
+		data: { speed, reload },
+	})
 
-				<li>Appuyez sur les flèches de direction ← ↓ ↑ → pour vous déplacer</li>
-			</Help>
-			<Game dangerouslySetInnerHTML={{ __html: HTML }} ref={refGame} />
-			<p>Coups : {nb}</p>
-		</Container>
+	return (
+		<Wrapper>
+			<D3
+				size={600}
+				margin={-100}
+				zoom={{ value: isMobile ? 4 : 8, min: 1, max: 20, step: 1, bigStep: 2 }}
+				control={{
+					mouse: { activate: true, smoothing: 400, speed: 3 },
+					keyboard: true,
+					UI: true,
+				}}
+				start={{ H: 10, V: 300 }}
+			>
+				<>
+					{out && out.map((draw, i) => <Plan draw={draw} z={i} key={i} />)}
+					<Explain>
+						<span>Résolution via de l'algorithme de dijkstra</span>
+					</Explain>
+				</>
+			</D3>
+
+			<Stats stats={stats} />
+		</Wrapper>
 	)
 }
 

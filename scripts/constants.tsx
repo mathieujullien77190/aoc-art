@@ -48,12 +48,12 @@ export const gamesConfig: GameConfig[] = [
 		title: "Rope Bridge",
 		component: () => <GameDay9 />,
 	},
-	// {
-	// 	day: "12",
-	// 	year: "2022",
-	// 	title: "Hill Climbing Algorithm",
-	// 	component: () => <GameDay12 />,
-	// },
+	{
+		day: "12",
+		year: "2022",
+		title: "Hill Climbing Algorithm",
+		component: () => <GameDay12 />,
+	},
 	{
 		day: "14",
 		year: "2022",
