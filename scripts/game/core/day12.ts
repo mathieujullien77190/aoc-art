@@ -143,7 +143,7 @@ export const init = (data): Record<string, string>[] => {
 			{ ...basePlan, ...updateBase },
 			{ [res[i]]: true },
 			size,
-			"@"
+			" "
 		)
 		timePlans.push(updateBase)
 	}
