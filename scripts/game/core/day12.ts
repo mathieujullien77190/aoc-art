@@ -138,14 +138,10 @@ export const init = (data): Record<string, string>[] => {
 	updateBase = { ...basePlan }
 
 	for (let i = 0; i < res.length; i++) {
-		const list = res.reduce((acc, curr, j) => {
-			if (j <= i) acc[curr] = true
-			return acc
-		}, {})
 		updateBase = updateAllPlan(
 			data,
 			{ ...basePlan, ...updateBase },
-			list,
+			{ [res[i]]: true },
 			size,
 			"@"
 		)
