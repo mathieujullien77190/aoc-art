@@ -6,6 +6,8 @@ import { isMobile } from "react-device-detect"
 import { data, init, size } from "../core/day12"
 import { useAnim, prepareViewsHelpers } from "./hooks"
 
+import { colors } from "_components/constants"
+
 import D3 from "./D3"
 import Stats from "./Stats"
 
@@ -25,12 +27,15 @@ const PlanContainer = styled.div<{
 	line-height: 15px;
 	position: absolute;
 	transform: ${({ z }) => `rotateX(90deg) translateZ(${z * 3}px)`};
-	color: ${({ z }) => `hsl(28deg, 100%, ${Math.abs((z - 27) * 3 - 19)}%)`};
+	color: ${({ z }) => {
+		if (z === 0) return "white"
+		if (z === 1) return colors.infoColor
+		if (z <= 3) return colors.cmdColor
+		return `hsl(28deg, 100%, ${Math.abs((z - 27) * 3 - 19)}%)`
+	}};
 	pre {
 		margin: 0;
-		span.s {
-			color: ${({ z }) => `hsl(0deg, 55%, ${Math.abs((z - 27) * 3 - 19)}%)`};
-		}
+
 		span.t {
 			color: red;
 			font-weight: bold;
@@ -58,9 +63,7 @@ type PlanProps = {
 }
 
 const Plan = ({ draw, z }: PlanProps) => {
-	const formatDraw = draw
-		.replace(/(\*+)/g, '<span class="s">$1</span>')
-		.replace(/(@+)/g, '<span class="t">$1</span>')
+	const formatDraw = draw.replace(/(@+)/g, '<span class="t">$1</span>')
 
 	return (
 		<PlanContainer z={z}>

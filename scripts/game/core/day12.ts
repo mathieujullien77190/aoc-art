@@ -116,7 +116,7 @@ export const init = (data, size): { data: string[]; meta: string }[] => {
 	for (let i = 0; i < size.width; i++) {
 		timePlans.push(
 			createView(
-				getLettersPlan(data, size, [...basePlan], i, { start, end }),
+				getLettersPlan(data, size, [...basePlan], i, 0, { start, end }),
 				"Construction de la carte"
 			)
 		)
@@ -131,7 +131,10 @@ export const init = (data, size): { data: string[]; meta: string }[] => {
 		)
 	}
 
-	const startPlan = getNormalPlan(data, size, [...basePlan], { start, end })
+	const startPlan = getElevationPlan(data, size, [...basePlan], altitude - 1, {
+		start,
+		end,
+	})
 
 	const res = findBestPath(
 		start.join(";"),
@@ -141,7 +144,7 @@ export const init = (data, size): { data: string[]; meta: string }[] => {
 			if (index % 20 === 0)
 				timePlans.push(
 					createView(
-						updateAllPlan(data, [...startPlan], list, size, "*", {
+						updateAllPlan(data, [...startPlan], list, size, "#", {
 							start,
 							end,
 						}),
@@ -151,6 +154,8 @@ export const init = (data, size): { data: string[]; meta: string }[] => {
 		}
 	)
 
+	const middlePlan = getNormalPlan(data, size, [...basePlan], { start, end })
+
 	for (let i = 0; i < res.length; i++) {
 		const list = res.reduce((acc, curr, j) => {
 			if (j <= i) acc[curr] = true
@@ -158,7 +163,7 @@ export const init = (data, size): { data: string[]; meta: string }[] => {
 		}, {})
 		timePlans.push(
 			createView(
-				updateAllPlan(data, [...startPlan], list, size, "@", { start, end }),
+				updateAllPlan(data, [...middlePlan], list, size, "@", { start, end }),
 				`Extraction du chemin le plus court ( ${Object.values(list).length} )`
 			)
 		)
@@ -197,14 +202,15 @@ export const getLettersPlan = (
 	size: Size,
 	plans: string[],
 	maxWidth: number,
+	altitude: number,
 	startEnd: { start: number[]; end: number[] }
 ): string[] => {
 	for (let y = 0; y < maxWidth && y < size.height; y++) {
 		for (let x = 0; x < maxWidth && x < size.width; x++) {
 			const str = getStr(data, { x, y }, size)
 
-			plans[0] = setStr(
-				plans[0],
+			plans[altitude] = setStr(
+				plans[altitude],
 				{ x, y },
 				size,
 				getChar(str, { x, y }, startEnd)
