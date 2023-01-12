@@ -8,14 +8,15 @@ type Position = { x: number; y: number }
 
 type Size = { width: number; height: number }
 
-export const data = input.replace("S", "`").replace("E", "{")
-
 const getSize = (data: string): Size => {
 	return {
 		width: data.split("\n")[0].length,
 		height: (data.match(/\n/g) || []).length + 1,
 	}
 }
+
+export const data = input.replace("S", "`").replace("E", "{")
+export const size = getSize(data)
 
 const getCode = c => c.charCodeAt(0)
 
@@ -33,7 +34,7 @@ const setStr = (
 	return data.slice(0, index) + str + data.slice(index + 1)
 }
 
-const getNeighbours = (data, pos, size) => {
+const getNeighbours = (data: string, size: Size, pos: Position) => {
 	let current = data[pos.y * (size.width + 1) + pos.x]
 	let matrix = [
 		{
@@ -71,8 +72,7 @@ const extract = id => {
 }
 
 const canGo = name => {
-	const size = getSize(data)
-	return getNeighbours(data, extract(name), size).map(item => ({
+	return getNeighbours(data, size, extract(name)).map(item => ({
 		name: item.id,
 		value: 1,
 	}))
@@ -83,7 +83,7 @@ const searchEnd = (data: string, size: Size) => {
 	const y = Math.floor(realValue / (size.width + 1))
 	const x = realValue - y * (size.width + 1)
 
-	return [x, y].join(";")
+	return [x, y]
 }
 
 const searchStart = (data: string, size: Size) => {
@@ -91,23 +91,17 @@ const searchStart = (data: string, size: Size) => {
 	const y = Math.floor(realValue / (size.width + 1))
 	const x = realValue - y * (size.width + 1)
 
-	return [x, y].join(";")
+	return [x, y]
 }
 
-const createBasePlan = (altitude: number, size: Size) => {
-	let plans = {}
-
-	for (let i = 0; i < altitude; i++) {
-		plans[`z${i}`] = createArray(size.height)
-			.map(() => " ".repeat(size.width))
-			.join("\n")
-	}
-
-	return plans
+const createView = (
+	data: string[],
+	text: string
+): { data: string[]; meta: string } => {
+	return { data, meta: text }
 }
 
-export const init = (data): Record<string, string>[] => {
-	const size = getSize(data)
+export const init = (data, size): { data: string[]; meta: string }[] => {
 	const start = searchStart(data, size)
 	const end = searchEnd(data, size)
 
@@ -117,45 +111,142 @@ export const init = (data): Record<string, string>[] => {
 	const max = getCode("{")
 	const altitude = max - min + 1
 
-	const basePlan = getAllPlan(data, size, createBasePlan(altitude, size))
-	timePlans.push(basePlan)
-	let updateBase = { ...basePlan }
+	const basePlan = createBasePlan(altitude, size)
 
-	const res = findBestPath(start, end, canGo, (list, index) => {
-		if (index % 20 === 0) {
-			updateBase = updateAllPlan(
-				data,
-				{ ...basePlan, ...updateBase },
-				list,
-				size,
-				"*"
+	for (let i = 0; i < size.width; i++) {
+		timePlans.push(
+			createView(
+				getLettersPlan(data, size, [...basePlan], i, { start, end }),
+				"Construction de la carte"
 			)
-			timePlans.push(updateBase)
-		}
-	})
+		)
+	}
 
-	timePlans.push({ ...basePlan })
-	updateBase = { ...basePlan }
+	for (let i = 0; i < altitude; i++) {
+		timePlans.push(
+			createView(
+				getElevationPlan(data, size, [...basePlan], i, { start, end }),
+				"Construction de la carte"
+			)
+		)
+	}
+
+	const startPlan = getNormalPlan(data, size, [...basePlan], { start, end })
+
+	const res = findBestPath(
+		start.join(";"),
+		end.join(";"),
+		canGo,
+		(list, index) => {
+			if (index % 20 === 0)
+				timePlans.push(
+					createView(
+						updateAllPlan(data, [...startPlan], list, size, "*", {
+							start,
+							end,
+						}),
+						"Exécution via de l'algorithme de Dijkstra"
+					)
+				)
+		}
+	)
 
 	for (let i = 0; i < res.length; i++) {
-		updateBase = updateAllPlan(
-			data,
-			{ ...basePlan, ...updateBase },
-			{ [res[i]]: true },
-			size,
-			"@"
+		const list = res.reduce((acc, curr, j) => {
+			if (j <= i) acc[curr] = true
+			return acc
+		}, {})
+		timePlans.push(
+			createView(
+				updateAllPlan(data, [...startPlan], list, size, "@", { start, end }),
+				`Extraction du chemin le plus court ( ${Object.values(list).length} )`
+			)
 		)
-		timePlans.push(updateBase)
 	}
 
 	return timePlans
 }
 
-export const getAllPlan = (
+const createBasePlan = (altitude: number, size: Size) => {
+	return createArray(altitude).map(() =>
+		createArray(size.height)
+			.map(() => " ".repeat(size.width))
+			.join("\n")
+	)
+}
+
+const isSpecial = (specialPos: number[], pos: Position) => {
+	return specialPos[0] === pos.x && specialPos[1] === pos.y
+}
+
+const getChar = (
+	baseChar: string,
+	pos: Position,
+	startEnd: { start: number[]; end: number[] }
+) => {
+	const startStr = isSpecial(startEnd.start, pos) || null
+	const endStr = isSpecial(startEnd.end, pos) || null
+
+	if (startStr) return "@"
+	if (endStr) return "@"
+	return baseChar
+}
+
+export const getLettersPlan = (
 	data: string,
 	size: Size,
-	plans: Record<string, string>
-): Record<string, string> => {
+	plans: string[],
+	maxWidth: number,
+	startEnd: { start: number[]; end: number[] }
+): string[] => {
+	for (let y = 0; y < maxWidth && y < size.height; y++) {
+		for (let x = 0; x < maxWidth && x < size.width; x++) {
+			const str = getStr(data, { x, y }, size)
+
+			plans[0] = setStr(
+				plans[0],
+				{ x, y },
+				size,
+				getChar(str, { x, y }, startEnd)
+			)
+		}
+	}
+
+	return plans
+}
+
+export const getElevationPlan = (
+	data: string,
+	size: Size,
+	plans: string[],
+	alt: number,
+	startEnd: { start: number[]; end: number[] }
+): string[] => {
+	const min = getCode("`")
+
+	for (let y = 0; y < size.height; y++) {
+		for (let x = 0; x < size.width; x++) {
+			const str = getStr(data, { x, y }, size)
+			const altStr = getCode(str) - min
+
+			plans[altStr > alt ? alt : altStr] = setStr(
+				plans[altStr > alt ? alt : altStr],
+				{ x, y },
+				size,
+				getChar(str, { x, y }, startEnd)
+			)
+		}
+	}
+
+	return plans
+}
+
+export const getNormalPlan = (
+	data: string,
+	size: Size,
+	plans: string[],
+	startEnd: { start: number[]; end: number[] }
+): string[] => {
 	const min = getCode("`")
 
 	for (let y = 0; y < size.height; y++) {
@@ -163,7 +254,12 @@ export const getAllPlan = (
 			const str = getStr(data, { x, y }, size)
 			const alt = getCode(str) - min
 
-			plans[`z${alt}`] = setStr(plans[`z${alt}`], { x, y }, size, "#")
+			plans[alt] = setStr(
+				plans[alt],
+				{ x, y },
+				size,
+				getChar("#", { x, y }, startEnd)
+			)
 		}
 	}
 
@@ -172,25 +268,25 @@ export const getAllPlan = (
 
 export const updateAllPlan = (
 	data: string,
-	plans: Record<string, string>,
+	plans: string[],
 	list: Record<string, any>,
 	size: Size,
-	strReplace: string
+	strReplace: string,
+	startEnd: { start: number[]; end: number[] }
 ) => {
-	let newPlans = {}
 	const min = getCode("`")
 
 	for (let key in list) {
 		const pos = extract(key)
 		const str = getStr(data, pos, size)
 		const alt = getCode(str) - min
-		const testStr = getStr(plans[`z${alt}`], pos, size)
-
-		if (testStr !== strReplace) {
-			if (!newPlans[`z${alt}`]) newPlans[`z${alt}`] = plans[`z${alt}`]
-			newPlans[`z${alt}`] = setStr(newPlans[`z${alt}`], pos, size, strReplace)
-		}
+		plans[alt] = setStr(
+			plans[alt],
+			pos,
+			size,
+			getChar(strReplace, pos, startEnd)
+		)
 	}
 
-	return newPlans
+	return plans
 }
