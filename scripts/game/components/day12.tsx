@@ -1,15 +1,13 @@
 /** @format */
-import { useEffect, useRef, useState, memo } from "react"
+import { useState } from "react"
 import styled from "styled-components"
 import { isMobile } from "react-device-detect"
 
-import { data, init } from "../core/day12"
+import { data, init, size } from "../core/day12"
 import { useAnim, prepareViewsHelpers } from "./hooks"
 
 import D3 from "./D3"
 import Stats from "./Stats"
-
-import { createArray } from "../helpers"
 
 const Wrapper = styled.div`
 	margin: 0;
@@ -26,13 +24,10 @@ const PlanContainer = styled.div<{
 	font-size: 15px;
 	line-height: 15px;
 	position: absolute;
-
 	transform: ${({ z }) => `rotateX(90deg) translateZ(${z * 3}px)`};
 	color: ${({ z }) => `hsl(28deg, 100%, ${Math.abs((z - 27) * 3 - 19)}%)`};
-
 	pre {
 		margin: 0;
-
 		span.s {
 			color: ${({ z }) => `hsl(0deg, 55%, ${Math.abs((z - 27) * 3 - 19)}%)`};
 		}
@@ -50,7 +45,6 @@ const Explain = styled.div`
 	display: flex;
 	justify-content: center;
 	align-items: end;
-
 	span {
 		background-color: black;
 		padding: 10px;
@@ -58,30 +52,18 @@ const Explain = styled.div`
 	}
 `
 
-const Plans = memo(() => {
-	return (
-		<>
-			{createArray(28).map((_, i) => (
-				<Plan className={`z${i}`} draw={""} z={i} key={i} />
-			))}
-		</>
-	)
-})
-
 type PlanProps = {
 	draw: string
 	z: number
-	className: string
 }
 
-const Plan = ({ draw, z, className }: PlanProps) => {
+const Plan = ({ draw, z }: PlanProps) => {
 	const formatDraw = draw
-
-	//.replace(/(\*+)/g, '<span class="s">$1</span>')
-	//.replace(/(@+)/g, '<span class="t">$1</span>')
+		.replace(/(\*+)/g, '<span class="s">$1</span>')
+		.replace(/(@+)/g, '<span class="t">$1</span>')
 
 	return (
-		<PlanContainer z={z} className={className}>
+		<PlanContainer z={z}>
 			<pre dangerouslySetInnerHTML={{ __html: formatDraw }}></pre>
 		</PlanContainer>
 	)
@@ -90,24 +72,18 @@ const Plan = ({ draw, z, className }: PlanProps) => {
 const Animation = () => {
 	const [speed, setSpeed] = useState<number>(50)
 	const [reload] = useState<number>(0)
+	const [meta, setMeta] = useState<string>("")
 
-	const { out, stats } = useAnim<Record<string, string>>({
+	const { out, stats } = useAnim<{ data: string[]; meta: string }>({
 		viewsFn: () =>
 			prepareViewsHelpers(() => {
-				return init(data)
+				return init(data, size)
 			}, true),
 		data: { speed, reload },
+		action: ({ view, i }) => {
+			setMeta(view.meta)
+		},
 	})
-
-	useEffect(() => {
-		if (out) {
-			for (let key in out) {
-				document.querySelector(`.${key} pre`).innerHTML = out[key]
-					.replace(/(\*+)/g, '<span class="s">$1</span>')
-					.replace(/(@+)/g, '<span class="t">$1</span>')
-			}
-		}
-	}, [out])
 
 	return (
 		<Wrapper>
@@ -123,9 +99,9 @@ const Animation = () => {
 				start={{ H: 10, V: 300 }}
 			>
 				<>
-					<Plans />
+					{out && out.data.map((draw, i) => <Plan draw={draw} z={i} key={i} />)}
 					<Explain>
-						<span>Résolution via de l'algorithme de dijkstra</span>
+						<span>{meta}</span>
 					</Explain>
 				</>
 			</D3>
