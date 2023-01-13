@@ -21,7 +21,7 @@ const nextConfig = {
 			_: path.join(__dirname),
 			_components: path.join(__dirname, "components"),
 			_commands: path.join(__dirname, "commands"),
-			_scripts: path.join(__dirname, "scripts"),
+			_games: path.join(__dirname, "games"),
 			_pages: path.join(__dirname, "pages"),
 			_contexts: path.join(__dirname, "contexts"),
 			_hooks: path.join(__dirname, "hooks"),
