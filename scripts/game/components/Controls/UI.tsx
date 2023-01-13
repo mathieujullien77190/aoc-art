@@ -12,10 +12,7 @@ export const ControllerContainer = styled.div<{
 	right: 0;
 	bottom: ${({ bottom, show }) => (show ? 0 : `${bottom}px`)};
 	background-color: ${({ show }) => (show ? `#00000030` : "black")};
-	display: flex;
-	flex-direction: column;
-	justify-content: start;
-	align-items: start;
+
 	z-index: 10;
 	padding: 12px;
 
@@ -25,6 +22,13 @@ export const ControllerContainer = styled.div<{
 			bottom: 0;
 		}
 	}
+`
+
+export const Container = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: start;
 `
 
 export const Title = styled.p`

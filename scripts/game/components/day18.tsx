@@ -118,20 +118,20 @@ const Animation = () => {
 					UI: true,
 				}}
 				start={{ H: 20, V: 130 }}
-				addControl={
-					<Slider
-						width={isMobile ? "auto" : "280px"}
-						label="Mettre en évidence"
-						min={-1}
-						max={data.limits.zMax - 1}
-						step={1}
-						unit=""
-						value={color}
-						onChange={({ value }) => {
-							setColor(value)
-						}}
-					/>
-				}
+				addControl={[
+					{
+						name: "slider",
+						label: "Mettre en évidence",
+						min: -1,
+						max: data.limits.zMax - 1,
+						step: 1,
+						unit: "",
+						value: color,
+					},
+				]}
+				onControlChange={(name, value) => {
+					if (name === "slider") setColor(value.value)
+				}}
 			>
 				<>
 					{basePlan.map((draw, i) => (

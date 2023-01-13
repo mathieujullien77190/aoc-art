@@ -7,7 +7,7 @@ export const useGetBottom = (ref: React.MutableRefObject<HTMLDivElement>) => {
 
 	useEffect(() => {
 		if (ref.current) {
-			setBottom(-ref.current.getBoundingClientRect().height + 36)
+			setBottom(-ref.current.getBoundingClientRect().height - 10)
 		}
 	}, [])
 

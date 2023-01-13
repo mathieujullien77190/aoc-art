@@ -1,5 +1,7 @@
 /** @format */
 
+import { Controls } from "../Controls"
+
 export type AxesValue = { H: number; V: number }
 
 export type D3Props = {
@@ -25,7 +27,7 @@ export type D3Props = {
 		keyboard?: boolean
 		UI?: boolean
 	}
-	addControl?: JSX.Element
+	addControl?: Controls[]
 
-	onChangeZoom?: (value: number) => void
+	onControlChange?: (name, value) => void
 }

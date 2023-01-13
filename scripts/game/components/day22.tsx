@@ -77,7 +77,7 @@ const size = 1000
 
 const Animation = () => {
 	const [speed, setSpeed] = useState<number>(30)
-	const [reload] = useState<number>(0)
+	const [reload, setReload] = useState<number>(0)
 
 	const { out, stats } = useAnim<{ cube: Record<string, string>; meta: any }>({
 		viewsFn: () =>
@@ -99,6 +99,14 @@ const Animation = () => {
 					mouse: { activate: true, smoothing: 400, speed: 3 },
 					keyboard: true,
 					UI: true,
+				}}
+				addControl={[
+					{ name: "speed", value: 50, min: 0, max: 1000 },
+					{ name: "reload" },
+				]}
+				onControlChange={(name: string, value) => {
+					if (name === "reload") setReload(value)
+					if (name === "speed") setSpeed(value)
 				}}
 			>
 				{out && (

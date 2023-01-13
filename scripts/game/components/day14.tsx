@@ -35,7 +35,7 @@ const Container = styled.div`
 const Animation = () => {
 	const [speed, setSpeed] = useState<number>(20)
 	const [dataSize] = useState<number>(100)
-	const [reload] = useState<number>(0)
+	const [reload, setReload] = useState<number>(0)
 
 	const scale = useScale(clipSize * 14)
 
@@ -64,9 +64,13 @@ const Animation = () => {
 			<Container>
 				<Game scale={scale} dangerouslySetInnerHTML={{ __html: out?.value }} />
 				<Controller
-					controls={[{ name: "speed", min: 0, max: 1000, value: speed }]}
+					controls={[
+						{ name: "reload" },
+						{ name: "speed", min: 0, max: 1000, value: speed },
+					]}
 					onChange={(name, value) => {
 						if (name === "speed") setSpeed(value as number)
+						if (name === "reload") setReload(value as number)
 					}}
 				/>
 			</Container>
