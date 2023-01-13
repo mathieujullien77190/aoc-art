@@ -11,7 +11,7 @@ export const RotationControl = ({
 }: RotationControlProps) => {
 	return (
 		<Slider
-			label={type === "H" ? "Rotation horyzontal" : "RotationVertical"}
+			label={type === "H" ? "Rotation horyzontal" : "Rotation vertical"}
 			min={0}
 			max={360}
 			loop

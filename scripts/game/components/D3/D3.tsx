@@ -23,8 +23,9 @@ export const D3 = ({
 		keyboard: true,
 		UI: true,
 	},
-	addControl,
+	addControl = [],
 	children,
+	onControlChange = () => {},
 }: D3Props) => {
 	const refCube = useRef<HTMLDivElement>()
 
@@ -180,6 +181,7 @@ export const D3 = ({
 						{ name: "zoom", min: zoom.min, max: zoom.max, value: Z },
 						{ name: "rotation", type: "H", value: axes.values.H },
 						{ name: "rotation", type: "V", value: axes.values.V },
+						...addControl,
 					]}
 					onChange={(name, value) => {
 						if (name === "zoom") setZ(value as number)
@@ -192,10 +194,9 @@ export const D3 = ({
 							add({ V: (value as { diff: number }).diff, H: 0 }, false)
 						}
 						if (name === "reset") handleReset()
+						onControlChange(name, value)
 					}}
-				>
-					{addControl}
-				</Controller>
+				/>
 			)}
 		</S.Wrapper>
 	)

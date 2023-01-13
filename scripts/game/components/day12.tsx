@@ -73,8 +73,8 @@ const Plan = ({ draw, z }: PlanProps) => {
 }
 
 const Animation = () => {
-	const [speed, setSpeed] = useState<number>(50)
-	const [reload] = useState<number>(0)
+	const [speed, setSpeed] = useState<number>(40)
+	const [reload, setReload] = useState<number>(0)
 	const [meta, setMeta] = useState<string>("")
 
 	const { out, stats } = useAnim<{ data: string[]; meta: string }>({
@@ -99,7 +99,15 @@ const Animation = () => {
 					keyboard: true,
 					UI: true,
 				}}
+				addControl={[
+					{ name: "speed", value: 50, min: 0, max: 1000 },
+					{ name: "reload" },
+				]}
 				start={{ H: 10, V: 300 }}
+				onControlChange={(name: string, value) => {
+					if (name === "reload") setReload(value)
+					if (name === "speed") setSpeed(value)
+				}}
 			>
 				<>
 					{out && out.data.map((draw, i) => <Plan draw={draw} z={i} key={i} />)}

@@ -3,7 +3,6 @@
 export type SliderProps = {
 	label: string
 	max: number
-	width?: string
 	value?: number
 	min?: number
 	loop?: boolean

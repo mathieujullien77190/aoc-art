@@ -43,12 +43,14 @@ const Animation = () => {
 				/>
 				<Controller
 					controls={[
+						{ name: "reload" },
 						{ name: "speed", min: 0, max: 1000, value: speed },
 						{ name: "data", min: 0, max: 100, value: dataSize },
 					]}
 					onChange={(name, value) => {
 						if (name === "speed") setSpeed(value as number)
 						if (name === "data") setDataSize(value as number)
+						if (name === "reload") setReload(value as number)
 					}}
 				/>
 			</Container>
