@@ -6,8 +6,8 @@ import { colors, app } from "_components/constants"
 
 import { title, highlightFlower, plantFlowers } from "./asciArt"
 
-import { Games } from "_scripts/Games"
-import { gamesConfig } from "_scripts/constants"
+import { Games } from "_games/Games"
+import { gamesConfig } from "_games/constants"
 
 import { setProperties } from "_store/global/"
 import { clear } from "_store/history/"
