@@ -30,7 +30,8 @@ const PlanContainer = styled.div<{
 	color: ${({ z }) => {
 		if (z === 0) return "white"
 		if (z === 1) return colors.infoColor
-		if (z <= 3) return colors.cmdColor
+		if (z === 2) return "#e8ffc5"
+		if (z === 3) return colors.cmdColor
 		return `hsl(28deg, 100%, ${Math.abs((z - 27) * 3 - 19)}%)`
 	}};
 	pre {

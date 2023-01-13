@@ -117,7 +117,9 @@ export const init = (data, size): { data: string[]; meta: string }[] => {
 		timePlans.push(
 			createView(
 				getLettersPlan(data, size, [...basePlan], i, 0, { start, end }),
-				"Construction de la carte"
+				`Construction de la carte ( taille : ${
+					(i < size.height ? i : size.height) * i
+				})`
 			)
 		)
 	}
@@ -126,7 +128,7 @@ export const init = (data, size): { data: string[]; meta: string }[] => {
 		timePlans.push(
 			createView(
 				getElevationPlan(data, size, [...basePlan], i, { start, end }),
-				"Construction de la carte"
+				`Construction de la carte ( altitude max : ${i} )`
 			)
 		)
 	}
@@ -148,7 +150,9 @@ export const init = (data, size): { data: string[]; meta: string }[] => {
 							start,
 							end,
 						}),
-						"Exécution via de l'algorithme de Dijkstra"
+						`Exécution de l'algorithme de Dijkstra ( noeuds : ${
+							Object.values(list).length
+						} )`
 					)
 				)
 		}
@@ -164,7 +168,9 @@ export const init = (data, size): { data: string[]; meta: string }[] => {
 		timePlans.push(
 			createView(
 				updateAllPlan(data, [...middlePlan], list, size, "@", { start, end }),
-				`Extraction du chemin le plus court ( ${Object.values(list).length} )`
+				`Extraction du chemin le plus court ( distance : ${
+					Object.values(list).length
+				} )`
 			)
 		)
 	}
