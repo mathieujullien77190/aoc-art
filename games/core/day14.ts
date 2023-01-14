@@ -3,8 +3,7 @@
 import { input } from "_games/data/day14"
 import { createArray, extractTab2 } from "_games/helpers/utils"
 import { createView, mergeView, areEqual, clipView } from "_games/helpers/view"
-
-type Boundary = { xMin: number; xMax: number; yMin: number; yMax: number }
+import { Boundary } from "_games/helpers/types"
 
 export const clipSize = 38
 

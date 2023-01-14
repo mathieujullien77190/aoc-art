@@ -2,12 +2,8 @@
 
 import { input } from "_games/data/day9"
 import { createArray, extractTab2 } from "_games/helpers/utils"
-import {
-	createView,
-	mergeView,
-	mergeViews,
-	Position,
-} from "_games/helpers/view"
+import { createView, mergeView, mergeViews } from "_games/helpers/view"
+import { Position } from "_games/helpers/types"
 
 const distance = (p1, p2) => {
 	const X = Math.abs(p1.x - p2.x)

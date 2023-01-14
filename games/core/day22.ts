@@ -2,10 +2,8 @@
 
 import { input } from "_games/data/day22"
 import { createArray, extractTab1 } from "_games/helpers/utils"
-
-type Matrix = string[][]
-
-const pgcd = (a, b) => (b ? pgcd(b, a % b) : Math.abs(a))
+import { pgcd } from "_games/helpers/math"
+import { Matrix } from "_games/helpers/types"
 
 const calcSize = (draw: Matrix) => {
 	const height = draw.length
@@ -140,7 +138,7 @@ const getNextFace = (map, face, action) => {
 	return map[face][dir]
 }
 
-const getNextPosition = (cube, map, position, face, action) => {
+const getNextPosition = (map, position, face, action) => {
 	const nextFace = getNextFace(map, face, action)
 	if (action.dir === "<" || action.dir === ">") {
 		if (nextFace.dir === "<")
@@ -248,7 +246,7 @@ const getListPosition = (cube, map, position, face, action) => {
 		y = pos.y + matrix.y
 
 		if (x >= sizes.sizeSide || y >= sizes.sizeSide || x < 0 || y < 0) {
-			change = getNextPosition(cube, map, pos, currentFace, currentAction)
+			change = getNextPosition(map, pos, currentFace, currentAction)
 			currentFace = change.face
 			currentAction = change.action
 			pos = change.pos

@@ -3,10 +3,7 @@
 import { input } from "_games/data/day12"
 import { findBestPath } from "../helpers/graph"
 import { createArray } from "_games/helpers/utils"
-
-type Position = { x: number; y: number }
-
-type Size = { width: number; height: number }
+import { Position, Size } from "_games/helpers/types"
 
 const getSize = (data: string): Size => {
 	return {

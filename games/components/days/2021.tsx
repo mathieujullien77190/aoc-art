@@ -5,7 +5,7 @@ import { useAnim, prepareViewsHelpers } from "_games/components/hooks"
 
 import { data } from "_games/data/2021"
 
-import { View } from "_games/helpers/view"
+import { View } from "_games/helpers/types"
 
 import Stats from "_games/components/Stats"
 import Controller from "_games/components/Controls"
