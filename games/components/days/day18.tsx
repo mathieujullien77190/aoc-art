@@ -8,11 +8,7 @@ import { colors } from "_components/constants"
 import { data, getAllPlan, volcano, searchInsideCube } from "_games/core/day18"
 
 import D3 from "_games/components/D3"
-
-const Wrapper = styled.div`
-	overflow: hidden;
-	height: 100%;
-`
+import { WrapperContainer3D } from "_games/components/Containers"
 
 const Volcano = styled.pre`
 	position: absolute;
@@ -106,7 +102,7 @@ const Animation = () => {
 	}, [])
 
 	return (
-		<Wrapper onContextMenu={handleClick}>
+		<WrapperContainer3D onContextMenu={handleClick}>
 			<D3
 				size={400}
 				margin={-100}
@@ -145,7 +141,7 @@ const Animation = () => {
 			</D3>
 
 			<Volcano dangerouslySetInnerHTML={{ __html: volcano }} />
-		</Wrapper>
+		</WrapperContainer3D>
 	)
 }
 

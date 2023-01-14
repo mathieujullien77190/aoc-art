@@ -3,7 +3,6 @@
 import { useEffect, useState, useMemo } from "react"
 
 import { read } from "_games/helpers/view"
-import { getWindowSize } from "./Window"
 
 export const prepareViewsHelpers = <T>(
 	fn: () => T[],
@@ -87,15 +86,4 @@ export const useAnim = <T>({
 	}, [calcSpeed, data.reload, data.dataSize, data.part])
 
 	return { out, stats }
-}
-
-export const useScale = (compare: number) => {
-	const [scale, setScale] = useState<number>(0)
-
-	useEffect(() => {
-		const width = getWindowSize().width / compare
-		setScale(width > 1 ? 1 : width)
-	}, [])
-
-	return scale
 }

@@ -2,12 +2,14 @@
 
 import { useState } from "react"
 import styled from "styled-components"
+import { isMobile } from "react-device-detect"
 
 import { organize, goN, map, actions, draw } from "_games/core/day22"
 import { useAnim, prepareViewsHelpers } from "_games/components/hooks"
 
 import D3 from "_games/components/D3"
 import Stats from "_games/components/Stats"
+import { WrapperContainer3D } from "_games/components/Containers"
 
 const PlanContainer = styled.div<{
 	size: number
@@ -89,11 +91,11 @@ const Animation = () => {
 	})
 
 	return (
-		<>
+		<WrapperContainer3D>
 			<D3
 				size={size}
 				margin={-100}
-				zoom={{ value: 3, min: 1, max: 20, step: 1, bigStep: 2 }}
+				zoom={{ value: isMobile ? 2 : 3, min: 1, max: 20, step: 1, bigStep: 2 }}
 				start={{ H: 30, V: 320 }}
 				control={{
 					mouse: { activate: true, smoothing: 400, speed: 3 },
@@ -121,7 +123,7 @@ const Animation = () => {
 				)}
 			</D3>
 			<Stats stats={stats} />
-		</>
+		</WrapperContainer3D>
 	)
 }
 

@@ -10,12 +10,7 @@ import { colors } from "_components/constants"
 
 import D3 from "_games/components/D3"
 import Stats from "_games/components/Stats"
-
-const Wrapper = styled.div`
-	margin: 0;
-	height: 100%;
-	overflow: hidden;
-`
+import { WrapperContainer3D } from "_games/components/Containers"
 
 const PlanContainer = styled.div<{
 	z: number
@@ -84,13 +79,13 @@ const Animation = () => {
 				return init(data, size)
 			}, true),
 		data: { speed, reload },
-		action: ({ view, i }) => {
+		action: ({ view }) => {
 			setMeta(view.meta)
 		},
 	})
 
 	return (
-		<Wrapper>
+		<WrapperContainer3D>
 			<D3
 				size={600}
 				margin={-100}
@@ -119,7 +114,7 @@ const Animation = () => {
 			</D3>
 
 			<Stats stats={stats} />
-		</Wrapper>
+		</WrapperContainer3D>
 	)
 }
 

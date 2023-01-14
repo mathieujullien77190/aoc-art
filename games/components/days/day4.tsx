@@ -9,16 +9,11 @@ import { View } from "_games/helpers/view"
 
 import Stats from "_games/components/Stats"
 import Controller from "_games/components/Controls"
+import { Wrapper } from "_games/components/Containers"
 
 const Game = styled.pre`
 	margin: 0;
-`
-
-const Container = styled.div`
-	height: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	padding: 10px;
 `
 
 const Animation = () => {
@@ -31,9 +26,11 @@ const Animation = () => {
 	})
 
 	return (
-		<>
-			<Container>
-				<Game dangerouslySetInnerHTML={{ __html: out?.value }} />
+		<Wrapper
+			game={<Game dangerouslySetInnerHTML={{ __html: out?.value }} />}
+			debounce={100}
+		>
+			<>
 				<Controller
 					controls={[
 						{ name: "reload" },
@@ -46,10 +43,10 @@ const Animation = () => {
 						if (name === "reload") setReload(value as number)
 					}}
 				/>
-			</Container>
 
-			<Stats stats={stats} />
-		</>
+				<Stats stats={stats} />
+			</>
+		</Wrapper>
 	)
 }
 

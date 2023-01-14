@@ -2,20 +2,17 @@
 import { useState } from "react"
 import styled from "styled-components"
 
-import { useAnim, prepareViewsHelpers, useScale } from "_games/components/hooks"
-import { generateViews, clipSize } from "_games/core/day14"
+import { useAnim, prepareViewsHelpers } from "_games/components/hooks"
+import { generateViews } from "_games/core/day14"
 import { View } from "_games/helpers/view"
 
 import Stats from "_games/components/Stats"
 import Controller from "_games/components/Controls"
+import { Wrapper } from "_games/components/Containers"
 
-const Game = styled.pre<{ scale: number }>`
+const Game = styled.pre`
 	margin: 0;
-
 	color: lightgray;
-
-	transform: ${({ scale }) => `scale(${scale})`};
-
 	font-size: 12px;
 	line-height: 8px;
 
@@ -25,19 +22,10 @@ const Game = styled.pre<{ scale: number }>`
 	}
 `
 
-const Container = styled.div`
-	height: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-`
-
 const Animation = () => {
 	const [speed, setSpeed] = useState<number>(20)
 	const [dataSize] = useState<number>(100)
 	const [reload, setReload] = useState<number>(0)
-
-	const scale = useScale(clipSize * 14)
 
 	const { out, stats } = useAnim<View>({
 		viewsFn: () => prepareViewsHelpers(() => generateViews(), true),
@@ -60,9 +48,11 @@ const Animation = () => {
 	})
 
 	return (
-		<>
-			<Container>
-				<Game scale={scale} dangerouslySetInnerHTML={{ __html: out?.value }} />
+		<Wrapper
+			game={<Game dangerouslySetInnerHTML={{ __html: out?.value }} />}
+			debounce={100}
+		>
+			<>
 				<Controller
 					controls={[
 						{ name: "reload" },
@@ -73,9 +63,9 @@ const Animation = () => {
 						if (name === "reload") setReload(value as number)
 					}}
 				/>
-			</Container>
-			<Stats stats={stats} />
-		</>
+				<Stats stats={stats} />
+			</>
+		</Wrapper>
 	)
 }
 
