@@ -1,301 +1,250 @@
 /** @format */
-
 import { input } from "_games/data/day12"
-import { findBestPath } from "../helpers/graph"
-import { createArray } from "_games/helpers/utils"
-import { Position, Size } from "_games/helpers/types"
 
-const getSize = (data: string): Size => {
-	return {
-		width: data.split("\n")[0].length,
-		height: (data.match(/\n/g) || []).length + 1,
-	}
-}
+import { View, ViewPlan, Position } from "_games/helpers/types"
+import { findBestPath } from "_games/helpers/graph"
+import {
+	createView,
+	getNeighbours,
+	getChar,
+	setChar,
+	searchChar,
+	iterator,
+} from "_games/helpers/view"
+import {
+	copyViewPlan,
+	createEmptyViewPlan,
+	extractView,
+} from "_games/helpers/viewPlan"
+import { getCode } from "_games/helpers/string"
 
-export const data = input.replace("S", "`").replace("E", "{")
-export const size = getSize(data)
+type StartEnd = { start: string; end: string }
 
-const getCode = c => c.charCodeAt(0)
+const startChar = "`"
+const endChar = "{"
 
-const getStr = (data: string, pos: Position, size: Size): string => {
-	return data[pos.y * (size.width + 1) + pos.x]
-}
+export const mapView = createView(
+	input.replace("S", startChar).replace("E", endChar),
+	false
+)
 
-const setStr = (
-	data: string,
-	pos: Position,
-	size: Size,
-	str: string
-): string => {
-	const index = pos.y * (size.width + 1) + pos.x
-	return data.slice(0, index) + str + data.slice(index + 1)
-}
-
-const getNeighbours = (data: string, size: Size, pos: Position) => {
-	let current = data[pos.y * (size.width + 1) + pos.x]
-	let matrix = [
-		{
-			cond: pos.y - 1 >= 0,
-			pos: (pos.y - 1) * (size.width + 1) + pos.x,
-			id: `${pos.x};${pos.y - 1}`,
-		},
-		{
-			cond: pos.y + 1 < size.height,
-			pos: (pos.y + 1) * (size.width + 1) + pos.x,
-			id: `${pos.x};${pos.y + 1}`,
-		},
-		{
-			cond: pos.x - 1 >= 0,
-			pos: pos.y * (size.width + 1) + pos.x - 1,
-			id: `${pos.x - 1};${pos.y}`,
-		},
-		{
-			cond: pos.x + 1 < size.width,
-			pos: pos.y * (size.width + 1) + pos.x + 1,
-			id: `${pos.x + 1};${pos.y}`,
-		},
-	]
-
-	return matrix
-		.filter(
-			item => item.cond && getCode(data[item.pos]) <= getCode(current) + 1
-		)
-		.map(item => ({ value: data[item.pos], id: item.id }))
-}
-
-const extract = id => {
+const extractPositionFromKey = (id: string): Position => {
 	const arr = id.split(";")
 	return { x: +arr[0], y: +arr[1] }
 }
 
+const createKeyFromPosition = (pos: Position): string => {
+	return `${pos.x};${pos.y}`
+}
+
 const canGo = name => {
-	return getNeighbours(data, size, extract(name)).map(item => ({
-		name: item.id,
-		value: 1,
-	}))
+	const currentPos = extractPositionFromKey(name)
+	const current = getChar(mapView, currentPos)
+	const search = getNeighbours(mapView, extractPositionFromKey(name))
+		.filter(item => getCode(getChar(mapView, item.pos)) <= getCode(current) + 1)
+		.map(item => ({
+			name: createKeyFromPosition(item.pos),
+			value: 1,
+		}))
+	return search
 }
 
-const searchEnd = (data: string, size: Size) => {
-	const realValue = data.indexOf("{")
-	const y = Math.floor(realValue / (size.width + 1))
-	const x = realValue - y * (size.width + 1)
-
-	return [x, y]
+const renderChar = (
+	baseChar: string,
+	replaceChar: string,
+	startChar: string,
+	endChar: string
+) => {
+	return baseChar === startChar || baseChar === endChar ? "@" : replaceChar
 }
 
-const searchStart = (data: string, size: Size) => {
-	const realValue = data.indexOf("`")
-	const y = Math.floor(realValue / (size.width + 1))
-	const x = realValue - y * (size.width + 1)
+export const getLettersPlan = (
+	mapView: View,
+	plans: ViewPlan,
+	maxWidth: number,
+	alt: number,
+	startEnd: StartEnd
+): ViewPlan => {
+	const min = getCode(startEnd.start)
 
-	return [x, y]
+	iterator(
+		mapView,
+		pos => {
+			const str = getChar(mapView, pos)
+
+			plans.value[0] = setChar(
+				extractView(plans, 0),
+				pos,
+				renderChar(str, str, startEnd.start, startEnd.end)
+			).value
+		},
+		{ x: x => x < maxWidth, y: y => y < maxWidth }
+	)
+
+	return plans
 }
 
-const createView = (
-	data: string[],
+export const getElevationPlan = (
+	mapView: View,
+	plans: ViewPlan,
+	alt: number,
+	startEnd: StartEnd
+): ViewPlan => {
+	const min = getCode(startEnd.start)
+
+	iterator(mapView, pos => {
+		const str = getChar(mapView, pos)
+		const altStr = getCode(str) - min
+
+		plans.value[altStr > alt ? alt : altStr] = setChar(
+			extractView(plans, altStr > alt ? alt : altStr),
+			pos,
+			renderChar(str, str, startEnd.start, startEnd.end)
+		).value
+	})
+
+	return plans
+}
+
+export const getNormalPlan = (
+	mapView: View,
+	plans: ViewPlan,
+	startEnd: StartEnd
+): ViewPlan => {
+	const min = getCode(startEnd.start)
+
+	iterator(mapView, pos => {
+		const str = getChar(mapView, pos)
+		const alt = getCode(str) - min
+
+		plans.value[alt] = setChar(
+			extractView(plans, alt),
+			pos,
+			renderChar(str, "#", startEnd.start, startEnd.end)
+		).value
+	})
+
+	return plans
+}
+
+export const updateAllPlan = <T>(
+	mapView: View,
+	plans: ViewPlan,
+	startEnd: StartEnd,
+	list: Record<string, T>,
+	strReplace: string
+): ViewPlan => {
+	const min = getCode(startEnd.start)
+
+	for (let key in list) {
+		const pos = extractPositionFromKey(key)
+		const str = getChar(mapView, pos)
+		const alt = getCode(str) - min
+
+		plans.value[alt] = setChar(
+			extractView(plans, alt),
+			pos,
+			renderChar(str, strReplace, startEnd.start, startEnd.end)
+		).value
+	}
+
+	return plans
+}
+
+const cView = (
+	plans: ViewPlan,
 	text: string
-): { data: string[]; meta: string } => {
-	return { data, meta: text }
-}
+): { plans: ViewPlan; meta: string } => ({ plans, meta: text })
 
-export const init = (data, size): { data: string[]; meta: string }[] => {
-	const start = searchStart(data, size)
-	const end = searchEnd(data, size)
+export const init = (mapView: View): { plans: ViewPlan; meta: string }[] => {
+	const start = searchChar(mapView, startChar)
+	const end = searchChar(mapView, endChar)
+
+	const min = getCode(startChar)
+	const max = getCode(endChar)
+	const altitudeMax = max - min + 1
+
+	const startEnd = { start: startChar, end: endChar }
 
 	let timePlans = []
 
-	const min = getCode("`")
-	const max = getCode("{")
-	const altitude = max - min + 1
+	const basePlans = createEmptyViewPlan(
+		{ width: mapView.width, height: mapView.height },
+		altitudeMax
+	)
 
-	const basePlan = createBasePlan(altitude, size)
-
-	for (let i = 0; i < size.width; i++) {
+	for (let i = 0; i < mapView.width; i++) {
+		const text = `Construction de la carte ( taille : ${
+			(i < mapView.height ? i : mapView.height) * i
+		})`
+		const z = altitudeMax - 1
 		timePlans.push(
-			createView(
-				getLettersPlan(data, size, [...basePlan], i, 0, { start, end }),
-				`Construction de la carte ( taille : ${
-					(i < size.height ? i : size.height) * i
-				})`
+			cView(
+				getLettersPlan(mapView, copyViewPlan(basePlans), i, z, startEnd),
+				text
 			)
 		)
 	}
 
-	for (let i = 0; i < altitude; i++) {
+	for (let i = 0; i < altitudeMax; i++) {
+		const text = `Construction de la carte ( altitude max : ${i} )`
 		timePlans.push(
-			createView(
-				getElevationPlan(data, size, [...basePlan], i, { start, end }),
-				`Construction de la carte ( altitude max : ${i} )`
+			cView(
+				getElevationPlan(mapView, copyViewPlan(basePlans), i, startEnd),
+				text
 			)
 		)
 	}
 
-	const startPlan = getElevationPlan(data, size, [...basePlan], altitude - 1, {
-		start,
-		end,
-	})
+	const startPlan = getElevationPlan(
+		mapView,
+		copyViewPlan(basePlans),
+		altitudeMax - 1,
+		startEnd
+	)
 
 	const res = findBestPath(
-		start.join(";"),
-		end.join(";"),
+		createKeyFromPosition(start),
+		createKeyFromPosition(end),
 		canGo,
 		(list, index) => {
-			if (index % 20 === 0)
+			if (index % 20 === 0) {
+				const text = `Exécution de l'algorithme de Dijkstra ( noeuds : ${
+					Object.values(list).length
+				} )`
+
 				timePlans.push(
-					createView(
-						updateAllPlan(data, [...startPlan], list, size, "#", {
-							start,
-							end,
-						}),
-						`Exécution de l'algorithme de Dijkstra ( noeuds : ${
-							Object.values(list).length
-						} )`
+					cView(
+						updateAllPlan(
+							mapView,
+							copyViewPlan(startPlan),
+							startEnd,
+							list,
+							"#"
+						),
+						text
 					)
 				)
+			}
 		}
 	)
 
-	const middlePlan = getNormalPlan(data, size, [...basePlan], { start, end })
+	const middlePlan = getNormalPlan(mapView, copyViewPlan(basePlans), startEnd)
 
 	for (let i = 0; i < res.length; i++) {
 		const list = res.reduce((acc, curr, j) => {
 			if (j <= i) acc[curr] = true
 			return acc
 		}, {})
+		const text = `Extraction du chemin le plus court ( distance : ${i + 1} )`
+
 		timePlans.push(
-			createView(
-				updateAllPlan(data, [...middlePlan], list, size, "@", { start, end }),
-				`Extraction du chemin le plus court ( distance : ${
-					Object.values(list).length
-				} )`
+			cView(
+				updateAllPlan(mapView, copyViewPlan(middlePlan), startEnd, list, "@"),
+				text
 			)
 		)
 	}
 
 	return timePlans
-}
-
-const createBasePlan = (altitude: number, size: Size) => {
-	return createArray(altitude).map(() =>
-		createArray(size.height)
-			.map(() => " ".repeat(size.width))
-			.join("\n")
-	)
-}
-
-const isSpecial = (specialPos: number[], pos: Position) => {
-	return specialPos[0] === pos.x && specialPos[1] === pos.y
-}
-
-const getChar = (
-	baseChar: string,
-	pos: Position,
-	startEnd: { start: number[]; end: number[] }
-) => {
-	const startStr = isSpecial(startEnd.start, pos) || null
-	const endStr = isSpecial(startEnd.end, pos) || null
-
-	if (startStr) return "@"
-	if (endStr) return "@"
-	return baseChar
-}
-
-export const getLettersPlan = (
-	data: string,
-	size: Size,
-	plans: string[],
-	maxWidth: number,
-	altitude: number,
-	startEnd: { start: number[]; end: number[] }
-): string[] => {
-	for (let y = 0; y < maxWidth && y < size.height; y++) {
-		for (let x = 0; x < maxWidth && x < size.width; x++) {
-			const str = getStr(data, { x, y }, size)
-
-			plans[altitude] = setStr(
-				plans[altitude],
-				{ x, y },
-				size,
-				getChar(str, { x, y }, startEnd)
-			)
-		}
-	}
-
-	return plans
-}
-
-export const getElevationPlan = (
-	data: string,
-	size: Size,
-	plans: string[],
-	alt: number,
-	startEnd: { start: number[]; end: number[] }
-): string[] => {
-	const min = getCode("`")
-
-	for (let y = 0; y < size.height; y++) {
-		for (let x = 0; x < size.width; x++) {
-			const str = getStr(data, { x, y }, size)
-			const altStr = getCode(str) - min
-
-			plans[altStr > alt ? alt : altStr] = setStr(
-				plans[altStr > alt ? alt : altStr],
-				{ x, y },
-				size,
-				getChar(str, { x, y }, startEnd)
-			)
-		}
-	}
-
-	return plans
-}
-
-export const getNormalPlan = (
-	data: string,
-	size: Size,
-	plans: string[],
-	startEnd: { start: number[]; end: number[] }
-): string[] => {
-	const min = getCode("`")
-
-	for (let y = 0; y < size.height; y++) {
-		for (let x = 0; x < size.width; x++) {
-			const str = getStr(data, { x, y }, size)
-			const alt = getCode(str) - min
-
-			plans[alt] = setStr(
-				plans[alt],
-				{ x, y },
-				size,
-				getChar("#", { x, y }, startEnd)
-			)
-		}
-	}
-
-	return plans
-}
-
-export const updateAllPlan = (
-	data: string,
-	plans: string[],
-	list: Record<string, any>,
-	size: Size,
-	strReplace: string,
-	startEnd: { start: number[]; end: number[] }
-) => {
-	const min = getCode("`")
-
-	for (let key in list) {
-		const pos = extract(key)
-		const str = getStr(data, pos, size)
-		const alt = getCode(str) - min
-		plans[alt] = setStr(
-			plans[alt],
-			pos,
-			size,
-			getChar(strReplace, pos, startEnd)
-		)
-	}
-
-	return plans
 }

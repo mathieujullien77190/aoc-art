@@ -21,6 +21,12 @@ const createViewFromString = (arr: string[], complete: boolean): View => {
 	return { value, width, height }
 }
 
+export const copyView = (view: View): View => ({
+	value: view.value,
+	width: view.width,
+	height: view.height,
+})
+
 export const createEmptyView = (size: Size, str: string = " "): View => {
 	str.repeat(size.width)
 	return {
@@ -164,4 +170,80 @@ export const read = <T>(
 		new Date().getTime()
 	)
 	return timer
+}
+
+export const searchChar = (view: View, str: string): Position => {
+	const realValue = view.value.indexOf(str)
+	const y = Math.floor(realValue / (view.width + 1))
+	const x = realValue - y * (view.width + 1)
+
+	return { x, y }
+}
+
+export const getChar = (view: View, pos: Position): string => {
+	return view.value[pos.y * (view.width + 1) + pos.x]
+}
+
+export const setChar = (view: View, pos: Position, str: string): View => {
+	const index = pos.y * (view.width + 1) + pos.x
+	return {
+		value: view.value.slice(0, index) + str + view.value.slice(index + 1),
+		height: view.height,
+		width: view.width,
+	}
+}
+
+export const replaceChar = (view: View, str: string, replace: string): View => {
+	return {
+		value: view.value.replace(str, replace),
+		height: view.height,
+		width: view.width,
+	}
+}
+
+export const getNeighbours = (
+	view: View,
+	pos: Position
+): { value: string; pos: Position }[] => {
+	let matrix = [
+		{
+			cond: pos.y - 1 >= 0,
+			pos: (pos.y - 1) * (view.width + 1) + pos.x,
+			realPos: { x: pos.x, y: pos.y - 1 },
+		},
+		{
+			cond: pos.y + 1 < view.height,
+			pos: (pos.y + 1) * (view.width + 1) + pos.x,
+			realPos: { x: pos.x, y: pos.y + 1 },
+		},
+		{
+			cond: pos.x - 1 >= 0,
+			pos: pos.y * (view.width + 1) + pos.x - 1,
+			realPos: { x: pos.x - 1, y: pos.y },
+		},
+		{
+			cond: pos.x + 1 < view.width,
+			pos: pos.y * (view.width + 1) + pos.x + 1,
+			realPos: { x: pos.x + 1, y: pos.y },
+		},
+	]
+
+	return matrix
+		.filter(item => item.cond)
+		.map(item => ({ value: view.value[item.pos], pos: item.realPos }))
+}
+
+export const iterator = (
+	view: View,
+	cb: (pos: Position) => void,
+	conditions: { x: (x: number) => boolean; y: (y: number) => boolean } = {
+		x: () => true,
+		y: () => true,
+	}
+): void => {
+	for (let y = 0; conditions.y(y) && y < view.height; y++) {
+		for (let x = 0; conditions.x(x) && x < view.width; x++) {
+			cb({ x, y })
+		}
+	}
 }

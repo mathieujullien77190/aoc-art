@@ -93,13 +93,3 @@ export const rotate90 = arr => {
 	})
 	return arr2
 }
-
-export const mergeView = (back, front, x, y) => {
-	let arr = back.map(item => item.slice(0))
-	for (let i = 0; i < front.length; i++) {
-		for (let j = 0; j < front[i].length; j++) {
-			arr[i + y][j + x] = front[i][j]
-		}
-	}
-	return arr
-}
