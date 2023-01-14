@@ -8,6 +8,8 @@ export type Size = { width: number; height: number }
 
 export type View = { width?: number; height?: number; value: string }
 
+export type ViewPlan = { width?: number; height?: number; value: string[] }
+
 export type Matrix = string[][]
 
 export type Boundary = {

@@ -3,7 +3,8 @@ import { useState } from "react"
 import styled from "styled-components"
 import { isMobile } from "react-device-detect"
 
-import { data, init, size } from "_games/core/day12"
+import { ViewPlan } from "_games/helpers/types"
+import { mapView, init } from "_games/core/day12"
 import { useAnim, prepareViewsHelpers } from "_games/components/hooks"
 
 import { colors } from "_components/constants"
@@ -73,10 +74,10 @@ const Animation = () => {
 	const [reload, setReload] = useState<number>(0)
 	const [meta, setMeta] = useState<string>("")
 
-	const { out, stats } = useAnim<{ data: string[]; meta: string }>({
+	const { out, stats } = useAnim<{ plans: ViewPlan; meta: string }>({
 		viewsFn: () =>
 			prepareViewsHelpers(() => {
-				return init(data, size)
+				return init(mapView)
 			}, true),
 		data: { speed, reload },
 		action: ({ view }) => {
@@ -106,7 +107,10 @@ const Animation = () => {
 				}}
 			>
 				<>
-					{out && out.data.map((draw, i) => <Plan draw={draw} z={i} key={i} />)}
+					{out &&
+						out.plans.value.map((draw, i) => (
+							<Plan draw={draw} z={i} key={i} />
+						))}
 					<Explain>
 						<span>{meta}</span>
 					</Explain>
