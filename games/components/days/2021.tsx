@@ -9,22 +9,15 @@ import { View } from "_games/helpers/view"
 
 import Stats from "_games/components/Stats"
 import Controller from "_games/components/Controls"
+import { Wrapper } from "_games/components/Containers"
 
 const Game = styled.pre`
-	margin: 0;
-	transform: scale(0.8);
-`
-
-const Container = styled.div`
-	height: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	font-size: 10px;
+	line-height: 6px;
 `
 
 const Animation = () => {
 	const [speed, setSpeed] = useState<number>(20)
-
 	const [reload, setReload] = useState<number>(0)
 
 	const { out, stats } = useAnim<View>({
@@ -34,11 +27,8 @@ const Animation = () => {
 	})
 
 	return (
-		<>
-			<Container>
-				<Game style={{ fontSize: "10px", lineHeight: "6px" }}>
-					{out?.value}
-				</Game>
+		<Wrapper game={<Game>{out?.value}</Game>} debounce={100}>
+			<>
 				<Controller
 					controls={[
 						{ name: "reload" },
@@ -46,14 +36,12 @@ const Animation = () => {
 					]}
 					onChange={(name, value) => {
 						if (name === "speed") setSpeed(value as number)
-
 						if (name === "reload") setReload(value as number)
 					}}
 				/>
-			</Container>
-
-			<Stats stats={stats} />
-		</>
+				<Stats stats={stats} />
+			</>
+		</Wrapper>
 	)
 }
 
