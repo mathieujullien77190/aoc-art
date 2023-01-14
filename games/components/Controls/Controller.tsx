@@ -21,17 +21,27 @@ export const Controller = ({
 	onChange,
 }: ControllerProps) => {
 	const [show, setShow] = useState<boolean>(false)
+	const [open, seOpen] = useState<boolean>(false)
 	const ref = useRef<HTMLDivElement>(null)
 	const bottom = useGetBottom(ref)
 
 	return (
-		<S.ControllerContainer bottom={bottom} show={show}>
+		<S.ControllerContainer
+			bottom={bottom}
+			show={show}
+			onMouseOver={() => {
+				seOpen(true)
+			}}
+			onMouseOut={() => {
+				seOpen(false)
+			}}
+		>
 			<S.Title
 				onClick={() => {
 					setShow(prev => !prev)
 				}}
 			>
-				PANNEAU DE CONTROLE
+				PANNEAU DE CONTROLE {!show && open && <>(cliquez pour fixer)</>}
 			</S.Title>
 			<S.Container ref={ref}>
 				{controls

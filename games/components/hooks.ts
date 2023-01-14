@@ -28,7 +28,6 @@ type UseAnimProps<T> = {
 	action?: ({ view, i }: { view: T; i: number }) => void
 	data: {
 		dataSize?: number
-		part?: 1 | 2
 		speed: number
 		reload: number
 	}
@@ -44,7 +43,7 @@ export const useAnim = <T>({
 	const [out, setOut] = useState<T>(undefined)
 	const [stats, setStats] = useState<Record<string, number>>({})
 
-	const viewsInfo = useMemo(() => viewsFn(), [data.dataSize, data.part])
+	const viewsInfo = useMemo(() => viewsFn(), [data.dataSize])
 	const calcSpeed = useMemo(
 		() => (data.speed === 0 ? 1 : data.speed),
 		[data.speed]
@@ -83,7 +82,7 @@ export const useAnim = <T>({
 		return () => {
 			clearInterval(timer)
 		}
-	}, [calcSpeed, data.reload, data.dataSize, data.part])
+	}, [calcSpeed, data.reload, data.dataSize])
 
 	return { out, stats }
 }

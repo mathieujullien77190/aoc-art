@@ -1,12 +1,7 @@
 /** @format */
 
 import { createArray } from "./utils"
-
-export type View = { width?: number; height?: number; value: string }
-
-export type Position = { x: number; y: number }
-
-export type Size = { width: number; height: number }
+import { View, Position, Size } from "./types"
 
 const createViewFromString = (arr: string[], complete: boolean): View => {
 	let value, width, height

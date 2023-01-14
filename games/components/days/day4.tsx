@@ -5,7 +5,7 @@ import styled from "styled-components"
 import { useAnim, prepareViewsHelpers } from "_games/components/hooks"
 import { generateViews } from "_games/core/day4"
 
-import { View } from "_games/helpers/view"
+import { View } from "_games/helpers/types"
 
 import Stats from "_games/components/Stats"
 import Controller from "_games/components/Controls"

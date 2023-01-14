@@ -2,21 +2,13 @@
 
 import { input } from "_games/data/day18"
 import { createArray, extractTab2 } from "_games/helpers/utils"
-
-type Position = { x: number; y: number; z: number }
+import {
+	Position3D as Position,
+	Boundary3D as Limits,
+	MinMax,
+} from "_games/helpers/types"
 
 type LPosition = Record<string, Position>
-
-type MinMax = { min: number; max: number }
-
-type Limits = {
-	xMax: number
-	yMax: number
-	zMax: number
-	xMin: number
-	yMin: number
-	zMin: number
-}
 
 type Blocks = {
 	x: MinMax

@@ -1,7 +1,8 @@
 /** @format */
 import { input, listStack } from "_games/data/day5"
 import { createArray, rotate90, extractTab2, copy } from "_games/helpers/utils"
-import { createView, mergeView, Position } from "_games/helpers/view"
+import { createView, mergeView } from "_games/helpers/view"
+import { Position } from "_games/helpers/types"
 
 type Move = { nbs?: number; from: number; to: number }
 
