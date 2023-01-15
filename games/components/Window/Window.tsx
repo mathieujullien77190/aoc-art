@@ -14,6 +14,7 @@ export const Window = ({ game, onClose }: WindowProps) => {
 					year={game.year}
 					day={game.day}
 					title={game.title}
+					special={game.special}
 					AOCUrl={link}
 					onClose={onClose}
 				/>

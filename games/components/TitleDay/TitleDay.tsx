@@ -10,22 +10,26 @@ export const TitleDay = ({
 	day,
 	title,
 	AOCUrl,
+	special,
 	onClose,
 }: TitleDayProps) => {
 	return (
 		<S.Container>
 			<div>
-				<a href={AOCUrl} target="_blank">
-					<>
-						{year} | jour {day}
-					</>
-					{!isMobile && (
+				{!special && (
+					<a href={AOCUrl} target="_blank">
 						<>
-							{" "}
-							: <span>{title}</span>
+							{year} | jour {day}
 						</>
-					)}
-				</a>
+						{!isMobile && (
+							<>
+								{" "}
+								: <span>{title}</span>
+							</>
+						)}
+					</a>
+				)}
+				{special && "Fonctions..."}
 			</div>
 
 			<div className="close" onClick={onClose}>

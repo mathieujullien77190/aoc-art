@@ -7,15 +7,13 @@ import { createEmptyView, searchChar, getChar } from "./view"
 export const extractView = (plans: ViewPlan, z: number): View => {
 	return {
 		value: plans.value[z],
-		width: plans.width,
-		height: plans.height,
+		size: plans.size,
 	}
 }
 
 export const copyViewPlan = (plans: ViewPlan): ViewPlan => ({
 	value: [...plans.value],
-	width: plans.width,
-	height: plans.height,
+	size: plans.size,
 })
 
 export const createEmptyViewPlan = (
@@ -27,8 +25,7 @@ export const createEmptyViewPlan = (
 
 	return {
 		value: createArray(nb).map(() => plan.value),
-		width: size.width,
-		height: size.height,
+		size,
 	}
 }
 

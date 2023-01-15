@@ -20,7 +20,7 @@ const Animation = () => {
 	const [speed, setSpeed] = useState<number>(20)
 	const [dataSize, setDataSize] = useState<number>(20)
 	const [reload, setReload] = useState<number>(0)
-	const { out, stats } = useAnim<View>({
+	const { out, stats } = useAnim<{ value: string }>({
 		viewsFn: () => prepareViewsHelpers(() => generateViews(25, dataSize), true),
 		data: { speed, reload, dataSize },
 	})

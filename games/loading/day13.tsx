@@ -3,7 +3,7 @@
 import { lazy } from "react"
 import Dynamic from "./Dynamic"
 
-const LazyComponent = lazy(() => import("_games/components/days/day9"))
+const LazyComponent = lazy(() => import("_games/components/days/day13"))
 
 const Game = () => (
 	<Dynamic>

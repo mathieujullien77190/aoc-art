@@ -88,5 +88,5 @@ export const generateViews = (sizeClip, dataSize) => {
 	const views = clip(beautifullBoat, sizeClip)
 	const viewsWater = addWater(views, sizeClip)
 
-	return viewsWater.map(item => ({ value: item }))
+	return viewsWater
 }

@@ -18,13 +18,12 @@ const createViewFromString = (arr: string[], complete: boolean): View => {
 		height = arr.length
 	}
 
-	return { value, width, height }
+	return { value, size: { width, height } }
 }
 
 export const copyView = (view: View): View => ({
 	value: view.value,
-	width: view.width,
-	height: view.height,
+	size: view.size,
 })
 
 export const createEmptyView = (size: Size, str: string = " "): View => {
@@ -33,14 +32,13 @@ export const createEmptyView = (size: Size, str: string = " "): View => {
 		value: createArray(size.height)
 			.map(() => str.repeat(size.width))
 			.join("\n"),
-		width: size.width,
-		height: size.height,
+		size,
 	}
 }
 
 export const createView = (
 	data: string | string[][],
-	complete: boolean
+	complete: boolean = false
 ): View => {
 	if (typeof data === "string") {
 		return createViewFromString(data.split("\n"), complete)
@@ -74,9 +72,9 @@ export const clipView = (
 	const yStart = pos.y - size < 0 ? 0 : pos.y - size
 
 	const firstSizeX = Math.min(size, pos.x)
-	const secondSizeX = Math.min(size, view.width - pos.x - 1)
+	const secondSizeX = Math.min(size, view.size.width - pos.x - 1)
 	const firstSizeY = Math.min(size, pos.y)
-	const secondSizeY = Math.min(size, view.height - pos.y - 1)
+	const secondSizeY = Math.min(size, view.size.height - pos.y - 1)
 
 	if (firstSizeY < size) {
 		for (let i = 0; i < size - firstSizeY; i++) {
@@ -96,7 +94,7 @@ export const clipView = (
 	let line = ""
 
 	for (let i = 0; i < calcSize + 1; i++) {
-		const X = (i + yStart) * (view.width + 1) + xStart
+		const X = (i + yStart) * (view.size.width + 1) + xStart
 		const Y = X + (firstSizeX + secondSizeX + 1)
 		line = emptyColFirst + view.value.substring(X, Y) + emptyColSecond
 		clipView += line
@@ -107,9 +105,44 @@ export const clipView = (
 
 	return {
 		value,
-		width: line.length,
-		height: value.match(/\n/g).length + 1,
+		size: { width: line.length, height: value.match(/\n/g).length + 1 },
 	}
+}
+
+export const extract = (
+	view: View,
+	pos: Position,
+	size: Size,
+	debug: boolean = false
+) => {
+	if (debug) {
+		if (pos.y >= view.size.height || pos.y < 0)
+			console.log("ERROR : invalid y position")
+		if (pos.x >= view.size.width || pos.x < 0)
+			console.log("ERROR : invalid x position")
+	}
+
+	const trueSize = {
+		width:
+			pos.x + size.width > view.size.width
+				? view.size.width - pos.x
+				: size.width,
+		height:
+			pos.y + size.height > view.size.height
+				? view.size.height - pos.y
+				: size.height,
+	}
+
+	let str = ""
+
+	for (let i = 0; i < trueSize.height; i++) {
+		const start = (view.size.width + 1) * (pos.y + i) + pos.x
+		str +=
+			view.value.slice(start, start + trueSize.width) +
+			(i < trueSize.height - 1 ? "\n" : "")
+	}
+
+	return { value: str, size: trueSize }
 }
 
 export const mergeViews = (
@@ -124,18 +157,18 @@ export const mergeViews = (
 }
 
 export const mergeView = (back: View, front: View, position: Position) => {
-	let copy = { ...back }
+	let copy = copyView(back)
 	let line, first, last
-	const frontWidth = front.width + 1
-	const backWidth = back.width + 1
+	const frontWidth = front.size.width + 1
+	const backWidth = back.size.width + 1
 	const partX =
-		position.x + front.width > back.width
-			? front.width - (position.x + front.width - back.width)
-			: front.width
+		position.x + front.size.width > back.size.width
+			? front.size.width - (position.x + front.size.width - back.size.width)
+			: front.size.width
 	const partY =
-		position.y + front.height > back.height
-			? front.height - (position.y + front.height - back.height)
-			: front.height
+		position.y + front.size.height > back.size.height
+			? front.size.height - (position.y + front.size.height - back.size.height)
+			: front.size.height
 
 	for (let i = 0; i < partY; i++) {
 		line = front.value.substring(i * frontWidth, i * frontWidth + partX)
@@ -174,30 +207,28 @@ export const read = <T>(
 
 export const searchChar = (view: View, str: string): Position => {
 	const realValue = view.value.indexOf(str)
-	const y = Math.floor(realValue / (view.width + 1))
-	const x = realValue - y * (view.width + 1)
+	const y = Math.floor(realValue / (view.size.width + 1))
+	const x = realValue - y * (view.size.width + 1)
 
 	return { x, y }
 }
 
 export const getChar = (view: View, pos: Position): string => {
-	return view.value[pos.y * (view.width + 1) + pos.x]
+	return view.value[pos.y * (view.size.width + 1) + pos.x]
 }
 
 export const setChar = (view: View, pos: Position, str: string): View => {
-	const index = pos.y * (view.width + 1) + pos.x
+	const index = pos.y * (view.size.width + 1) + pos.x
 	return {
 		value: view.value.slice(0, index) + str + view.value.slice(index + 1),
-		height: view.height,
-		width: view.width,
+		size: view.size,
 	}
 }
 
 export const replaceChar = (view: View, str: string, replace: string): View => {
 	return {
-		value: view.value.replace(str, replace),
-		height: view.height,
-		width: view.width,
+		value: view.value.replace(new RegExp(str, "g"), replace),
+		size: view.size,
 	}
 }
 
@@ -208,22 +239,22 @@ export const getNeighbours = (
 	let matrix = [
 		{
 			cond: pos.y - 1 >= 0,
-			pos: (pos.y - 1) * (view.width + 1) + pos.x,
+			pos: (pos.y - 1) * (view.size.width + 1) + pos.x,
 			realPos: { x: pos.x, y: pos.y - 1 },
 		},
 		{
-			cond: pos.y + 1 < view.height,
-			pos: (pos.y + 1) * (view.width + 1) + pos.x,
+			cond: pos.y + 1 < view.size.height,
+			pos: (pos.y + 1) * (view.size.width + 1) + pos.x,
 			realPos: { x: pos.x, y: pos.y + 1 },
 		},
 		{
 			cond: pos.x - 1 >= 0,
-			pos: pos.y * (view.width + 1) + pos.x - 1,
+			pos: pos.y * (view.size.width + 1) + pos.x - 1,
 			realPos: { x: pos.x - 1, y: pos.y },
 		},
 		{
-			cond: pos.x + 1 < view.width,
-			pos: pos.y * (view.width + 1) + pos.x + 1,
+			cond: pos.x + 1 < view.size.width,
+			pos: pos.y * (view.size.width + 1) + pos.x + 1,
 			realPos: { x: pos.x + 1, y: pos.y },
 		},
 	]
@@ -231,19 +262,26 @@ export const getNeighbours = (
 	return matrix
 		.filter(item => item.cond)
 		.map(item => ({ value: view.value[item.pos], pos: item.realPos }))
+		.filter(item => !!item.value)
 }
 
 export const iterator = (
 	view: View,
-	cb: (pos: Position) => void,
-	conditions: { x: (x: number) => boolean; y: (y: number) => boolean } = {
+	cb: (pos: Position, str: string) => void,
+	conditions: {
+		x: (pos: Position) => boolean
+		y: (pos: Position) => boolean
+	} = {
 		x: () => true,
 		y: () => true,
 	}
 ): void => {
-	for (let y = 0; conditions.y(y) && y < view.height; y++) {
-		for (let x = 0; conditions.x(x) && x < view.width; x++) {
-			cb({ x, y })
+	let y = 0
+	let x = 0
+
+	for (y = 0; conditions.y({ x, y }) && y < view.size.height; y++) {
+		for (x = 0; conditions.x({ x, y }) && x < view.size.width; x++) {
+			cb({ x, y }, getChar(view, { x, y }))
 		}
 	}
 }

@@ -5,5 +5,6 @@ export type TitleDayProps = {
 	day: string
 	title: string
 	AOCUrl: string
+	special: boolean
 	onClose?: () => void
 }

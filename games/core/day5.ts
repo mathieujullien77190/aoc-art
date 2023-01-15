@@ -142,7 +142,7 @@ export const generateViews = (dataSize: number) => {
 		moveBis = { nbs: 1, from: i > 0 ? tab[i - 1].to : 0, to: move.from }
 
 		stacks = createView(drawStacks(data), true)
-		viewBackGround = createView(createCargoCrane(stacks.height, 9), true)
+		viewBackGround = createView(createCargoCrane(stacks.size.height, 9), true)
 		merge = mergeView(viewBackGround, stacks, {
 			x: X,
 			y: Y,
@@ -166,7 +166,7 @@ export const generateViews = (dataSize: number) => {
 
 				const mergeT = mergeView(i < tab.length - 1 ? mergeV : merge, fil, {
 					x: position.x + 2,
-					y: position.y - fil.height,
+					y: position.y - fil.size.height,
 				})
 
 				return mergeT
@@ -177,7 +177,7 @@ export const generateViews = (dataSize: number) => {
 		data[move.from] = data[move.from].slice(0, -move.nbs)
 
 		stacks = createView(drawStacks(data), true)
-		viewBackGround = createView(createCargoCrane(stacks.height, 9), true)
+		viewBackGround = createView(createCargoCrane(stacks.size.height, 9), true)
 		merge = mergeView(viewBackGround, stacks, {
 			x: X,
 			y: Y,
@@ -197,7 +197,7 @@ export const generateViews = (dataSize: number) => {
 			const mergeV = mergeView(merge, block, position)
 			return mergeView(mergeV, fil, {
 				x: position.x + 2,
-				y: position.y - fil.height,
+				y: position.y - fil.size.height,
 			})
 		})
 
