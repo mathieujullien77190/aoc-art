@@ -104,11 +104,11 @@ export const generateViews = () => {
 
 	const back = construct(data, boundary)
 
-	const sandView = { value: "o", width: 1, height: 1 }
+	const sandView = { value: "o", size: { width: 1, height: 1 } }
 
 	let backView = mergeView(
 		createView(back, false),
-		{ value: "V", width: 1, height: 1 },
+		{ value: "V", size: { width: 1, height: 1 } },
 		{ x: start.x - boundary.xMin, y: 0 }
 	)
 

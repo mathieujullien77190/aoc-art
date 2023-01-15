@@ -5,8 +5,6 @@ import { useAnim, prepareViewsHelpers } from "_games/components/hooks"
 
 import { data } from "_games/data/2021"
 
-import { View } from "_games/helpers/types"
-
 import Stats from "_games/components/Stats"
 import Controller from "_games/components/Controls"
 import { Wrapper } from "_games/components/Containers"
@@ -20,14 +18,13 @@ const Animation = () => {
 	const [speed, setSpeed] = useState<number>(20)
 	const [reload, setReload] = useState<number>(0)
 
-	const { out, stats } = useAnim<View>({
-		viewsFn: () =>
-			prepareViewsHelpers(() => data.map(item => ({ value: item })), false),
+	const { out, stats } = useAnim<string>({
+		viewsFn: () => prepareViewsHelpers(() => data, false),
 		data: { speed, reload },
 	})
 
 	return (
-		<Wrapper game={<Game>{out?.value}</Game>} debounce={100}>
+		<Wrapper game={<Game>{out}</Game>} debounce={100}>
 			<>
 				<Controller
 					controls={[

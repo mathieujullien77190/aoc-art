@@ -62,7 +62,6 @@ export const getLettersPlan = (
 	mapView: View,
 	plans: ViewPlan,
 	maxWidth: number,
-	alt: number,
 	startEnd: StartEnd
 ): ViewPlan => {
 	const min = getCode(startEnd.start)
@@ -78,7 +77,7 @@ export const getLettersPlan = (
 				renderChar(str, str, startEnd.start, startEnd.end)
 			).value
 		},
-		{ x: x => x < maxWidth, y: y => y < maxWidth }
+		{ x: pos => pos.x < maxWidth, y: pos => pos.y < maxWidth }
 	)
 
 	return plans
@@ -168,21 +167,15 @@ export const init = (mapView: View): { plans: ViewPlan; meta: string }[] => {
 
 	let timePlans = []
 
-	const basePlans = createEmptyViewPlan(
-		{ width: mapView.width, height: mapView.height },
-		altitudeMax
-	)
+	const basePlans = createEmptyViewPlan(mapView.size, altitudeMax)
 
-	for (let i = 0; i < mapView.width; i++) {
+	for (let i = 0; i < mapView.size.width; i++) {
 		const text = `Construction de la carte ( taille : ${
-			(i < mapView.height ? i : mapView.height) * i
+			(i < mapView.size.height ? i : mapView.size.height) * i
 		})`
 		const z = altitudeMax - 1
 		timePlans.push(
-			cView(
-				getLettersPlan(mapView, copyViewPlan(basePlans), i, z, startEnd),
-				text
-			)
+			cView(getLettersPlan(mapView, copyViewPlan(basePlans), i, startEnd), text)
 		)
 	}
 

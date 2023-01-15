@@ -6,9 +6,9 @@ export type Position3D = Position & { z: number }
 
 export type Size = { width: number; height: number }
 
-export type View = { width?: number; height?: number; value: string }
+export type View = { value: string; size: Size }
 
-export type ViewPlan = { width?: number; height?: number; value: string[] }
+export type ViewPlan = { value: string[]; size: Size }
 
 export type Matrix = string[][]
 

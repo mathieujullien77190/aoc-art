@@ -23,19 +23,18 @@ const Animation = () => {
 	const [reload, setReload] = useState<number>(0)
 	const [dataSize, setDataSize] = useState<number>(100)
 
-	const { out, stats } = useAnim<View>({
+	const { out, stats } = useAnim<string>({
 		viewsFn: () => prepareViewsHelpers(() => generateViews(60, dataSize), true),
 		transform: ({ view, i }) => {
-			const item1 = view.value.substring(0, pos)
-			const item2 = view.value.substring(pos, pos + 6)
-			const item3 = view.value.substring(pos + 6)
+			const item1 = view.substring(0, pos)
+			const item2 = view.substring(pos, pos + 6)
+			const item3 = view.substring(pos + 6)
 
 			theBest = extractMax(item2, theBest)
 
 			return {
-				view: {
-					value: `${item1}<span style="color:red;">${item2}</span>${item3}\n\nScan : <span style="color:red;">${item2}</span>\nBest : ${theBest}`,
-				},
+				view: `${item1}<span style="color:red;">${item2}</span>${item3}\n\nScan : <span style="color:red;">${item2}</span>\nBest : ${theBest}`,
+
 				i,
 			}
 		},
@@ -45,7 +44,7 @@ const Animation = () => {
 	return (
 		<>
 			<Wrapper
-				game={<Game dangerouslySetInnerHTML={{ __html: out?.value }} />}
+				game={<Game dangerouslySetInnerHTML={{ __html: out }} />}
 				debounce={100}
 			>
 				<>
