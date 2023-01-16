@@ -2,7 +2,7 @@
 import { input } from "_games/data/day12"
 
 import { View, ViewPlan, Position } from "_games/helpers/types"
-import { findBestPath } from "_games/helpers/graph"
+import { findBestPath, ElementGraph } from "_games/helpers/graph"
 import {
 	createView,
 	getNeighbours,
@@ -126,26 +126,24 @@ export const getNormalPlan = (
 	return plans
 }
 
-export const updateAllPlan = <T>(
+export const updateAllPlan = (
 	mapView: View,
 	plans: ViewPlan,
 	startEnd: StartEnd,
-	list: Record<string, T>,
+	current: ElementGraph,
 	strReplace: string
 ): ViewPlan => {
 	const min = getCode(startEnd.start)
 
-	for (let key in list) {
-		const pos = extractPositionFromKey(key)
-		const str = getChar(mapView, pos)
-		const alt = getCode(str) - min
+	const pos = extractPositionFromKey(current.name)
+	const str = getChar(mapView, pos)
+	const alt = getCode(str) - min
 
-		plans.value[alt] = setChar(
-			extractView(plans, alt),
-			pos,
-			renderChar(str, strReplace, startEnd.start, startEnd.end)
-		).value
-	}
+	plans.value[alt] = setChar(
+		extractView(plans, alt),
+		pos,
+		renderChar(str, strReplace, startEnd.start, startEnd.end)
+	).value
 
 	return plans
 }
@@ -189,7 +187,7 @@ export const init = (mapView: View): { plans: ViewPlan; meta: string }[] => {
 		)
 	}
 
-	const startPlan = getElevationPlan(
+	let startPlan = getElevationPlan(
 		mapView,
 		copyViewPlan(basePlans),
 		altitudeMax - 1,
@@ -200,42 +198,34 @@ export const init = (mapView: View): { plans: ViewPlan; meta: string }[] => {
 		createKeyFromPosition(start),
 		createKeyFromPosition(end),
 		canGo,
-		(list, index) => {
+		({ current, index }) => {
+			const text = `Exécution de l'algorithme de Dijkstra ( noeuds : ${index} )`
+			startPlan = updateAllPlan(
+				mapView,
+				copyViewPlan(startPlan),
+				startEnd,
+				current,
+				"#"
+			)
 			if (index % 20 === 0) {
-				const text = `Exécution de l'algorithme de Dijkstra ( noeuds : ${
-					Object.values(list).length
-				} )`
-
-				timePlans.push(
-					cView(
-						updateAllPlan(
-							mapView,
-							copyViewPlan(startPlan),
-							startEnd,
-							list,
-							"#"
-						),
-						text
-					)
-				)
+				timePlans.push(cView(startPlan, text))
 			}
 		}
 	)
 
-	const middlePlan = getNormalPlan(mapView, copyViewPlan(basePlans), startEnd)
+	let middlePlan = getNormalPlan(mapView, copyViewPlan(basePlans), startEnd)
 
 	for (let i = 0; i < res.length; i++) {
-		const list = res.reduce((acc, curr, j) => {
-			if (j <= i) acc[curr] = true
-			return acc
-		}, {})
-		const text = `Extraction du chemin le plus court ( distance : ${i + 1} )`
-
+		const text = `Extraction du chemin le plus court ( distance : ${i} )`
+		middlePlan = updateAllPlan(
+			mapView,
+			copyViewPlan(middlePlan),
+			startEnd,
+			res[i],
+			"@"
+		)
 		timePlans.push(
-			cView(
-				updateAllPlan(mapView, copyViewPlan(middlePlan), startEnd, list, "@"),
-				text
-			)
+			cView(updateAllPlan(mapView, middlePlan, startEnd, res[i], "@"), text)
 		)
 	}
 
