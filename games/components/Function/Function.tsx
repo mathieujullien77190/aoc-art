@@ -20,7 +20,7 @@ export const Function = ({ story }: FunctionProps) => {
 			<S.Title onClick={() => setOpen(prev => !prev)}>
 				{story.title} : {story.description}
 			</S.Title>
-			<S.Content display={open}>
+			<S.Content open={open}>
 				<S.Code>
 					{story.results.map((item, i) => (
 						<S.Line

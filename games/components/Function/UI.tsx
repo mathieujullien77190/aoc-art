@@ -47,8 +47,8 @@ export const Pre = styled.pre<{ highlight: boolean }>`
 	}
 `
 
-export const Content = styled.div<{ display: boolean }>`
-	display: ${({ display }) => (display ? "block" : "none")};
+export const Content = styled.div<{ open: boolean }>`
+	display: ${({ open }) => (open ? "block" : "none")};
 `
 
 export const Title = styled.p`
