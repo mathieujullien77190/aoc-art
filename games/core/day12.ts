@@ -148,12 +148,7 @@ export const updateAllPlan = (
 	return plans
 }
 
-const cView = (
-	plans: ViewPlan,
-	text: string
-): { plans: ViewPlan; meta: string } => ({ plans, meta: text })
-
-export const init = (mapView: View): { plans: ViewPlan; meta: string }[] => {
+export const init = (mapView: View): ViewPlan[] => {
 	const start = searchChar(mapView, startChar)
 	const end = searchChar(mapView, endChar)
 
@@ -171,19 +166,15 @@ export const init = (mapView: View): { plans: ViewPlan; meta: string }[] => {
 		const text = `Construction de la carte ( taille : ${
 			(i < mapView.size.height ? i : mapView.size.height) * i
 		})`
-		const z = altitudeMax - 1
 		timePlans.push(
-			cView(getLettersPlan(mapView, copyViewPlan(basePlans), i, startEnd), text)
+			getLettersPlan(mapView, copyViewPlan(basePlans, { text }), i, startEnd)
 		)
 	}
 
 	for (let i = 0; i < altitudeMax; i++) {
 		const text = `Construction de la carte ( altitude max : ${i} )`
 		timePlans.push(
-			cView(
-				getElevationPlan(mapView, copyViewPlan(basePlans), i, startEnd),
-				text
-			)
+			getElevationPlan(mapView, copyViewPlan(basePlans, { text }), i, startEnd)
 		)
 	}
 
@@ -202,13 +193,13 @@ export const init = (mapView: View): { plans: ViewPlan; meta: string }[] => {
 			const text = `Exécution de l'algorithme de Dijkstra ( noeuds : ${index} )`
 			startPlan = updateAllPlan(
 				mapView,
-				copyViewPlan(startPlan),
+				copyViewPlan(startPlan, { text }),
 				startEnd,
 				current,
 				"#"
 			)
 			if (index % 20 === 0) {
-				timePlans.push(cView(startPlan, text))
+				timePlans.push(startPlan)
 			}
 		}
 	)
@@ -219,14 +210,12 @@ export const init = (mapView: View): { plans: ViewPlan; meta: string }[] => {
 		const text = `Extraction du chemin le plus court ( distance : ${i} )`
 		middlePlan = updateAllPlan(
 			mapView,
-			copyViewPlan(middlePlan),
+			copyViewPlan(middlePlan, { text }),
 			startEnd,
 			res[i],
 			"@"
 		)
-		timePlans.push(
-			cView(updateAllPlan(mapView, middlePlan, startEnd, res[i], "@"), text)
-		)
+		timePlans.push(updateAllPlan(mapView, middlePlan, startEnd, res[i], "@"))
 	}
 
 	return timePlans

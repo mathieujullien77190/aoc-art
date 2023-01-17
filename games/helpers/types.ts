@@ -8,7 +8,11 @@ export type Size = { width: number; height: number }
 
 export type View = { value: string; size: Size }
 
-export type ViewPlan = { value: string[]; size: Size }
+export type ViewPlan = {
+	value: string[]
+	size: Size
+	meta: Record<string, string>
+}
 
 export type Matrix = string[][]
 
