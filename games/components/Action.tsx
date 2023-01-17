@@ -22,10 +22,15 @@ const ActionContainer = styled.button`
 	align-items: center;
 	outline: none;
 
-	&:hover {
-		color: ${colors.background};
+	> span {
+		padding: 0px 2px;
+	}
 
-		background-color: ${colors.importantColor};
+	&:hover {
+		> span {
+			color: ${colors.background};
+			background-color: ${colors.importantColor};
+		}
 	}
 `
 
@@ -37,7 +42,9 @@ type ActionProps = {
 export const Action = ({ value, onClick = () => {} }: ActionProps) => {
 	return (
 		<>
-			<ActionContainer onClick={onClick}>{value}</ActionContainer>
+			<ActionContainer onClick={onClick}>
+				[<span>{value}</span>]
+			</ActionContainer>
 		</>
 	)
 }

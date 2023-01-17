@@ -46,40 +46,40 @@ export const AnimationControl = ({
 						const calcSpeed = limitSpeed(speed + bigStep)
 						onChange({ reload: reload, speed: calcSpeed, pause })
 					}}
-					value="[<<]"
+					value="<<"
 				/>
 				<Action
 					onClick={() => {
 						const calcSpeed = limitSpeed(speed + step)
 						onChange({ reload: reload, speed: calcSpeed, pause })
 					}}
-					value="[<]"
+					value="<"
 				/>
 				<Action
 					onClick={() => {
 						onChange({ reload: reload + 1, speed, pause })
 					}}
-					value="[🗘]"
+					value="🗘"
 				/>
 				<Action
 					onClick={() => {
 						onChange({ reload: reload, speed, pause: !pause })
 					}}
-					value={pause ? "[▷]" : "[‖]"}
+					value={pause ? "▷" : "‖"}
 				/>
 				<Action
 					onClick={() => {
 						const calcSpeed = limitSpeed(speed - step)
 						onChange({ reload: reload, speed: calcSpeed, pause })
 					}}
-					value="[>]"
+					value=">"
 				/>
 				<Action
 					onClick={() => {
 						const calcSpeed = limitSpeed(speed - bigStep)
 						onChange({ reload: reload, speed: calcSpeed, pause })
 					}}
-					value="[>>]"
+					value=">>"
 				/>
 			</span>
 		</S.Line>
