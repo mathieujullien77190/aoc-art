@@ -15,9 +15,18 @@ export type DataControlProps = {
 	onChange: (value: number) => void
 }
 
-export type ResetControlProps = { onChange: () => void }
+export type ResetControlProps = { onChange: () => void; label: string }
 
 export type ReloadControlProps = { onChange: (value: number) => void }
+
+export type AnimationValue = { speed: number; reload: number; pause: boolean }
+
+export type AnimationControlProps = {
+	onChange: (value: AnimationValue) => void
+	speed?: number
+	reload?: number
+	pause?: boolean
+}
 
 export type RotationControlProps = {
 	value: number
@@ -41,8 +50,15 @@ export type Controls =
 	| { name: "zoom"; value: number; min: number; max: number }
 	| { name: "rotation"; value: number; type: "H" | "V" }
 	| { name: "help" }
-	| { name: "reset" }
+	| { name: "reset"; label: string }
 	| { name: "reload" }
+	| {
+			name: "animation"
+			speed?: number
+			reload?: number
+			pause?: boolean
+	  }
+	| { name: "separator" }
 
 export type ControllerProps = {
 	controls: Controls[]

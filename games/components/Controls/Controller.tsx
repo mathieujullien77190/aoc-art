@@ -2,6 +2,9 @@
 
 import React, { useState, useRef } from "react"
 
+import { ControllerProps } from "./types"
+import { useGetBottom } from "./hooks"
+
 import { SpeedControl } from "./SpeedControl"
 import { DataControl } from "./DataControl"
 import { HelpControl } from "./HelpControl"
@@ -10,8 +13,8 @@ import { ReloadControl } from "./ReloadControl"
 import { ZoomControl } from "./ZoomControl"
 import { RotationControl } from "./RotationControl"
 import { CustomSliderControl } from "./CustomSliderControl"
-import { ControllerProps } from "./types"
-import { useGetBottom } from "./hooks"
+import { AnimationControl } from "./AnimationControl"
+import { SeparatorControl } from "./SeparatorControl"
 
 import * as S from "./UI"
 
@@ -66,11 +69,22 @@ export const Controller = ({
 							)}
 							{control.name === "help" && <HelpControl />}
 							{control.name === "reset" && (
-								<ResetControl onChange={() => onChange(control.name, null)} />
+								<ResetControl
+									onChange={() => onChange(control.name, null)}
+									label={control.label}
+								/>
 							)}
 							{control.name === "reload" && (
 								<ReloadControl
 									onChange={value => onChange(control.name, value)}
+								/>
+							)}
+							{control.name === "animation" && (
+								<AnimationControl
+									onChange={value => onChange(control.name, value)}
+									pause={control.pause}
+									speed={control.speed}
+									reload={control.reload}
 								/>
 							)}
 							{control.name === "rotation" && (
@@ -102,6 +116,7 @@ export const Controller = ({
 									onChange={value => onChange(control.name, value)}
 								/>
 							)}
+							{control.name === "separator" && <SeparatorControl />}
 						</React.Fragment>
 					))}
 				{children}

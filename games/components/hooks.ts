@@ -1,6 +1,6 @@
 /** @format */
 
-import { useEffect, useState, useMemo } from "react"
+import { useEffect, useState, useMemo, useCallback } from "react"
 
 import { read } from "_games/helpers/view"
 
@@ -26,28 +26,48 @@ type UseAnimProps<T> = {
 		i: number
 	}
 	action?: ({ view, i }: { view: T; i: number }) => void
-	data: {
+	data?: {
 		dataSize?: number
-		speed: number
-		reload: number
 	}
+	control?: { pause: boolean; reload: number; speed: number }
 }
 
 export const useAnim = <T>({
 	viewsFn,
 	action = () => {},
 	transform = ({ view, i }) => ({ view, i }),
-	data,
+	data = {},
+	control = { pause: false, reload: 0, speed: 40 },
 }: UseAnimProps<T>) => {
-	let timer
 	const [out, setOut] = useState<T>(undefined)
 	const [stats, setStats] = useState<Record<string, number>>({})
+	const [index, setIndex] = useState<number>(0)
+	const [timer, setTimer] = useState<number>(0)
+	const [reload, setReload] = useState<number>(control.reload)
 
 	const viewsInfo = useMemo(() => viewsFn(), [data.dataSize])
 	const calcSpeed = useMemo(
-		() => (data.speed === 0 ? 1 : data.speed),
-		[data.speed]
+		() => (control.speed === 0 ? 1 : control.speed),
+		[control.speed]
 	)
+
+	useEffect(() => {
+		if (control.pause) {
+			clearInterval(timer)
+		}
+	}, [control.pause])
+
+	useEffect(() => {
+		setIndex(0)
+		clearInterval(timer)
+		window.setTimeout(() => setReload(prev => prev + 1), 100)
+	}, [control.reload])
+
+	useEffect(() => {
+		setIndex(0)
+		clearInterval(timer)
+		window.setTimeout(() => setReload(prev => prev + 1), 100)
+	}, [data.dataSize])
 
 	useEffect(() => {
 		const totalView = viewsInfo.views.length
@@ -62,27 +82,36 @@ export const useAnim = <T>({
 
 		clearInterval(timer)
 
-		timer = read<T>(viewsInfo.views, calcSpeed, args => {
-			const { view, i } = transform(args)
-			action(args)
-			countView++
+		if (!control.pause) {
+			setTimer(
+				read<T>(viewsInfo.views, calcSpeed, index, args => {
+					const { view, i } = transform(args)
 
-			setOut(view)
-			setStats({
-				timeViews,
-				nbViewSec,
-				nbsView: countView,
-				countView: i + 1,
-				totalView,
-				dataSize: data.dataSize,
-				speed: calcSpeed,
-			})
-		})
+					action(args)
+					countView++
+
+					setOut(view)
+					setStats({
+						timeViews,
+						nbViewSec,
+						nbsView: countView,
+						countView: i + 1,
+						totalView,
+						dataSize: data.dataSize,
+						speed: calcSpeed,
+					})
+
+					setIndex(i)
+
+					return true
+				})
+			)
+		}
 
 		return () => {
 			clearInterval(timer)
 		}
-	}, [calcSpeed, data.reload, data.dataSize])
+	}, [calcSpeed, control.pause, reload])
 
 	return { out, stats }
 }

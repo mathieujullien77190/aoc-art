@@ -1,11 +1,13 @@
 /** @format */
 
+import { Size } from "_games/helpers/types"
+
 import { Controls } from "../Controls"
 
 export type AxesValue = { H: number; V: number }
 
 export type D3Props = {
-	size: number
+	size: Size
 	start?: AxesValue
 	set?: AxesValue & { i: number }
 	children: JSX.Element

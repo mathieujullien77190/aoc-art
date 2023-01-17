@@ -36,6 +36,7 @@ export const MetaText = styled.div`
 	display: flex;
 	justify-content: center;
 	align-items: end;
+	position: absolute;
 	span {
 		background-color: black;
 		padding: 10px;

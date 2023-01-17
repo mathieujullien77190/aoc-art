@@ -55,3 +55,12 @@ export const HelpContainer = styled.p`
 	padding: 5px;
 	margin: 0;
 `
+
+export const Separator = styled.div`
+	width: 100%;
+	text-align: center;
+
+	hr {
+		color: white;
+	}
+`

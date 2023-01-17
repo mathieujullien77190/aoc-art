@@ -53,7 +53,7 @@ const PlanContainer = styled.div<{
 	pre {
 		margin: 0;
 		opacity: ${({ highlight }) =>
-			highlight ? 1 : highlight === false ? 0.1 : 1};
+			highlight ? 1 : highlight === false ? 0.2 : 1};
 		color: ${({ highlight }) =>
 			highlight ? colors.importantColor : colors.textColor};
 
@@ -104,7 +104,7 @@ const Animation = () => {
 	return (
 		<WrapperContainer3D onContextMenu={handleClick}>
 			<D3
-				size={400}
+				size={{ width: 400, height: 400 }}
 				margin={-100}
 				control={{
 					mouse: { activate: true, smoothing: 400, speed: 3 },

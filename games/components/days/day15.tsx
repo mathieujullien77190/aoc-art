@@ -1,16 +1,14 @@
 /** @format */
 import { useState } from "react"
 import styled from "styled-components"
-import { isMobile } from "react-device-detect"
 
 import { mapView, init } from "_games/core/day15"
 import { useAnim, prepareViewsHelpers } from "_games/components/hooks"
 
-import { colors } from "_components/constants"
 import { View } from "_games/helpers/types"
 
 import Stats from "_games/components/Stats"
-import Controller from "_games/components/Controls"
+import Controller, { AnimationValue } from "_games/components/Controls"
 import { Wrapper } from "_games/components/Containers"
 
 const Game = styled.pre`
@@ -28,14 +26,15 @@ const Game = styled.pre`
 
 const Animation = () => {
 	const [speed, setSpeed] = useState<number>(40)
-	const [reload, setReload] = useState<number>(0)
+	const [reload, setReload] = useState<number>(1)
+	const [pause, setPause] = useState<boolean>(false)
 
 	const { out, stats } = useAnim<View>({
 		viewsFn: () =>
 			prepareViewsHelpers(() => {
 				return init(mapView)
 			}, true),
-		data: { speed, reload },
+		control: { pause, reload, speed },
 	})
 
 	return (
@@ -55,13 +54,19 @@ const Animation = () => {
 			<>
 				<Controller
 					controls={[
-						{ name: "reload" },
-						{ name: "speed", min: 0, max: 1000, value: speed },
+						{
+							name: "animation",
+							speed,
+							pause,
+							reload,
+						},
 					]}
 					onChange={(name, value) => {
-						if (name === "speed") setSpeed(value as number)
-
-						if (name === "reload") setReload(value as number)
+						if (name === "animation") {
+							setSpeed((value as AnimationValue).speed)
+							setReload((value as AnimationValue).reload)
+							setPause((value as AnimationValue).pause)
+						}
 					}}
 				/>
 

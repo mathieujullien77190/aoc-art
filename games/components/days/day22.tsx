@@ -10,6 +10,7 @@ import { useAnim, prepareViewsHelpers } from "_games/components/hooks"
 import D3 from "_games/components/D3"
 import Stats from "_games/components/Stats"
 import { WrapperContainer3D } from "_games/components/Containers"
+import { AnimationValue } from "_games/components/Controls"
 
 const PlanContainer = styled.div<{
 	size: number
@@ -80,6 +81,7 @@ const size = 1000
 const Animation = () => {
 	const [speed, setSpeed] = useState<number>(30)
 	const [reload, setReload] = useState<number>(0)
+	const [pause, setPause] = useState<boolean>(false)
 
 	const { out, stats } = useAnim<{ cube: Record<string, string>; meta: any }>({
 		viewsFn: () =>
@@ -87,13 +89,13 @@ const Animation = () => {
 				const cube = organize(draw)
 				return goN(cube, map, actions, { x: 0, y: 0 }, "01")
 			}, true),
-		data: { speed, reload },
+		control: { pause, reload, speed },
 	})
 
 	return (
 		<WrapperContainer3D>
 			<D3
-				size={size}
+				size={{ width: size, height: size }}
 				margin={-100}
 				zoom={{ value: isMobile ? 2 : 3, min: 1, max: 20, step: 1, bigStep: 2 }}
 				start={{ H: 30, V: 320 }}
@@ -103,12 +105,19 @@ const Animation = () => {
 					UI: true,
 				}}
 				addControl={[
-					{ name: "speed", value: 50, min: 0, max: 1000 },
-					{ name: "reload" },
+					{
+						name: "animation",
+						speed,
+						pause,
+						reload,
+					},
 				]}
 				onControlChange={(name: string, value) => {
-					if (name === "reload") setReload(value)
-					if (name === "speed") setSpeed(value)
+					if (name === "animation") {
+						setSpeed((value as AnimationValue).speed)
+						setReload((value as AnimationValue).reload)
+						setPause((value as AnimationValue).pause)
+					}
 				}}
 			>
 				{out && (
