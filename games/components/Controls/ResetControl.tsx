@@ -10,7 +10,7 @@ export const ResetControl = ({ onChange, label }: ResetControlProps) => {
 		<S.Line>
 			<label>{label}</label>
 			<span>
-				<Action onClick={onChange} value="[Reset]" />
+				<Action onClick={onChange} value="Reset" />
 			</span>
 		</S.Line>
 	)
