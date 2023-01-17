@@ -2,11 +2,6 @@
 import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 
-import { View } from "_games/helpers/types"
-import { createEmptyView } from "_games/helpers/view"
-
-import { colors } from "_components/constants"
-
 import Function from "_games/components/Function"
 
 import { init, Story } from "_games/core/playground"

@@ -186,14 +186,19 @@ export const mergeView = (back: View, front: View, position: Position) => {
 export const read = <T>(
 	arr: T[],
 	timeStep: number,
+	indexStart: number,
 	fn: ({ view, i }: { view: T; i: number }) => void,
 	end?: () => void
 ): number => {
 	const timer = window.setInterval(
 		initTime => {
-			const index = Math.floor((new Date().getTime() - initTime) / timeStep) - 1
-			if (arr[index]) fn.call(this, { view: arr[index], i: index }, timer)
-			else {
+			const index =
+				Math.floor((new Date().getTime() - initTime) / timeStep) -
+				1 +
+				indexStart
+			if (arr[index]) {
+				fn.call(this, { view: arr[index], i: index }, timer)
+			} else {
 				fn.call(this, { view: arr[arr.length - 1], i: arr.length - 1 }, timer)
 				clearInterval(timer)
 				if (end) end()

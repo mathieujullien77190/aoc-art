@@ -176,12 +176,12 @@ export const D3 = ({
 			{control.UI && (
 				<Controller
 					controls={[
-						!isMobile ? { name: "help" } : null,
-						{ name: "reset" },
+						...addControl,
+						{ name: "separator" },
+						{ name: "reset", label: "Orientation : " },
 						{ name: "zoom", min: zoom.min, max: zoom.max, value: Z },
 						{ name: "rotation", type: "H", value: axes.values.H },
 						{ name: "rotation", type: "V", value: axes.values.V },
-						...addControl,
 					]}
 					onChange={(name, value) => {
 						if (name === "zoom") setZ(value as number)

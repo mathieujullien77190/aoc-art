@@ -1,5 +1,4 @@
 /** @format */
-import { StyledComponent } from "styled-components"
 import { ViewPlan } from "_games/helpers/types"
 
 export type ViewPlanProps = {

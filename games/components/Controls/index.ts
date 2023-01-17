@@ -2,5 +2,5 @@
 
 import { Controller } from "./Controller"
 
-export type { Controls } from "./types"
+export * from "./types"
 export default Controller

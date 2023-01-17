@@ -8,7 +8,7 @@ import { colors } from "_components/constants"
 const ActionContainer = styled.button`
 	background-color: transparent;
 	color: ${colors.textColor};
-	font-weight: normal;
+	font-weight: bold;
 
 	padding: 0;
 	margin: 0 2px;
@@ -24,7 +24,7 @@ const ActionContainer = styled.button`
 
 	&:hover {
 		color: ${colors.background};
-		font-weight: bold;
+
 		background-color: ${colors.importantColor};
 	}
 `

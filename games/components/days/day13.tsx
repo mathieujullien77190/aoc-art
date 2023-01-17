@@ -35,7 +35,7 @@ const Animation = () => {
 	return (
 		<WrapperContainer3D>
 			<D3
-				size={1000}
+				size={{ width: 1000, height: 1000 }}
 				margin={-100}
 				zoom={{ value: 8, min: 1, max: 20, step: 1, bigStep: 2 }}
 				control={{
