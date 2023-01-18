@@ -43,9 +43,10 @@ const Animation = () => {
 				<Game
 					dangerouslySetInnerHTML={{
 						__html: out?.value?.replace(
-							/(#+)/g,
+							/(\@+)/g,
 							'<span class="path">$1</span>'
 						),
+						//.replace(/(@+)/g, '<span class="path">$1</span>'),
 					}}
 				/>
 			}

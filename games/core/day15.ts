@@ -11,6 +11,9 @@ import {
 	searchChar,
 	iterator,
 	copyView,
+	clipView,
+	extract,
+	mergeView,
 } from "_games/helpers/view"
 
 export const mapView = createView(input)
@@ -44,14 +47,30 @@ export const init = (mapView: View): View[] => {
 	const res = findBestPath(
 		createKeyFromPosition(start),
 		createKeyFromPosition(end),
-		canGo
+		canGo,
+		({ current, index }) => {
+			tempView = setChar(
+				copyView(tempView),
+				extractPositionFromKey(current.name),
+				" "
+			)
+			if (index % 30 === 0) timeViews.push(tempView)
+		}
 	)
 
-	let tot = 0
-	for (let i = 0; i < res.length; i++) {
+	for (let i = 0; i < res.length - 16; i++) {
 		const pos = extractPositionFromKey(res[i].name)
-		tot += +getChar(mapView, pos)
-		tempView = setChar(copyView(tempView), pos, "#")
+		const ext = clipView(copyView(mapView), { x: pos.x, y: pos.y }, 4)
+
+		tempView = mergeView(tempView, ext, { x: pos.x - 4, y: pos.y - 4 })
+		for (let j = 0; j <= i; j++) {
+			tempView = setChar(
+				copyView(tempView),
+				extractPositionFromKey(res[j].name),
+				"@"
+			)
+		}
+
 		timeViews.push(tempView)
 	}
 
