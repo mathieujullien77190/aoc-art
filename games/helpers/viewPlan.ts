@@ -20,6 +20,19 @@ export const copyViewPlan = (
 	meta: meta ? meta : { ...plans.meta },
 })
 
+export const createEmptyViewPlanFromString = (
+	plansStr: string[],
+	meta: Record<string, string> = undefined
+): ViewPlan => {
+	const width = plansStr[0].split("\n")[0].length
+	const height = plansStr[0].match(/\n/g).length + 1
+	return {
+		value: [...plansStr],
+		size: { width, height },
+		meta,
+	}
+}
+
 export const createEmptyViewPlan = (
 	size: Size,
 	nb: number,

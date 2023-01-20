@@ -9,6 +9,34 @@ import { data, getAllPlan, volcano, searchInsideCube } from "_games/core/day18"
 
 import D3 from "_games/components/D3"
 import { WrapperContainer3D } from "_games/components/Containers"
+import ViewPlanComponent from "_games/components/ViewPlan"
+
+import { ViewPlan } from "_games/helpers/types"
+
+const CustomViewPlanComponent = styled(ViewPlanComponent)`
+	&.zCurrent {
+		border: solid 1px white;
+
+		pre {
+			opacity: 1;
+			color: ${colors.importantColor};
+		}
+	}
+
+	pre {
+		margin: 0;
+		color: ${colors.textColor};
+		opacity: 0.2;
+
+		span.in {
+			color: ${colors.infoColor};
+		}
+
+		span.out {
+			color: ${colors.restrictedColor};
+		}
+	}
+`
 
 const Volcano = styled.pre`
 	position: absolute;
@@ -25,70 +53,19 @@ const Volcano = styled.pre`
 		opacity: 1;
 	}
 
+	span.in {
+		color: ${colors.infoColor};
+	}
+
 	span.target {
 		opacity: 1;
 		color: ${colors.importantColor};
 	}
 `
 
-const PlanContainer = styled.div<{
-	size: number
-	z: number
-	highlight: boolean
-}>`
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	font-size: 15px;
-	line-height: 15px;
-	position: absolute;
-	width: ${data.limits.xMax * 10}px;
-	height: ${data.limits.yMax * 15}px;
-
-	border: ${({ highlight }) => (highlight ? "solid 1px white" : "none")};
-
-	transform: ${({ size, z }) =>
-		`rotateX(90deg) translateZ(${-z * 10 + size / 4}px)`};
-
-	pre {
-		margin: 0;
-		opacity: ${({ highlight }) =>
-			highlight ? 1 : highlight === false ? 0.2 : 1};
-		color: ${({ highlight }) =>
-			highlight ? colors.importantColor : colors.textColor};
-
-		span.in {
-			color: ${colors.infoColor};
-		}
-
-		span.out {
-			color: ${colors.restrictedColor};
-		}
-	}
-`
-
-type PlanProps = {
-	draw: string
-	size: number
-	z: number
-	highlight: boolean | null
-}
-
-const Plan = ({ draw, size, z, highlight }: PlanProps) => {
-	const formatDraw = draw
-		.replace(/(x+)/g, '<span class="in">$1</span>')
-		.replace(/(\.+)/g, '<span class="out">$1</span>')
-
-	return (
-		<PlanContainer size={size} z={z} highlight={highlight}>
-			<pre dangerouslySetInnerHTML={{ __html: formatDraw }}></pre>
-		</PlanContainer>
-	)
-}
-
 const Animation = () => {
 	const [color, setColor] = useState<number>(9)
-	const [basePlan, setBasePlan] = useState<string[]>([])
+	const [basePlan, setBasePlan] = useState<ViewPlan>()
 
 	const handleClick = useCallback(e => {
 		e.preventDefault()
@@ -105,7 +82,6 @@ const Animation = () => {
 		<WrapperContainer3D onContextMenu={handleClick}>
 			<D3
 				size={{ width: 400, height: 400 }}
-				margin={-100}
 				control={{
 					mouse: { activate: true, smoothing: 400, speed: 3 },
 					keyboard: true,
@@ -116,7 +92,7 @@ const Animation = () => {
 					{
 						name: "slider",
 						label: "Mettre en évidence",
-						min: -1,
+						min: 0,
 						max: data.limits.zMax - 1,
 						step: 1,
 						unit: "",
@@ -127,17 +103,16 @@ const Animation = () => {
 					if (name === "slider") setColor(value.value)
 				}}
 			>
-				<>
-					{basePlan.map((draw, i) => (
-						<Plan
-							draw={draw}
-							size={400}
-							z={i}
-							key={i}
-							highlight={color === i ? true : color === -1 ? null : false}
-						/>
-					))}
-				</>
+				<CustomViewPlanComponent
+					currentPlan={color}
+					plans={basePlan}
+					format={str =>
+						str
+							.replace(/(\.+)/g, '<span class="out">$1</span>')
+							.replace(/(\x+)/g, '<span class="in">$1</span>')
+					}
+					getTranslateZ={z => z * 10}
+				/>
 			</D3>
 
 			<Volcano dangerouslySetInnerHTML={{ __html: volcano }} />

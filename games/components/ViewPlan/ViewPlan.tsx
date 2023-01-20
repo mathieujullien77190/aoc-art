@@ -1,5 +1,6 @@
 /** @format */
 
+import { getEnvironmentData } from "worker_threads"
 import { ViewPlanProps } from "./types"
 import * as S from "./UI"
 
@@ -15,17 +16,18 @@ export const ViewPlan = ({
 	getTranslateZ = z => z,
 	getColor = () => "white",
 	metaComponent = () => <></>,
+	currentPlan = 0,
 	className,
 	preHighlight = false,
 }: ViewPlanProps) => {
-	const Pre = <>{}</>
-
 	return (
 		<>
 			{plans &&
 				plans.value.map((viewStr, i) => (
 					<S.PlanContainer
-						className={className}
+						className={
+							className + ` z${i} ` + (i === currentPlan ? "zCurrent" : "")
+						}
 						translateZ={getTranslateZ(i)}
 						color={getColor(i)}
 						key={i}
