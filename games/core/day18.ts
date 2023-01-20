@@ -2,10 +2,12 @@
 
 import { input } from "_games/data/day18"
 import { createArray, extractTab2 } from "_games/helpers/utils"
+import { createEmptyViewPlanFromString } from "_games/helpers/viewPlan"
 import {
 	Position3D as Position,
 	Boundary3D as Limits,
 	MinMax,
+	ViewPlan,
 } from "_games/helpers/types"
 
 type LPosition = Record<string, Position>
@@ -252,14 +254,14 @@ export const getAllPlan = (
 	inside: LPosition,
 	outside: LPosition,
 	limits: Limits
-): string[] => {
+): ViewPlan => {
 	const draw = []
 
 	for (let z = 0; z < limits.zMax; z++) {
 		draw[z] = getPlan(data, inside, outside, limits, z)
 	}
 
-	return draw
+	return createEmptyViewPlanFromString(draw)
 }
 
 export const volcano = [

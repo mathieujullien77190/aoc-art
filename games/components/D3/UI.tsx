@@ -16,7 +16,6 @@ export const Wrapper = styled.div<{ mouseControl: boolean }>`
 `
 
 export const Container = styled.div<{ size: Size; margin: number }>`
-	//margin-top: ${({ margin }) => `${margin}px`};
 	width: ${({ size }) => (size ? `${size.width}px` : "auto")};
 	height: ${({ size }) => (size ? `${size.height}px` : "auto")};
 	perspective: ${({ size }) =>
