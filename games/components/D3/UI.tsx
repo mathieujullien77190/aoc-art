@@ -27,8 +27,11 @@ export const Container = styled.div<{ size: Size; margin: number }>`
 
 export const Cube = styled.div<{
 	size: Size
+	originZ: number
 }>`
 	transform-style: preserve-3d;
+	transform-origin: ${({ originZ }) =>
+		`center center ${originZ ? originZ + "px" : "center"}`};
 	margin-top: -50px;
 	position: relative;
 	display: flex;

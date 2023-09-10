@@ -15,6 +15,7 @@ let timer = null
 export const D3 = ({
 	size,
 	margin = 0,
+	originZ,
 	zoom = { value: 10, min: 1, max: 20, step: 1, bigStep: 2 },
 	set = { H: 0, V: 0, i: 0 },
 	start = { H: 0, V: 0 },
@@ -160,6 +161,7 @@ export const D3 = ({
 				}}
 			>
 				<S.Cube
+					originZ={originZ}
 					ref={refCube}
 					size={size}
 					style={{

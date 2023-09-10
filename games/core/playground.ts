@@ -1,5 +1,6 @@
 /** @format */
 import {
+	viewData0,
 	viewData1,
 	viewData2,
 	viewData3,
@@ -18,6 +19,7 @@ import {
 	extract,
 	getNeighbours,
 	getChar,
+	searchChars,
 	searchChar,
 	setChar,
 	replaceChar,
@@ -343,19 +345,30 @@ export const init = (): Story[] => {
 			id: "getNeighbours",
 			results: [
 				{
-					text: `const data = viewData2`,
+					text: `const data = viewData0`,
 					exec: () => {
 						return {
-							base: viewData2,
-							display: viewData2,
+							base: viewData0,
+							display: viewData0,
 						}
 					},
 				},
 				{
-					text: `neighbours1 = getNeighbours(view, {x:4,y:3})`,
+					text: `neighbours1 = getNeighbours(view, {x:1,y:1})`,
 					exec: () => {
-						const view = createView(viewData2)
-						const neighbours = getNeighbours(view, { x: 4, y: 2 })
+						const view = createView(viewData0)
+						const neighbours = getNeighbours(view, { x: 1, y: 1 })
+						return {
+							base: neighbours,
+							display: JSON.stringify(neighbours, null, 1),
+						}
+					},
+				},
+				{
+					text: `neighbours1 = getNeighbours(view, {x:1,y:1}, true)`,
+					exec: () => {
+						const view = createView(viewData0)
+						const neighbours = getNeighbours(view, { x: 1, y: 1 }, true)
 						return {
 							base: neighbours,
 							display: JSON.stringify(neighbours, null, 1),
@@ -365,7 +378,7 @@ export const init = (): Story[] => {
 				{
 					text: `neighbours2 = getNeighbours(view, {x:0,y:0})`,
 					exec: () => {
-						const view = createView(viewData2)
+						const view = createView(viewData0)
 						const neighbours = getNeighbours(view, { x: 0, y: 0 })
 						return {
 							base: neighbours,
@@ -376,7 +389,7 @@ export const init = (): Story[] => {
 				{
 					text: `neighbours3 = getNeighbours(view, {x:100,y:100})`,
 					exec: () => {
-						const view = createView(viewData2)
+						const view = createView(viewData0)
 						const neighbours = getNeighbours(view, { x: 100, y: 1000 })
 						return {
 							base: neighbours,
@@ -418,6 +431,17 @@ export const init = (): Story[] => {
 					exec: () => {
 						const view = createView(viewData1)
 						const pos = searchChar(view, "@")
+						return {
+							base: pos,
+							display: JSON.stringify(pos),
+						}
+					},
+				},
+				{
+					text: `const pos = searchChars(view, "#")`,
+					exec: () => {
+						const view = createView(viewData1)
+						const pos = searchChars(view, "#")
 						return {
 							base: pos,
 							display: JSON.stringify(pos),

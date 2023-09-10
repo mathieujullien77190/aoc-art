@@ -12,8 +12,7 @@ export const PlanContainer = styled.div<{
 	font-size: 15px;
 	line-height: 15px;
 	position: absolute;
-	transform: ${({ translateZ }) =>
-		`rotateX(90deg) translateZ(${translateZ}px)`};
+	transform: ${({ translateZ }) => `translateZ(${translateZ}px)`};
 	color: ${({ color }) => color};
 `
 

@@ -20,6 +20,7 @@ export type D3Props = {
 	}
 	zoomMax?: number
 	margin?: number
+	originZ?: number
 	control?: {
 		mouse: {
 			activate: boolean

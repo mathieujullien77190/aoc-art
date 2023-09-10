@@ -1,17 +1,17 @@
 /** @format */
-import { useState } from "react"
-import { isMobile } from "react-device-detect"
+import { useState, useEffect } from "react"
 
 import { colors } from "_components/constants"
 
+import { init, data } from "_games/core/day11"
+
 import { ViewPlan } from "_games/helpers/types"
-import { mapView, init } from "_games/core/day12"
 import { useAnim, prepareViewsHelpers } from "_games/components/hooks"
 
 import D3 from "_games/components/D3"
 import Stats from "_games/components/Stats"
 import { WrapperContainer3D } from "_games/components/Containers"
-import ViewPlanComponent, { metaText } from "_games/components/ViewPlan"
+import ViewPlanComponent from "_games/components/ViewPlan"
 import { AnimationValue } from "_games/components/Controls"
 
 const Animation = () => {
@@ -22,7 +22,7 @@ const Animation = () => {
 	const { out, stats } = useAnim<ViewPlan>({
 		viewsFn: () =>
 			prepareViewsHelpers(() => {
-				return init(mapView)
+				return init(data)
 			}, true),
 		control: { pause, reload, speed },
 	})
@@ -30,9 +30,10 @@ const Animation = () => {
 	return (
 		<WrapperContainer3D>
 			<D3
-				size={{ width: 1000, height: 600 }}
+				size={{ width: 105, height: 150 }}
+				originZ={60}
 				margin={-100}
-				zoom={{ value: isMobile ? 4 : 8, min: 1, max: 20, step: 1, bigStep: 2 }}
+				zoom={{ value: 15, min: 1, max: 20, step: 1, bigStep: 2 }}
 				control={{
 					mouse: { activate: true, smoothing: 400, speed: 3 },
 					keyboard: true,
@@ -46,7 +47,7 @@ const Animation = () => {
 						reload,
 					},
 				]}
-				start={{ H: 0, V: 10 }}
+				start={{ H: 0, V: 0 }}
 				onControlChange={(name: string, value) => {
 					if (name === "animation") {
 						setSpeed((value as AnimationValue).speed)
@@ -55,20 +56,7 @@ const Animation = () => {
 					}
 				}}
 			>
-				<ViewPlanComponent
-					plans={out}
-					format={str => str.replace(/(@+)/g, '<span class="H">$1</span>')}
-					getColor={z => {
-						if (z === 0) return "white"
-						if (z === 1) return colors.infoColor
-						if (z === 2) return "#e8ffc5"
-						if (z === 3) return colors.cmdColor
-						return `hsl(28deg, 100%, ${Math.abs((z - 27) * 3 - 19)}%)`
-					}}
-					getTranslateZ={z => z * 3}
-					metaComponent={metaText}
-					preHighlight
-				/>
+				<ViewPlanComponent plans={out} getTranslateZ={z => z * 30} />
 			</D3>
 
 			<Stats stats={stats} />

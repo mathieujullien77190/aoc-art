@@ -1,5 +1,9 @@
 /** @format */
 
+export const viewData0 = `123
+4#6
+789`
+
 export const viewData1 = `.........
 ....#....
 ...#@#...

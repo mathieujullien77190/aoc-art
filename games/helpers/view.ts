@@ -218,6 +218,24 @@ export const searchChar = (view: View, str: string): Position => {
 	return { x, y }
 }
 
+export const searchChars = (view: View, str: string): Position[] => {
+	let positions: Position[] = []
+	let pos = -1
+	do {
+		pos = view.value.indexOf(str, pos + 1)
+		if (pos !== -1) {
+			const y = Math.floor(pos / (view.size.width + 1))
+			const x = pos - y * (view.size.width + 1)
+			positions.push({
+				x,
+				y,
+			})
+		}
+	} while (pos > -1)
+
+	return positions
+}
+
 export const getChar = (view: View, pos: Position): string => {
 	return view.value[pos.y * (view.size.width + 1) + pos.x]
 }
@@ -239,35 +257,34 @@ export const replaceChar = (view: View, str: string, replace: string): View => {
 
 export const getNeighbours = (
 	view: View,
-	pos: Position
+	pos: Position,
+	withDiag: boolean = false
 ): { value: string; pos: Position }[] => {
-	let matrix = [
-		{
-			cond: pos.y - 1 >= 0,
-			pos: (pos.y - 1) * (view.size.width + 1) + pos.x,
-			realPos: { x: pos.x, y: pos.y - 1 },
-		},
-		{
-			cond: pos.y + 1 < view.size.height,
-			pos: (pos.y + 1) * (view.size.width + 1) + pos.x,
-			realPos: { x: pos.x, y: pos.y + 1 },
-		},
-		{
-			cond: pos.x - 1 >= 0,
-			pos: pos.y * (view.size.width + 1) + pos.x - 1,
-			realPos: { x: pos.x - 1, y: pos.y },
-		},
-		{
-			cond: pos.x + 1 < view.size.width,
-			pos: pos.y * (view.size.width + 1) + pos.x + 1,
-			realPos: { x: pos.x + 1, y: pos.y },
-		},
+	const matrix = [
+		[0, -1],
+		[-1, 0],
+		[1, 0],
+		[0, 1],
 	]
 
-	return matrix
-		.filter(item => item.cond)
-		.map(item => ({ value: view.value[item.pos], pos: item.realPos }))
-		.filter(item => !!item.value)
+	const matrixDiag = [
+		[-1, -1],
+		[1, -1],
+		[-1, 1],
+		[1, 1],
+	]
+
+	return [...matrix, ...(withDiag ? matrixDiag : [])]
+		.map(add => {
+			const y = pos.y + add[1]
+			const x = pos.x + add[0]
+			if (y >= 0 && y < view.size.height && x >= 0 && x < view.size.width) {
+				const position = y * (view.size.width + 1) + x
+				return { pos: { x, y }, value: view.value[position] }
+			}
+			return null
+		})
+		.filter(value => !!value)
 }
 
 export const iterator = (
