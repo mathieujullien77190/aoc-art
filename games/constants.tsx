@@ -24,7 +24,7 @@ export type GameConfig = {
 export const gamesConfig: GameConfig[] = [
 	{
 		day: "25",
-		year: "2022",
+		year: "2021",
 		title: "Sea Cucumber",
 		component: () => <Game2021 />,
 	},

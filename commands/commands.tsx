@@ -16,9 +16,8 @@ const textHelp = (help: Help) => {
 	const patterns = help.patterns
 		.map(item => `\t${item.pattern} : ${item.description}\n`)
 		.join("")
-	return `${help.description || ""}${
-		help.patterns.length > 0 ? "\n" : ""
-	}${patterns}`
+	return `${help.description || ""}${help.patterns.length > 0 ? "\n" : ""
+		}${patterns}`
 }
 
 const allCommandsHelp = (commands: BaseCommand[]) => {
@@ -49,8 +48,8 @@ export const commands: BaseCommand[] = [
 				"\n",
 				`Bienvenue, Vous êtes sur $${app.name}$.`,
 				"\n",
-				"Pour voir le ASCII Art d'un jour précis tapez : `day [nbDay]`",
-				"Pour lister tout les scripts tapez : `day list`",
+				"Pour voir le ASCII Art d'un jour précis tapez : `aoc [year]-[day]`",
+				"Pour lister tout les scripts tapez : `aoc list`",
 				"Pour obtenir plus d'information tapez : `help` ",
 			].join("\n")
 		},
@@ -134,24 +133,28 @@ export const commands: BaseCommand[] = [
 	},
 	{
 		restricted: false,
-		name: "day",
+		name: "aoc",
 		action: ({ args }) => {
 			if (args[0] === "list") {
 				return (
 					"\n" +
 					gamesConfig
-						.map(script => ` > +day ${script.day}+ : ${script.title}`)
+						.filter(script => !script.special)
+						.map(script => ` > +aoc ${script.year}-${`0${script.day}`.substr(-2)}+ : ${script.title}`)
 						.join("\n")
 				)
 			}
 
-			const search = gamesConfig.filter(script => script.day === args[0])
 
-			if (search.length === 1) {
-				return `§Jour : ${search[0].day}§\n\n${search[0].title}`
-			} else {
-				return `Aucun script pour ce jour `
+			const extract = args[0] ? args[0].split("-") : []
+			if (extract.length === 2) {
+				const search = gamesConfig.filter(script => script.day === parseInt(extract[1], 10).toString() && script.year === extract[0])
+				if (search.length === 1) {
+					return `§Année : ${search[0].year} / Jour : ${search[0].day}§\n\n${search[0].title}`
+				}
 			}
+			return `Aucun script pour ce jour`
+
 		},
 		redux: () => {
 			return setProperties({
@@ -161,18 +164,21 @@ export const commands: BaseCommand[] = [
 		},
 
 		JSX: ({ args }) => {
-			return <Games day={args[0]} />
+			const extract = args[0] ? args[0].split("-") : []
+			if (extract.length === 2) {
+				return <Games day={parseInt(extract[1], 10).toString()} year={extract[0]} />
+			} return <></>
 		},
 
 		help: {
 			description: "Affiche l'exercice du jour En ASCII Art ",
 			patterns: [
 				{
-					pattern: "day [numero]",
+					pattern: "aoc [year]-[day]",
 					description: "Affiche un jour spécifique",
 				},
 				{
-					pattern: "day list",
+					pattern: "aoc list",
 					description: "Liste tout les scripts",
 				},
 			],
@@ -183,7 +189,7 @@ export const commands: BaseCommand[] = [
 	},
 	{
 		restricted: true,
-		name: "closeday",
+		name: "closeaoc",
 		action: ({ args }) => {
 			return "script close"
 		},
