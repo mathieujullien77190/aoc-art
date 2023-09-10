@@ -13,7 +13,7 @@ export const colors = {
 }
 
 export const app = {
-	name: "AOC 2022",
+	name: "AOC Art",
 	logo: "🌼",
 	author: "JULLIEN Mathieu",
 	alias: "SuperMatou",
