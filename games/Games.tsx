@@ -9,11 +9,11 @@ import { gamesConfig } from "./constants"
 
 import Window from "./components/Window"
 
-export const Games = ({ day }: { day: string }) => {
+export const Games = ({ day, year }: { day: string, year: string }) => {
 	const dispatch = useAppDispatch()
 	const [display, setDisplay] = useState<boolean>(true)
 
-	const search = gamesConfig.filter(script => script.day === day)
+	const search = gamesConfig.filter(script => script.day === day && script.year === year)
 
 	return (
 		<>
@@ -22,7 +22,7 @@ export const Games = ({ day }: { day: string }) => {
 					game={search[0]}
 					onClose={() => {
 						setDisplay(false)
-						sendRestrictedCommand("closeday", dispatch)
+						sendRestrictedCommand("closeaoc", dispatch)
 					}}
 				/>
 			)}
