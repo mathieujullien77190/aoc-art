@@ -5,15 +5,15 @@ import { colors } from "_components/constants"
 import uniqid from "uniqid"
 
 export const title = `
-   ____        ,-----.        _______               .\`\`\`\`\`-.   .-\`\`\`\`\`\`\`-.     .\`\`\`\`\`-.      .\`\`\`\`\`-.   
- .'  __ \`.   .'  I.-,I  '.     /   __  \\             /   ,-.  \\ / ,\`\`\`\`\`\`\`. \\   /   ,-.  \\    /   ,-.  \\  
-/   '  \\  \\ / I,-.|  \\ _I \\   | B,_B/  \\__)           (___/  |   ||/ K.-./ )K  \\|  (___/  |   |  (___/  |   | 
-|___|  /  |;  I\\  '_ /  |I :B,-./  )B                       .'  / || K\\ '_ .')K||        .'  /         .'  /  
-  _.-\`    ||  I_\`,/ \\ _/I  |B\\  '_ '\`)B                 _.-'_.-'  ||K(_ (_) _)K||    _.-'_.-'      _.-'_.-'   
-.'   R_R    |: I(  '\\_/ \\I   ; B> (_)  )B  __           G_/_G  .'     ||  K/ .  \\K ||  H_/_H  .'       D_/_D  .'      
-|  R_( )_R  | \\ I\`"/  \\  )I / B(  .  .-'B_/  )         G( ' )G(__..--.||  K\`-'\`"\`K || H( ' )H(__..--. D( ' )D(__..--. 
-\\ R(_ o _)R /  '. I\\_/\`\`"I.'   B\`-'\`-'B     /         G(_{;}_)G      |\\'._______.'/H(_{;}_)H      |D(_{;}_)D      | 
- '.R(_,_)R.'     '-----'       \`._____.'           G(_,_)G-------' '._______.'  H(_,_)H-------' D(_,_)D-------'
+  ____        ,-----.         _______              ____    .-------. ,---------.  
+.'  __ \`.   .'  I.-,I  '.      /   __  \\           .'  __ \`. |  G_ _G   \\\\          \\ 
+/   '  \\  \\ / I,-.|  \\ _I \\   | B,_B/  \\__)         /   '  \\  \\| G( ' )G  | \`--.  ,---' 
+|___|  /  |;  I\\  '_ /  |I :B,-./  )B               |___|  /  ||G(_ o _)G /    |   \\    
+  _.-\`    ||  I_\`,/ \\ _/I  |B\\  '_ '\`)B                _.-\`   || G(_,_)G.' __  :J_ _J:    
+.'   R_R    |: I(  '\\_/ \\   I; B> (_)  )B  __         .'   S_S    ||  |\\ \\  |  | J(_|_)J    
+|  R_( )_R  | \\ I\`"/  \\  )I / B(  .  .-'B_/  )        |  S_( )_S  ||  | \\ \`'   /J(_(=)_)J   
+\\ R(_ o _)R /  '. I\\_/\`\`"I.'   B\`-'\`-'B     /         \\ S(_ o _)S /|  |  \\    /  J(_|_)J    
+ '.R(_,_)R.'     '-----'       \`._____.'           '.S(_,_)S.' ''-'   \`'-'   '---'    
 `
 
 export const highlightFlower = (text: any, baseStyles: CSSProperties) => {
@@ -21,6 +21,7 @@ export const highlightFlower = (text: any, baseStyles: CSSProperties) => {
 
 	const list = [
 		{ reg: /R(.*)R/g, styles: { color: colors.restrictedColor } },
+		{ reg: /S(.*)S/g, styles: { color: colors.restrictedColor } },
 		{ reg: /I(.*)I/g, styles: { color: colors.importantColor } },
 		{ reg: /B(.*)B/g, styles: { color: colors.infoColor } },
 		{ reg: /G(.*)G/g, styles: { color: colors.appColor } },
