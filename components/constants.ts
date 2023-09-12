@@ -1,6 +1,7 @@
 /** @format */
 
 export const colors = {
+
 	background: "#212E35",
 	overlay: "#0f0f23e0",
 	aoc: "#0f0f23",
