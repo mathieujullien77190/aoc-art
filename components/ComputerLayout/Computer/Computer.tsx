@@ -22,7 +22,7 @@ const code = () => {
   return `${part1}:${part2}`.toUpperCase();
 };
 
-const BaseComputer = ({ children }: ComputerProps, ref: Ref<HTMLDivElement>) => {
+const BaseComputer = ({ children, onCloseWindow = () => { } }: ComputerProps, ref: Ref<HTMLDivElement>) => {
   const [power, setPower] = useState<boolean>(true);
   const [ready, setReady] = useState<boolean>(false);
   const [bios, setBios] = useState<boolean>(false);
@@ -78,6 +78,7 @@ const BaseComputer = ({ children }: ComputerProps, ref: Ref<HTMLDivElement>) => 
                     onBlueScreen={() => {
                       if (hasFatalError(settings)) setFatalError(true);
                     }}
+                    onCloseWindow={onCloseWindow}
                   >
                     {children}
                   </Windows>

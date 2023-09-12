@@ -110,7 +110,9 @@ const Home = () => {
 	return (
 		<Layout onClick={handleClick}>
 
-			<Computer ref={containerRef}>
+			<Computer ref={containerRef} onCloseWindow={() => {
+				sendCommand("clear", dispatch)
+			}}>
 				<Terminal
 					options={options}
 					commands={commands}

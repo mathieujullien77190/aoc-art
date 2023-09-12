@@ -13,6 +13,7 @@ import Date from "../Date";
 const BaseWindows = ({
   children,
   onBlueScreen = () => { },
+  onCloseWindow = () => { }
 }: WindowsProps, ref: Ref<HTMLDivElement>) => {
 
   const [displayWindow, setDisplayWindow] = useState<boolean>(true);
@@ -27,6 +28,7 @@ const BaseWindows = ({
         image="🌼"
         onClick={() => {
           setDisplayWindow(prev => !prev);
+          onCloseWindow()
         }}
       />
 
@@ -36,6 +38,7 @@ const BaseWindows = ({
         title="Flower Cmder"
         onClose={() => {
           setDisplayWindow(false);
+          onCloseWindow()
         }}
         ref={ref}
       >

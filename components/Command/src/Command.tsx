@@ -41,7 +41,7 @@ const Command = ({
 
 	useEffect(() => {
 		if (displayResult.finish) onRendered()
-		if (displayResult.letter === "\n") onAnimate()
+		onAnimate()
 
 	}, [displayResult, onRendered])
 
