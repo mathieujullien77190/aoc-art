@@ -32,6 +32,7 @@ const animDate = (withTime: boolean, withDate: boolean): string => {
 export const DateComponent = ({
   withTime = false,
   withDate = false,
+  onClick = () => { }
 }: DateProps) => {
   const [currentDate, setCurrentDate] = useState<string>();
 
@@ -45,5 +46,5 @@ export const DateComponent = ({
     };
   }, []);
 
-  return <S.Container>{currentDate}</S.Container>;
+  return <S.Container onClick={onClick}>{currentDate}</S.Container>;
 };

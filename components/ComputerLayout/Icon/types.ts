@@ -1,5 +1,8 @@
+/** @format */
+
 export type IconProps = {
-  name: string;
-  image: string;
-  onOpen?: (name: string) => void;
-};
+	name: string
+	image: string
+	open: boolean
+	onClick?: (name: string) => void
+}

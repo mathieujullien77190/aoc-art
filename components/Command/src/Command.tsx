@@ -15,8 +15,9 @@ const Command = ({
 	baseCommand,
 	lang,
 	animation,
-	onRendered = () => {},
-	onClickCommand = () => {},
+	onRendered = () => { },
+	onAnimate = () => { },
+	onClickCommand = () => { },
 }: CommandProps) => {
 	const result =
 		baseCommand?.display?.trad === false
@@ -39,12 +40,10 @@ const Command = ({
 	})
 
 	useEffect(() => {
-		window.scrollTo(0, 100000)
-	}, [displayResult])
-
-	useEffect(() => {
 		if (displayResult.finish) onRendered()
-	}, [displayResult.finish, onRendered])
+		if (displayResult.letter === "\n") onAnimate()
+
+	}, [displayResult, onRendered])
 
 	return (
 		<>
@@ -63,12 +62,12 @@ const Command = ({
 						{baseCommand?.display?.highlight
 							? baseCommand?.display?.highlight(displayResult.txt)
 							: highlight(
-									displayResult.txt,
-									(name, args) => {
-										onClickCommand(name, args)
-									},
-									lang
-							  )}
+								displayResult.txt,
+								(name, args) => {
+									onClickCommand(name, args)
+								},
+								lang
+							)}
 					</S.CmdResult>
 
 					{baseCommand?.JSX && baseCommand.JSX({ args: command.args })}
