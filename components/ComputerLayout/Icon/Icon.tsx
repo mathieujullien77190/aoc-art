@@ -1,15 +1,24 @@
 /** @format */
 
 
+import { useEffect, useState } from "react";
 import { IconProps } from "./types";
 import * as S from "./UI";
 
-export const Icon = ({ name, image, onOpen = () => { } }: IconProps) => {
+export const Icon = ({ name, image, open, onClick = () => { } }: IconProps) => {
+  const [isOpen, setIsOpen] = useState<boolean>(open)
+
+  useEffect(() => {
+    setIsOpen(open)
+  }, [open])
+
   return (
     <S.Container
       onClick={() => {
-        onOpen(name);
+        setIsOpen(prev => !prev)
+        onClick(name);
       }}
+      isOpen={isOpen}
     >
       <S.Image>{image}</S.Image>
       <S.Name>{name}</S.Name>

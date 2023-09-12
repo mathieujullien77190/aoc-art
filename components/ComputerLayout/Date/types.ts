@@ -1,1 +1,7 @@
-export type DateProps = { withTime?: boolean; withDate?: boolean };
+/** @format */
+
+export type DateProps = {
+	withTime?: boolean
+	withDate?: boolean
+	onClick?: () => void
+}

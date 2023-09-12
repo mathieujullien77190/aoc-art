@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useCallback, useEffect, useRef } from "react"
 
 import { sendRestrictedCommand, sendCommand } from "_commands/helpers"
 
@@ -60,14 +60,23 @@ const Home = () => {
 	const currentCommand = useGetCurrentCommand()
 	const start = useGetStart()
 
-
+	const containerRef = useRef<HTMLDivElement>(null)
 
 	const handleRendered = useCallback(
 		(id: string) => {
 			dispatch(setIsRendered(id))
+			containerRef.current.scrollTo(0, 1000000)
 		},
 		[dispatch]
 	)
+
+	const handleAnimate = useCallback(
+		() => {
+			containerRef.current.scrollTo(0, 1000000)
+		},
+		[dispatch]
+	)
+
 
 	const handleClick = useCallback(() => {
 		if (isMobile) {
@@ -81,6 +90,11 @@ const Home = () => {
 		},
 		[dispatch]
 	)
+
+	const handleSendCommand = (commandPattern: string) => {
+		sendCommand(commandPattern, dispatch)
+
+	}
 
 	useEffect(() => {
 		sendRestrictedCommand("title", dispatch)
@@ -96,18 +110,21 @@ const Home = () => {
 	return (
 		<Layout onClick={handleClick}>
 
-			<Computer ><Terminal
-				options={options}
-				commands={commands}
-				currentCommand={currentCommand}
-				onSendCommand={commandPattern => sendCommand(commandPattern, dispatch)}
-				onSendRestrictedCommand={commandPattern =>
-					sendRestrictedCommand(commandPattern, dispatch)
-				}
-				onSendPreviousCommand={() => handleSetCursor(-1)}
-				onSendNextCommand={() => handleSetCursor(1)}
-				onRendered={handleRendered}
-			/></Computer>
+			<Computer ref={containerRef}>
+				<Terminal
+					options={options}
+					commands={commands}
+					currentCommand={currentCommand}
+					onSendCommand={handleSendCommand}
+					onAnimateCommand={handleAnimate}
+					onSendRestrictedCommand={commandPattern =>
+						sendRestrictedCommand(commandPattern, dispatch)
+					}
+					onSendPreviousCommand={() => handleSetCursor(-1)}
+					onSendNextCommand={() => handleSetCursor(1)}
+					onRendered={handleRendered}
+				/>
+			</Computer>
 
 		</Layout>
 	)

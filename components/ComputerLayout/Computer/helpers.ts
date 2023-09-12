@@ -15,5 +15,6 @@ export const hasOldScreen = (settings: Record<string, string>): boolean => {
 }
 
 export const hasFatalError = (settings: Record<string, string>): boolean => {
+	if (!settings?.settings4) return true
 	return settings?.settings4 === ERROR.yes
 }

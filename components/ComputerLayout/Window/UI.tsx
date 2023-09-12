@@ -9,14 +9,11 @@ import {
 } from "../Windows/constants";
 
 export const Container = styled.div<{
-  pos: Pos;
   size: Size;
   mode: Mode;
-
+  followMouse: boolean
 }>`
   position: absolute;
-  top: ${({ pos }) => `${pos.y}px`};
-  left: ${({ pos }) => `${pos.x}px`};
   width: ${({ size }) =>
     `calc(${size.width}${size.unit} - ${FULL.borderSize} * 2)`};
   height: ${({ size }) =>
@@ -25,21 +22,20 @@ export const Container = styled.div<{
   border-style: solid;
   border-width: ${FULL.borderSize};
   border-color: ${COLORS.borderColor};
-
-  ${({ mode }) =>
-    mode === "medium" &&
-    `
-    box-shadow: 3px 2px 4px #00000041;
-    border-radius: 4px;
-  `};
-
   background-color: ${COLORS.backgroundContent};
   color: ${COLORS.text};
   overflow: hidden;
   font-weight: ${FULL.fontWeight};
   z-index: 9;
 
-  transition: all ${ANIM_TIME / 1000}s ease-out;
+  transition: ${({ followMouse }) => followMouse ? `width ${ANIM_TIME / 1000}s ease-out, height ${ANIM_TIME / 1000}s ease-out` : `all ${ANIM_TIME / 1000}s ease-out`};
+
+  ${({ mode }) => {
+    if (mode === "medium") return `
+      box-shadow: 3px 2px 4px #00000041;
+      border-radius: 4px;
+    `
+  }}
 `;
 
 export const topBar = styled.div`
@@ -49,9 +45,9 @@ export const topBar = styled.div`
   border-bottom-width: ${FULL.borderSize};
   border-bottom-color: ${COLORS.borderColor};
   display: flex;
-
   align-items: center;
   padding: ${FULL.padding};
+  cursor: move;
 `;
 
 export const Content = styled.div`

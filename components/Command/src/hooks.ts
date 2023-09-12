@@ -22,6 +22,7 @@ export const useDisplayByLetter = ({
 	stepSize,
 }: useDisplayByLetterProps) => {
 	const [textTime, setTextTime] = useState<string>("")
+	const [letterTime, setLetterTime] = useState<string>("")
 	const [finish, setFinish] = useState<boolean>(false)
 	useEffect(() => {
 		if (canRendered) {
@@ -29,6 +30,7 @@ export const useDisplayByLetter = ({
 			let i = 0
 
 			const timer = setInterval(() => {
+				setLetterTime(baseTxt.substr(i, 1))
 				setTextTime(
 					animation
 						? !reverse
@@ -49,5 +51,5 @@ export const useDisplayByLetter = ({
 	useEffect(() => {
 		if (finish) setTextTime(baseTxt)
 	}, [lang])
-	return { txt: textTime, finish }
+	return { txt: textTime, finish, letter: letterTime }
 }

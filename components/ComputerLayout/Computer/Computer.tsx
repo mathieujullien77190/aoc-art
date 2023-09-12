@@ -1,5 +1,5 @@
 /** @format */
-import { useState, useEffect } from "react";
+import { useState, useEffect, Ref, forwardRef } from "react";
 import { ComputerProps } from "./types";
 import * as S from "./UI";
 import { getSpeed, hasOldScreen, hasFatalError } from "./helpers";
@@ -22,12 +22,12 @@ const code = () => {
   return `${part1}:${part2}`.toUpperCase();
 };
 
-export const Computer = ({ children }: ComputerProps) => {
+const BaseComputer = ({ children }: ComputerProps, ref: Ref<HTMLDivElement>) => {
   const [power, setPower] = useState<boolean>(true);
   const [ready, setReady] = useState<boolean>(false);
   const [bios, setBios] = useState<boolean>(false);
   const [wantToGoBIOS, setWantToGoBIOS] = useState<boolean>(false);
-  const [onOffCounter, setOnOffCounter] = useState<number>(0);
+
   const [fatalError, setFatalError] = useState<boolean>(false);
   const [settings, setSettings] = useState<Record<string, string>>({});
   const [build, setBuild] = useState<boolean>(false);
@@ -36,9 +36,7 @@ export const Computer = ({ children }: ComputerProps) => {
     if (e.code === "Delete" && !wantToGoBIOS) setWantToGoBIOS(true);
   };
 
-  useEffect(() => {
-    if (onOffCounter > 10 && hasFatalError(settings)) setFatalError(true);
-  }, [onOffCounter]);
+
 
   useEffect(() => {
     window.addEventListener("keyup", gotoBios);
@@ -76,9 +74,8 @@ export const Computer = ({ children }: ComputerProps) => {
                 )}
                 {power && ready && (
                   <Windows
-
+                    ref={ref}
                     onBlueScreen={() => {
-                      console.log(hasFatalError(settings));
                       if (hasFatalError(settings)) setFatalError(true);
                     }}
                   >
@@ -119,3 +116,5 @@ export const Computer = ({ children }: ComputerProps) => {
     </S.Wrapper>
   );
 };
+
+export const Computer = forwardRef<HTMLDivElement, ComputerProps>(BaseComputer)
