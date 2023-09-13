@@ -30,8 +30,8 @@ export const Controller = ({
 
 	return (
 		<S.ControllerContainer
-			bottom={bottom}
-			show={show}
+			$bottom={bottom}
+			$show={show}
 			onMouseOver={() => {
 				seOpen(true)
 			}}

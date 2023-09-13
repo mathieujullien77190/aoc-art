@@ -1,5 +1,3 @@
-/** @format */
-
 import React, { useEffect } from "react"
 import { CommandProps } from "./types"
 
@@ -15,9 +13,9 @@ const Command = ({
 	baseCommand,
 	lang,
 	animation,
-	onRendered = () => { },
-	onAnimate = () => { },
-	onClickCommand = () => { },
+	onRendered = () => {},
+	onAnimate = () => {},
+	onClickCommand = () => {},
 }: CommandProps) => {
 	const result =
 		baseCommand?.display?.trad === false
@@ -42,7 +40,6 @@ const Command = ({
 	useEffect(() => {
 		if (displayResult.finish) onRendered()
 		onAnimate()
-
 	}, [displayResult, onRendered])
 
 	return (
@@ -50,7 +47,7 @@ const Command = ({
 			{canRendered && (
 				<S.CmdContainer style={baseCommand?.display?.style || {}}>
 					{!baseCommand?.display?.hideCmd && (
-						<S.CmdLine restricted={command.restricted}>
+						<S.CmdLine $restricted={command.restricted}>
 							<strong>{app.logo}</strong>{" "}
 							<span>
 								{name} {args}
@@ -62,12 +59,12 @@ const Command = ({
 						{baseCommand?.display?.highlight
 							? baseCommand?.display?.highlight(displayResult.txt)
 							: highlight(
-								displayResult.txt,
-								(name, args) => {
-									onClickCommand(name, args)
-								},
-								lang
-							)}
+									displayResult.txt,
+									(name, args) => {
+										onClickCommand(name, args)
+									},
+									lang
+							  )}
 					</S.CmdResult>
 
 					{baseCommand?.JSX && baseCommand.JSX({ args: command.args })}

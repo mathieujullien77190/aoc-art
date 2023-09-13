@@ -1,6 +1,3 @@
-/** @format */
-
-import { getEnvironmentData } from "worker_threads"
 import { ViewPlanProps } from "./types"
 import * as S from "./UI"
 
@@ -28,8 +25,8 @@ export const ViewPlan = ({
 						className={
 							className + ` z${i} ` + (i === currentPlan ? "zCurrent" : "")
 						}
-						translateZ={getTranslateZ(i)}
-						color={getColor(i)}
+						$translateZ={getTranslateZ(i)}
+						$color={getColor(i)}
 						key={i}
 					>
 						{preHighlight ? (

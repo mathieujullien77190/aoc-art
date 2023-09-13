@@ -1,9 +1,6 @@
-/** @format */
-
 import { useState, useCallback, useEffect, useRef } from "react"
 import { D3Props } from "./types"
 
-import { isMobile } from "react-device-detect"
 import * as S from "./UI"
 
 import { useOrientation } from "./hooks"
@@ -145,15 +142,15 @@ export const D3 = ({
 
 	return (
 		<S.Wrapper
-			mouseControl={control.mouse.activate}
+			$mouseControl={control.mouse.activate}
 			onMouseDown={control.mouse.activate ? e => handleMouseDown(e) : undefined}
 			onMouseMove={control.mouse.activate ? e => handleMouseMove(e) : undefined}
 			onMouseUp={control.mouse.activate ? () => handleMouseUp() : undefined}
 			onWheel={control.mouse.activate ? e => handleMouseWheel(e) : undefined}
 		>
 			<S.Container
-				size={size}
-				margin={margin}
+				$size={size}
+				$margin={margin}
 				style={{
 					transition: `transform ${control.mouse.smoothing / 1000}s`,
 					transform: `scale(${Z / 10})`,
@@ -161,7 +158,7 @@ export const D3 = ({
 			>
 				<S.Cube
 					ref={refCube}
-					size={size}
+					$size={size}
 					style={{
 						transform: matrix.value,
 						...(matrix.withTransition
