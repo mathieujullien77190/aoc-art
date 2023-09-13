@@ -31,8 +31,8 @@ export const Container = styled.div<{
 			  }s ease-out`
 			: `all ${ANIM_TIME / 1000}s ease-out`};
 
-	${({ mode }) => {
-		if (mode === "medium")
+	${({ $mode }) => {
+		if ($mode === "medium")
 			return `
       box-shadow: 3px 2px 4px #00000041;
       border-radius: 4px;
