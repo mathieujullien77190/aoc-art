@@ -1,5 +1,3 @@
-/** @format */
-
 import React, {
 	useCallback,
 	useState,
@@ -93,9 +91,9 @@ export const Input = ({
 		<S.Container>
 			<S.Lambda>{app.logo}</S.Lambda>
 			<S.CustomInput
+				$nbsLetters={nbsLetters}
 				ref={ref}
 				value={inputValue}
-				nbsLetters={nbsLetters}
 				spellCheck="false"
 				autoComplete="false"
 				autoCapitalize="off"

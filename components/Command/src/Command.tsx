@@ -1,5 +1,3 @@
-/** @format */
-
 import React, { useEffect } from "react"
 import { CommandProps } from "./types"
 
@@ -16,6 +14,7 @@ const Command = ({
 	lang,
 	animation,
 	onRendered = () => {},
+	onAnimate = () => {},
 	onClickCommand = () => {},
 }: CommandProps) => {
 	const result =
@@ -39,19 +38,16 @@ const Command = ({
 	})
 
 	useEffect(() => {
-		window.scrollTo(0, 100000)
-	}, [displayResult])
-
-	useEffect(() => {
 		if (displayResult.finish) onRendered()
-	}, [displayResult.finish, onRendered])
+		onAnimate()
+	}, [displayResult, onRendered])
 
 	return (
 		<>
 			{canRendered && (
 				<S.CmdContainer style={baseCommand?.display?.style || {}}>
 					{!baseCommand?.display?.hideCmd && (
-						<S.CmdLine restricted={command.restricted}>
+						<S.CmdLine $restricted={command.restricted}>
 							<strong>{app.logo}</strong>{" "}
 							<span>
 								{name} {args}

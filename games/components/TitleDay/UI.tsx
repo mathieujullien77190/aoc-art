@@ -3,24 +3,33 @@
 import styled from "styled-components"
 import { colors } from "_components/constants"
 
+
+export const Close = styled.div`
+	position: fixed;
+	top: 10px;
+	right: 10px;
+	z-index: 11;
+	font-size: 24px;
+	cursor: pointer;
+	display: flex;
+	width: 32px;
+	height: 32px;
+	background: black;
+	justify-content: center;
+	align-items: center;
+`
+
 export const Container = styled.div`
 	position: fixed;
 	padding: 8px;
-	top: 6px;
-	left: 36px;
-	right: 36px;
-	z-index: 11;
+	top: 10px;
+	left: 10px;
+	z-index: 1100;
 	display: flex;
-	background: ${colors.overlay};
-	border: solid 2px ${colors.textColor};
+	background: black;
 
-	@media screen and (max-width: 1024px) {
-		top: 2px;
-		right: 18px;
-		left: 18px;
-		padding: 4px;
-	}
 
+	
 	a {
 		color: ${colors.textColor};
 		text-decoration: none;
@@ -31,14 +40,5 @@ export const Container = styled.div`
 		}
 	}
 
-	div {
-		display: inline-block;
-		margin: 0 5px;
-
-		&.close {
-			margin-left: auto;
-			cursor: pointer;
-			text-decoration: underline;
-		}
-	}
+	
 `
