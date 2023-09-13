@@ -14,11 +14,11 @@ const Container = styled.div`
 `
 
 const Wrapper = styled.div`
-	margin: 30px 10px;
+	margin: 10px 10px;
 	position: absolute;
 	top: 0;
 	right: 0;
-	background: ${colors.aoc};
+	background: black;
 	padding: 10px;
 
 	p {

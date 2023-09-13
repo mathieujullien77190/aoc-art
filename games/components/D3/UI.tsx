@@ -1,8 +1,7 @@
-/** @format */
 import { Size } from "_games/helpers/types"
 import styled from "styled-components"
 
-export const Wrapper = styled.div<{ mouseControl: boolean }>`
+export const Wrapper = styled.div<{ $mouseControl: boolean }>`
 	position: relative;
 	display: flex;
 	flex-direction: column;
@@ -12,21 +11,21 @@ export const Wrapper = styled.div<{ mouseControl: boolean }>`
 	overflow: hidden;
 	user-select: none;
 
-	cursor: ${({ mouseControl }) => (mouseControl ? "move" : "default")};
+	cursor: ${({ $mouseControl }) => ($mouseControl ? "move" : "default")};
 `
 
-export const Container = styled.div<{ size: Size; margin: number }>`
-	width: ${({ size }) => (size ? `${size.width}px` : "auto")};
-	height: ${({ size }) => (size ? `${size.height}px` : "auto")};
-	perspective: ${({ size }) =>
-		size ? `${Math.max(size.width, size.height) * 2}px` : "auto"};
+export const Container = styled.div<{ $size: Size; $margin: number }>`
+	width: ${({ $size }) => ($size ? `${$size.width}px` : "auto")};
+	height: ${({ $size }) => ($size ? `${$size.height}px` : "auto")};
+	perspective: ${({ $size }) =>
+		$size ? `${Math.max($size.width, $size.height) * 2}px` : "auto"};
 	display: flex;
 	justify-content: center;
 	align-items: center;
 `
 
 export const Cube = styled.div<{
-	size: Size
+	$size: Size
 }>`
 	transform-style: preserve-3d;
 	margin-top: -50px;
@@ -34,6 +33,6 @@ export const Cube = styled.div<{
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	width: ${({ size }) => (size ? `${size.width}px` : "auto")};
-	height: ${({ size }) => (size ? `${size.height}px` : "auto")};
+	width: ${({ $size }) => ($size ? `${$size.width}px` : "auto")};
+	height: ${({ $size }) => ($size ? `${$size.height}px` : "auto")};
 `

@@ -1,9 +1,7 @@
-/** @format */
-
 import styled from "styled-components"
 import { colors } from "_components/constants"
 
-export const CustomInput = styled.input<{ nbsLetters: number }>`
+export const CustomInput = styled.input<{ $nbsLetters: number }>`
 	background-color: ${colors.background};
 	border: none;
 	outline: none;
@@ -11,7 +9,7 @@ export const CustomInput = styled.input<{ nbsLetters: number }>`
 	padding: 0;
 	margin: 0;
 	font-family: monospace;
-	width: ${({ nbsLetters }) => nbsLetters * 10 + 10}px;
+	width: ${({ $nbsLetters }) => $nbsLetters * 10 + 10}px;
 	margin-left: 8px;
 `
 

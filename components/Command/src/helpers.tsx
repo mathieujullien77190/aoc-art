@@ -1,8 +1,7 @@
-/** @format */
+import React, { ReactNode } from "react"
 import reactStringReplace from "react-string-replace"
 import { colors, app } from "_components/constants"
 import uniqid from "uniqid"
-import React from "react"
 
 export const trad = (input: string, lang: string) => {
 	if (lang === "leet") return frToLeet(input["fr"] || input)
@@ -76,7 +75,7 @@ export const highlight = (
 	onClick: (name: string, arg: string[]) => void,
 	lang: string
 ) => {
-	let result: string | React.ReactNodeArray = text
+	let result: string | ReactNode[] = text
 
 	const list: {
 		separator: string

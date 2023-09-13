@@ -1,10 +1,8 @@
-/** @format */
-
 import styled from "styled-components"
 
 export const PlanContainer = styled.div<{
-	translateZ: number
-	color: string
+	$translateZ: number
+	$color: string
 }>`
 	display: flex;
 	justify-content: center;
@@ -12,9 +10,9 @@ export const PlanContainer = styled.div<{
 	font-size: 15px;
 	line-height: 15px;
 	position: absolute;
-	transform: ${({ translateZ }) =>
-		`rotateX(90deg) translateZ(${translateZ}px)`};
-	color: ${({ color }) => color};
+	transform: ${({ $translateZ }) =>
+		`rotateX(90deg) translateZ(${$translateZ}px)`};
+	color: ${({ $color }) => $color};
 `
 
 export const Pre = styled.pre`

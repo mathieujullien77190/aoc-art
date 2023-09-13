@@ -1,7 +1,4 @@
-/** @format */
-
 import styled, { createGlobalStyle } from "styled-components"
-import { colors } from "_components/constants"
 
 export const GlobalStyles = createGlobalStyle<{
 	isMobile: boolean
@@ -10,7 +7,7 @@ export const GlobalStyles = createGlobalStyle<{
 	height: 100%;
 	width: 100%;
 	margin: 0;
-	background: ${colors.background};
+	font-family: monospace;
   }
 
   *, input {
@@ -20,7 +17,11 @@ export const GlobalStyles = createGlobalStyle<{
 `
 
 export const App = styled.div`
-	padding: 12px;
-	min-height: calc(100% - 24px);
+	width: 100%;
+	height: 100%;
 	display: flex;
+	-webkit-box-pack: center;
+	justify-content: center;
+	-webkit-box-align: center;
+	align-items: center;
 `
