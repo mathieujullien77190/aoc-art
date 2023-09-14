@@ -1,5 +1,3 @@
-/** @format */
-
 import styled from "styled-components"
 import { colors } from "_components/constants"
 
@@ -8,12 +6,12 @@ export const CmdContainer = styled.div`
 	flex-direction: column;
 `
 
-export const CmdLine = styled.div<{ restricted: boolean }>`
+export const CmdLine = styled.div<{ $restricted: boolean }>`
 	font-weight: bold;
 
 	span {
-		color: ${({ restricted }) =>
-			restricted ? colors.restrictedColor : colors.cmdColor};
+		color: ${({ $restricted }) =>
+			$restricted ? colors.restrictedColor : colors.cmdColor};
 	}
 `
 

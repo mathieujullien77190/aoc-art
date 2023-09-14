@@ -1,5 +1,6 @@
 /** @format */
 
+import { useState } from "react"
 import { TitleDayProps } from "./types"
 
 import * as S from "./UI"
@@ -13,9 +14,10 @@ export const TitleDay = ({
 	special,
 	onClose,
 }: TitleDayProps) => {
+
 	return (
-		<S.Container>
-			<div>
+		<>
+			<S.Container >
 				{!special && (
 					<a href={AOCUrl} target="_blank">
 						<>
@@ -30,11 +32,8 @@ export const TitleDay = ({
 					</a>
 				)}
 				{special && "Fonctions..."}
-			</div>
-
-			<div className="close" onClick={onClose}>
-				Fermer
-			</div>
-		</S.Container>
+			</S.Container>
+			<S.Close onClick={onClose}>✖️</S.Close>
+		</>
 	)
 }

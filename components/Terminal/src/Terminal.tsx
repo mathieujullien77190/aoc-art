@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useState } from "react"
+import React from "react"
 
 import { TerminalProps } from "./types"
 
@@ -17,6 +17,7 @@ export const Terminal = ({
 	currentCommand,
 	options,
 	onRendered,
+	onAnimateCommand,
 	onSendCommand,
 	onSendRestrictedCommand,
 	onSendPreviousCommand,
@@ -45,6 +46,7 @@ export const Terminal = ({
 							key={command.id}
 							canRendered={prevIsRendered}
 							onRendered={() => onRendered(command.id)}
+							onAnimate={onAnimateCommand}
 							onClickCommand={(name, args) =>
 								onSendRestrictedCommand(`${name} ${args.join(" ")}`)
 							}
