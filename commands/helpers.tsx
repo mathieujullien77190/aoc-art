@@ -20,8 +20,10 @@ export const sendRestrictedCommand = (
 		restricted: true,
 	})
 
-	if (baseCmd?.redux && cmd.canExecute)
-		dispatch(baseCmd.redux({ args: cmd.args }))
+	if (baseCmd?.redux && cmd.canExecute) {
+		const reduxRes = baseCmd.redux({ args: cmd.args })
+		if (reduxRes) dispatch(reduxRes)
+	}
 
 	dispatch(
 		addCommand(
@@ -46,8 +48,10 @@ export const sendCommand = (commandPattern: string, dispatch: any) => {
 		restricted: false,
 	})
 
-	if (baseCmd?.redux && cmd.canExecute)
-		dispatch(baseCmd.redux({ args: cmd.args }))
+	if (baseCmd?.redux && cmd.canExecute) {
+		const reduxRes = baseCmd.redux({ args: cmd.args })
+		if (reduxRes) dispatch(reduxRes)
+	}
 
 	if (cmd.name === "clear" && cmd.canExecute) {
 		sendRestrictedCommand("title", dispatch)

@@ -5,6 +5,7 @@ import { BaseCommand, Help } from "_/types"
 import { colors, app } from "_components/constants"
 
 import { title, highlightFlower, plantFlowers } from "./asciArt"
+import { displayList, loadScript, getScript } from "./aocCommands"
 
 import { Games } from "_games/Games"
 import { gamesConfig } from "_games/constants"
@@ -49,7 +50,7 @@ export const commands: BaseCommand[] = [
 				"\n",
 				`Bienvenue, Vous êtes sur $${app.name}$.`,
 				"\n",
-				"Pour voir le ASCII Art d'un jour précis tapez : `aoc [year]-[day]`",
+				"Pour voir le ASCII Art d'un jour précis tapez : `aoc [index]` ou `aoc [date]` ou `aoc [string]`",
 				"Pour lister tout les scripts tapez : `aoc list`",
 				"Pour obtenir plus d'information tapez : `help` ",
 			].join("\n")
@@ -136,57 +137,42 @@ export const commands: BaseCommand[] = [
 		restricted: false,
 		name: "aoc",
 		action: ({ args }) => {
-			if (args[0] === "list" || !args) {
-				return (
-					"\n" +
-					gamesConfig
-						.filter(script => !script.special)
-						.map(
-							script =>
-								` > +aoc ${script.year}-${`0${script.day}`.substr(-2)}+ : ${
-									script.title
-								}`
-						)
-						.join("\n")
-				)
+			if (args[0] === "list" || args.length === 0) {
+				return displayList(gamesConfig)
+			} else {
+				return loadScript(args, gamesConfig)
 			}
-
-			const extract = args[0] ? args[0].split("-") : []
-			if (extract.length === 2) {
-				const search = gamesConfig.filter(
-					script =>
-						script.day === parseInt(extract[1], 10).toString() &&
-						script.year === extract[0]
-				)
-				if (search.length === 1) {
-					return `§Année : ${search[0].year} / Jour : ${search[0].day}§\n\n${search[0].title}`
-				}
-			}
-			return `Aucun script pour ce jour`
 		},
-		redux: () => {
-			return setProperties({
-				key: "keyboardOnFocus",
-				value: false,
-			})
+		redux: ({ args }) => {
+			if (getScript(args, gamesConfig)) {
+				return setProperties({
+					key: "keyboardOnFocus",
+					value: false,
+				})
+			}
+			return undefined
 		},
 
 		JSX: ({ args }) => {
-			const extract = args[0] ? args[0].split("-") : []
-			if (extract.length === 2) {
-				return (
-					<Games day={parseInt(extract[1], 10).toString()} year={extract[0]} />
-				)
-			}
-			return <></>
+			const script = getScript(args, gamesConfig)
+
+			return script ? <Games day={script.day} year={script.year} /> : <></>
 		},
 
 		help: {
 			description: "Affiche l'exercice du jour En ASCII Art ",
 			patterns: [
 				{
-					pattern: "aoc [year]-[day]",
-					description: "Affiche un jour spécifique",
+					pattern: "aoc [index]",
+					description: '+aoc 1+ => Lancera "Calorie Counting"',
+				},
+				{
+					pattern: "aoc [year]-[date]",
+					description: '+aoc 2022-12+ => Lancera "Hill Climbing Algorithm"',
+				},
+				{
+					pattern: "aoc [string]",
+					description: '+aoc cuc+ => Lancera "Sea Cucumber"',
 				},
 				{
 					pattern: "aoc list",
