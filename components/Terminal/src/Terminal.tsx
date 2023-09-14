@@ -1,6 +1,6 @@
 /** @format */
 
-import React from "react"
+import React, { useState } from "react"
 
 import { TerminalProps } from "./types"
 
@@ -22,8 +22,10 @@ export const Terminal = ({
 	onSendPreviousCommand,
 	onSendNextCommand,
 }: TerminalProps) => {
+	const [forceFocus, setForceFocus] = useState<number>(0)
+
 	return (
-		<S.TerminalContainer>
+		<S.TerminalContainer onClick={() => setForceFocus(prev => prev + 1)}>
 			{commands
 				.filter(command => command.visible)
 				.map((command, i, all) => {
@@ -51,6 +53,7 @@ export const Terminal = ({
 				})}
 
 			<Input
+				forceFocus={forceFocus}
 				options={options}
 				value={currentCommand?.pattern}
 				onValidate={onSendCommand}

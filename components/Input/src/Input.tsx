@@ -20,6 +20,7 @@ import { cleanCommand } from "./helpers"
 
 export const Input = ({
 	value = "",
+	forceFocus,
 	options,
 	onValidate = () => {},
 	onCallPrevious = () => {},
@@ -79,6 +80,10 @@ export const Input = ({
 	useEffect(() => {
 		ref?.current?.focus()
 	}, [options.keyboardOnFocus])
+
+	useEffect(() => {
+		ref?.current?.focus()
+	}, [forceFocus])
 
 	useEffect(() => {
 		setInputValue(value)
