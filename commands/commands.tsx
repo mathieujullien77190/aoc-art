@@ -16,8 +16,9 @@ const textHelp = (help: Help) => {
 	const patterns = help.patterns
 		.map(item => `\t${item.pattern} : ${item.description}\n`)
 		.join("")
-	return `${help.description || ""}${help.patterns.length > 0 ? "\n" : ""
-		}${patterns}`
+	return `${help.description || ""}${
+		help.patterns.length > 0 ? "\n" : ""
+	}${patterns}`
 }
 
 const allCommandsHelp = (commands: BaseCommand[]) => {
@@ -135,26 +136,33 @@ export const commands: BaseCommand[] = [
 		restricted: false,
 		name: "aoc",
 		action: ({ args }) => {
-			if (args[0] === "list") {
+			if (args[0] === "list" || !args) {
 				return (
 					"\n" +
 					gamesConfig
 						.filter(script => !script.special)
-						.map(script => ` > +aoc ${script.year}-${`0${script.day}`.substr(-2)}+ : ${script.title}`)
+						.map(
+							script =>
+								` > +aoc ${script.year}-${`0${script.day}`.substr(-2)}+ : ${
+									script.title
+								}`
+						)
 						.join("\n")
 				)
 			}
 
-
 			const extract = args[0] ? args[0].split("-") : []
 			if (extract.length === 2) {
-				const search = gamesConfig.filter(script => script.day === parseInt(extract[1], 10).toString() && script.year === extract[0])
+				const search = gamesConfig.filter(
+					script =>
+						script.day === parseInt(extract[1], 10).toString() &&
+						script.year === extract[0]
+				)
 				if (search.length === 1) {
 					return `§Année : ${search[0].year} / Jour : ${search[0].day}§\n\n${search[0].title}`
 				}
 			}
 			return `Aucun script pour ce jour`
-
 		},
 		redux: () => {
 			return setProperties({
@@ -166,8 +174,11 @@ export const commands: BaseCommand[] = [
 		JSX: ({ args }) => {
 			const extract = args[0] ? args[0].split("-") : []
 			if (extract.length === 2) {
-				return <Games day={parseInt(extract[1], 10).toString()} year={extract[0]} />
-			} return <></>
+				return (
+					<Games day={parseInt(extract[1], 10).toString()} year={extract[0]} />
+				)
+			}
+			return <></>
 		},
 
 		help: {
