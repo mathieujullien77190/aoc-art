@@ -1,17 +1,15 @@
-/** @format */
-
 import styled from "styled-components"
 
 export const ControllerContainer = styled.div<{
-	show: boolean
-	bottom: number
+	$show: boolean
+	$bottom: number
 }>`
 	transition: all 0.1s ease-in;
 	position: absolute;
 	left: 0;
 	right: 0;
-	bottom: ${({ bottom, show }) => (show ? 0 : `${bottom}px`)};
-	background-color: ${({ show }) => (show ? `#00000030` : "black")};
+	bottom: ${({ $bottom, $show }) => ($show ? 0 : `${$bottom}px`)};
+	background-color: ${({ $show }) => ($show ? `#00000030` : "black")};
 
 	z-index: 10;
 	padding: 12px;

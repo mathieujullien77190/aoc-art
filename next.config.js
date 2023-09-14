@@ -9,7 +9,16 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 })
 
 const nextConfig = {
+	output: "export",
 	trailingSlash: true,
+	compiler: {
+		styledComponents: {
+			displayName: true,
+			ssr: true,
+			fileName: false,
+		},
+	},
+
 	exportPathMap: function () {
 		return {
 			"/": { page: "/" },

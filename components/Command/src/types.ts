@@ -8,5 +8,6 @@ export type CommandProps = {
 	animation: boolean
 	canRendered: boolean
 	onRendered?: () => void
+	onAnimate?: () => void
 	onClickCommand?: (name: string, args: string[]) => void
 }

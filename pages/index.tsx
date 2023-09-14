@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useCallback, useEffect } from "react"
+import React, { useCallback, useEffect, useRef } from "react"
 
 import { sendRestrictedCommand, sendCommand } from "_commands/helpers"
 
@@ -22,6 +22,32 @@ import {
 } from "_store/global/"
 
 import { isMobile } from "react-device-detect"
+import Computer from "_components/ComputerLayout/Computer"
+import styled from "styled-components"
+
+export const Button = styled.div`
+  position: absolute;
+  z-index: 10000;
+  top: 27px;
+  right: 22px;
+  display: none;
+
+  @media (min-width: 1024px) {
+    display: block;
+  }
+
+  border: solid 2px #000000;
+  padding: 12px;
+  background-color: #ffffff;
+  cursor: pointer;
+  opacity: 0.2;
+
+  &:hover {
+    background-color: gray;
+    opacity: 1;
+  }
+`;
+
 
 const Home = () => {
 	const dispatch = useAppDispatch()
@@ -34,12 +60,23 @@ const Home = () => {
 	const currentCommand = useGetCurrentCommand()
 	const start = useGetStart()
 
+	const containerRef = useRef<HTMLDivElement>(null)
+
 	const handleRendered = useCallback(
 		(id: string) => {
 			dispatch(setIsRendered(id))
+			containerRef.current.scrollTo(0, 1000000)
 		},
 		[dispatch]
 	)
+
+	const handleAnimate = useCallback(
+		() => {
+			containerRef.current.scrollTo(0, 1000000)
+		},
+		[dispatch]
+	)
+
 
 	const handleClick = useCallback(() => {
 		if (isMobile) {
@@ -54,6 +91,11 @@ const Home = () => {
 		[dispatch]
 	)
 
+	const handleSendCommand = (commandPattern: string) => {
+		sendCommand(commandPattern, dispatch)
+
+	}
+
 	useEffect(() => {
 		sendRestrictedCommand("title", dispatch)
 		sendRestrictedCommand("welcome", dispatch)
@@ -67,18 +109,25 @@ const Home = () => {
 
 	return (
 		<Layout onClick={handleClick}>
-			<Terminal
-				options={options}
-				commands={commands}
-				currentCommand={currentCommand}
-				onSendCommand={commandPattern => sendCommand(commandPattern, dispatch)}
-				onSendRestrictedCommand={commandPattern =>
-					sendRestrictedCommand(commandPattern, dispatch)
-				}
-				onSendPreviousCommand={() => handleSetCursor(-1)}
-				onSendNextCommand={() => handleSetCursor(1)}
-				onRendered={handleRendered}
-			/>
+
+			<Computer ref={containerRef} onCloseWindow={() => {
+				sendCommand("clear", dispatch)
+			}}>
+				<Terminal
+					options={options}
+					commands={commands}
+					currentCommand={currentCommand}
+					onSendCommand={handleSendCommand}
+					onAnimateCommand={handleAnimate}
+					onSendRestrictedCommand={commandPattern =>
+						sendRestrictedCommand(commandPattern, dispatch)
+					}
+					onSendPreviousCommand={() => handleSetCursor(-1)}
+					onSendNextCommand={() => handleSetCursor(1)}
+					onRendered={handleRendered}
+				/>
+			</Computer>
+
 		</Layout>
 	)
 }

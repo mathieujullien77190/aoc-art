@@ -2,7 +2,7 @@
 
 export const colors = {
 	background: "#212E35",
-	overlay: "#0f0f23e0",
+	overlay: "#0f0f23ed",
 	aoc: "#0f0f23",
 	textColor: "#CED4DF",
 	importantColor: "#FFCC6A",
