@@ -80,7 +80,7 @@ export const Input = ({
 	}, [options.keyboardOnFocus])
 
 	useEffect(() => {
-		ref?.current?.focus()
+		if (options.keyboardOnFocus) ref?.current?.focus()
 	}, [forceFocus])
 
 	useEffect(() => {

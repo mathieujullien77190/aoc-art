@@ -26,28 +26,27 @@ import Computer from "_components/ComputerLayout/Computer"
 import styled from "styled-components"
 
 export const Button = styled.div`
-  position: absolute;
-  z-index: 10000;
-  top: 27px;
-  right: 22px;
-  display: none;
+	position: absolute;
+	z-index: 10000;
+	top: 27px;
+	right: 22px;
+	display: none;
 
-  @media (min-width: 1024px) {
-    display: block;
-  }
+	@media (min-width: 1024px) {
+		display: block;
+	}
 
-  border: solid 2px #000000;
-  padding: 12px;
-  background-color: #ffffff;
-  cursor: pointer;
-  opacity: 0.2;
+	border: solid 2px #000000;
+	padding: 12px;
+	background-color: #ffffff;
+	cursor: pointer;
+	opacity: 0.2;
 
-  &:hover {
-    background-color: gray;
-    opacity: 1;
-  }
-`;
-
+	&:hover {
+		background-color: gray;
+		opacity: 1;
+	}
+`
 
 const Home = () => {
 	const dispatch = useAppDispatch()
@@ -70,13 +69,9 @@ const Home = () => {
 		[dispatch]
 	)
 
-	const handleAnimate = useCallback(
-		() => {
-			containerRef.current.scrollTo(0, 1000000)
-		},
-		[dispatch]
-	)
-
+	const handleAnimate = useCallback(() => {
+		containerRef.current.scrollTo(0, 1000000)
+	}, [dispatch])
 
 	const handleClick = useCallback(() => {
 		if (isMobile) {
@@ -93,12 +88,12 @@ const Home = () => {
 
 	const handleSendCommand = (commandPattern: string) => {
 		sendCommand(commandPattern, dispatch)
-
 	}
 
 	useEffect(() => {
 		sendRestrictedCommand("title", dispatch)
 		sendRestrictedCommand("welcome", dispatch)
+		sendCommand("aoc", dispatch)
 	}, [sendRestrictedCommand])
 
 	useEffect(() => {
@@ -109,10 +104,12 @@ const Home = () => {
 
 	return (
 		<Layout onClick={handleClick}>
-
-			<Computer ref={containerRef} onCloseWindow={() => {
-				sendCommand("clear", dispatch)
-			}}>
+			<Computer
+				ref={containerRef}
+				onCloseWindow={() => {
+					sendCommand("clear", dispatch)
+				}}
+			>
 				<Terminal
 					options={options}
 					commands={commands}
@@ -127,7 +124,6 @@ const Home = () => {
 					onRendered={handleRendered}
 				/>
 			</Computer>
-
 		</Layout>
 	)
 }
