@@ -94,8 +94,9 @@ const BaseWindow = (
 					$followMouse={followMouse.current}
 				>
 					<S.topBar
+						onDoubleClick={handleResize}
 						onMouseDown={() => {
-							followMouse.current = true
+							if (mode !== "full") followMouse.current = true
 						}}
 						onMouseUp={() => {
 							followMouse.current = false
