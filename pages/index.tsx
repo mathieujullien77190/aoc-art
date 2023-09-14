@@ -93,14 +93,14 @@ const Home = () => {
 	useEffect(() => {
 		sendRestrictedCommand("title", dispatch)
 		sendRestrictedCommand("welcome", dispatch)
-		window.setTimeout(() => {
-			sendCommand("aoc", dispatch)
-		}, 4000)
 	}, [sendRestrictedCommand, sendCommand])
 
 	useEffect(() => {
-		if (start === true && location.hash.includes("#")) {
-			sendCommand(location.hash.substring(1).split("_").join(" "), dispatch)
+		if (start) {
+			sendCommand("aoc", dispatch)
+			if (location.hash.includes("#")) {
+				sendCommand(location.hash.substring(1).split("_").join(" "), dispatch)
+			}
 		}
 	}, [start])
 

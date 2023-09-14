@@ -53,10 +53,24 @@ export const topBar = styled.div`
 `
 
 export const Content = styled.div`
-	overflow-y: scroll;
+	overflow-y: auto;
 	height: ${`calc(100% - ${FULL.padding} * 2 - 25px)`};
 	padding: ${FULL.padding};
 	background-color: ${colors.background};
+
+	&::-webkit-scrollbar {
+		-webkit-appearance: none;
+		width: 12px;
+		background-color: #f2e7c8;
+		border-radius: 2px;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background-color: #776b6d;
+		border-radius: 2px;
+		border-top: solid 1px black;
+		border-bottom: solid 1px black;
+	}
 `
 
 export const Title = styled.div`
