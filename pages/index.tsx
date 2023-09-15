@@ -91,15 +91,21 @@ const Home = () => {
 	}
 
 	useEffect(() => {
-		sendRestrictedCommand("title", dispatch)
-		sendRestrictedCommand("welcome", dispatch)
+		if (location.hash.includes("#retro")) {
+			sendRestrictedCommand("retro", dispatch)
+		} else {
+			sendRestrictedCommand("welcome", dispatch)
+			sendRestrictedCommand("title", dispatch)
+		}
 	}, [sendRestrictedCommand, sendCommand])
 
 	useEffect(() => {
 		if (start) {
-			sendCommand("aoc", dispatch)
-			if (location.hash.includes("#")) {
-				sendCommand(location.hash.substring(1).split("_").join(" "), dispatch)
+			if (!location.hash.includes("#retro")) {
+				sendCommand("aoc", dispatch)
+				if (location.hash.includes("#aoc")) {
+					sendCommand(location.hash.substring(1).split("_").join(" "), dispatch)
+				}
 			}
 		}
 	}, [start])

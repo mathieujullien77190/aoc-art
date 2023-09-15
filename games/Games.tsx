@@ -9,11 +9,13 @@ import { gamesConfig } from "./constants"
 
 import Window from "./components/Window"
 
-export const Games = ({ day, year }: { day: string, year: string }) => {
+export const Games = ({ day, year }: { day: string; year: string }) => {
 	const dispatch = useAppDispatch()
 	const [display, setDisplay] = useState<boolean>(true)
 
-	const search = gamesConfig.filter(script => script.day === day && script.year === year)
+	const search = gamesConfig.filter(
+		script => script.day === day && script.year === year
+	)
 
 	return (
 		<>

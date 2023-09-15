@@ -1,5 +1,7 @@
 /** @format */
 
-import styled from "styled-components";
+import styled from "styled-components"
 
-export const Container = styled.div`cursor:pointer;`;
+export const Container = styled.div`
+	cursor: not-allowed;
+`

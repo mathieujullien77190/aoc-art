@@ -134,6 +134,29 @@ export const commands: BaseCommand[] = [
 		},
 	},
 	{
+		restricted: true,
+		name: "retro",
+		action: ({ args }) => {
+			return "Retro : running"
+		},
+		redux: ({ args }) => {
+			if (getScript(args, gamesConfig)) {
+				return setProperties({
+					key: "keyboardOnFocus",
+					value: false,
+				})
+			}
+			return undefined
+		},
+
+		JSX: () => {
+			return <Games day="retro" year="XXXX" />
+		},
+		display: {
+			animation: false,
+		},
+	},
+	{
 		restricted: false,
 		name: "aoc",
 		action: ({ args }) => {

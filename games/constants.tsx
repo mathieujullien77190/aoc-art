@@ -12,6 +12,7 @@ import GameDay22 from "./loading/day22"
 import GameDay13 from "./loading/day13"
 import GameDay15 from "./loading/day15"
 import GamePlayground from "./loading/playground"
+import Retro from "./loading/Retro"
 
 export type GameConfig = {
 	day: string
@@ -94,5 +95,12 @@ export const gamesConfig: GameConfig[] = [
 		title: "Playground",
 		special: true,
 		component: () => <GamePlayground />,
+	},
+	{
+		day: "retro",
+		year: "XXXX",
+		title: "Retro starlord",
+		special: true,
+		component: () => <Retro />,
 	},
 ]
