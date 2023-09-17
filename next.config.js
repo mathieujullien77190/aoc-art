@@ -9,7 +9,6 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 })
 
 const nextConfig = {
-	output: "export",
 	trailingSlash: true,
 	compiler: {
 		styledComponents: {
