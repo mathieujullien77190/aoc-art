@@ -9,7 +9,15 @@ import { gamesConfig } from "./constants"
 
 import Window from "./components/Window"
 
-export const Games = ({ day, year }: { day: string; year: string }) => {
+export const Games = ({
+	day,
+	year,
+	args,
+}: {
+	day: string
+	year: string
+	args?: string[]
+}) => {
 	const dispatch = useAppDispatch()
 	const [display, setDisplay] = useState<boolean>(true)
 
@@ -21,6 +29,7 @@ export const Games = ({ day, year }: { day: string; year: string }) => {
 		<>
 			{display && search.length === 1 && (
 				<Window
+					args={args}
 					game={search[0]}
 					onClose={() => {
 						setDisplay(false)

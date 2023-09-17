@@ -19,7 +19,7 @@ export type GameConfig = {
 	year: string
 	title: string
 	special?: boolean
-	component: () => JSX.Element
+	component: ({ args }: { args?: string[] }) => JSX.Element
 }
 
 export const gamesConfig: GameConfig[] = [
@@ -101,6 +101,6 @@ export const gamesConfig: GameConfig[] = [
 		year: "XXXX",
 		title: "Retro starlord",
 		special: true,
-		component: () => <Retro />,
+		component: ({ args }) => <Retro args={args} />,
 	},
 ]

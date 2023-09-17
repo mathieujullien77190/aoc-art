@@ -5,9 +5,9 @@ import Dynamic from "./Dynamic"
 
 const LazyComponent = lazy(() => import("_games/components/days/retro"))
 
-const Game = () => (
+const Game = ({ args }: { args?: string[] }) => (
 	<Dynamic>
-		<LazyComponent />
+		<LazyComponent args={args} />
 	</Dynamic>
 )
 

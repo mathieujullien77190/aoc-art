@@ -7,7 +7,7 @@ import * as S from "./UI"
 
 let timer1
 
-export const Window = ({ game, onClose }: WindowProps) => {
+export const Window = ({ game, args, onClose }: WindowProps) => {
 	const link = `https://adventofcode.com/${game.year}/day/${game.day}`
 	const [hole, setHole] = useState<boolean>(false)
 	const [openHole1, setOpenHole1] = useState<number>(0)
@@ -53,7 +53,7 @@ export const Window = ({ game, onClose }: WindowProps) => {
 					onFuck={handleFuck}
 				/>
 
-				{game.component()}
+				{game.component({ args })}
 			</>
 		</S.Container>
 	)

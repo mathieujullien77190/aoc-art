@@ -13,6 +13,8 @@ import { gamesConfig } from "_games/constants"
 import { setProperties } from "_store/global/"
 import { clear } from "_store/history/"
 
+import { listPlayers } from "_games/components/days/retro"
+
 const textHelp = (help: Help) => {
 	const patterns = help.patterns
 		.map(item => `\t${item.pattern} : ${item.description}\n`)
@@ -149,8 +151,54 @@ export const commands: BaseCommand[] = [
 			return undefined
 		},
 
-		JSX: () => {
-			return <Games day="retro" year="XXXX" />
+		JSX: ({ args }) => {
+			return <Games day="retro" year="XXXX" args={args} />
+		},
+		display: {
+			animation: false,
+		},
+	},
+	{
+		restricted: false,
+		name: "hack",
+		action: ({ args }) => {
+			if (args.length === 0) {
+				return "Déduisez le code des autres joueurs grâce à votre code et trouvez leur personnage"
+			} else if (args.length === 1) {
+				try {
+					const name = args[0]
+						.split("")
+						.reduce((acc, curr, i) => {
+							const pos = Math.floor(i / 3)
+							acc[pos] = acc[pos] ? acc[pos] + curr : curr
+							return acc
+						}, [])
+						.map(item => String.fromCharCode(item))
+						.join("")
+
+					const search = listPlayers.filter(player => player.name === name)
+					if (search.length === 1)
+						return `joueur [+${name}+ alias +${search[0].pseudo}+] : +[personnage]+`
+					return `le joueur [+${name}+] n'existe pas`
+				} catch (e) {
+					return "commande incorrecte"
+				}
+			}
+			return "commande incorrecte"
+		},
+
+		help: {
+			description: "trouve le personnage d'un joueur",
+			patterns: [
+				{
+					pattern: "hack",
+					description: "règles d'utilisation",
+				},
+				{
+					pattern: "hack [code]",
+					description: "affiche le personnage associé au code",
+				},
+			],
 		},
 		display: {
 			animation: false,

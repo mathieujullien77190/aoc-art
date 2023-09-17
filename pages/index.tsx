@@ -92,7 +92,10 @@ const Home = () => {
 
 	useEffect(() => {
 		if (location.hash.includes("#retro")) {
-			sendRestrictedCommand("retro", dispatch)
+			sendRestrictedCommand(
+				location.hash.substring(1).split("_").join(" "),
+				dispatch
+			)
 		} else {
 			sendRestrictedCommand("welcome", dispatch)
 			sendRestrictedCommand("title", dispatch)
