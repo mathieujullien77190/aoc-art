@@ -1,9 +1,15 @@
 /** @format */
-import React, { useEffect, useState, useMemo } from "react"
+import React, {
+	useEffect,
+	useState,
+	useMemo,
+	useRef,
+	MutableRefObject,
+} from "react"
+import Image from "next/image"
 import styled from "styled-components"
-import { createArray } from "_games/helpers/utils"
-import { rand } from "_games/helpers/math"
 
+import { createArray } from "_games/helpers/utils"
 import D3 from "_games/components/D3"
 import { WrapperContainer3D } from "_games/components/Containers"
 
@@ -17,16 +23,34 @@ type Player = {
 type Status = "active" | "inactive" | "disconnected"
 
 export const listPlayers = [
-	{ name: "mathieu", pseudo: "Matou" },
-	{ name: "romain", pseudo: "Chef" },
-	{ name: "charlotte", pseudo: "Chacha" },
-	{ name: "sebastien", pseudo: "Seb" },
-	{ name: "marilyn", pseudo: "MarYlIne" },
+	{ name: "mathieu", nickName: "Matou" },
+	{ name: "romain", nickName: "Chef" },
+	{ name: "charlotte", nickName: "Chacha" },
+	{ name: "sebastien", nickName: "Seb" },
+	{ name: "marilyn", nickName: "MarYlIne" },
 ]
 
 const TIME_REFRESH = 5000
 const PLAYER_ACTIVE = TIME_REFRESH * 2
 const PLAYER_DISCONNECTED = TIME_REFRESH * 4
+
+export const getName = (code: string): string =>
+	code
+		.match(/.{1,3}/g)
+		.map(item => String.fromCharCode(parseInt(item, 10)))
+		.join("")
+
+export const getNickName = (name: string): string => {
+	const search = listPlayers.filter(item => name === item.name)
+
+	if (search.length === 1) return search[0].nickName
+	return `unknown`
+}
+
+export const isValidPlayer = (code: string): boolean => {
+	const name = getName(code)
+	return getNickName(name) !== "unknown"
+}
 
 const Content = styled.div`
 	height: 100%;
@@ -38,6 +62,62 @@ const Content = styled.div`
 	background-color: #1a1a1a;
 	position: relative;
 
+	p {
+		position: absolute;
+		top: 10px;
+		left: 10px;
+		margin: 0;
+	}
+`
+
+export const Container = styled.div`
+	display: flex;
+`
+
+export const Wolf = styled.pre`
+	position: absolute;
+	bottom: 0;
+	font-size: 10px;
+	left: 0;
+	opacity: 0.2;
+`
+
+export const CardContainer = styled.div`
+	display: flex;
+	align-items: center;
+	position: relative;
+`
+
+export const Photo = styled.div`
+	margin: 0;
+	width: calc(100% - 35px);
+	height: calc(100% - 40px);
+	position: absolute;
+	z-index: 0;
+	margin: 20px 20px 20px 15px;
+`
+
+export const Card = styled.pre`
+	margin: 0;
+	z-index: 1;
+
+	.line {
+		background: #1a1a1a;
+		transition: all 0.5s ease-in;
+
+		&.hidden {
+			opacity: 0;
+		}
+	}
+`
+
+export const TableContainer = styled.div`
+	display: flex;
+	align-items: center;
+`
+
+export const Table = styled.pre`
+	margin: 0;
 	.active {
 		color: green;
 	}
@@ -49,29 +129,6 @@ const Content = styled.div`
 	.disconnected {
 		color: red;
 	}
-
-	.empty {
-		background-color: #ced4df;
-	}
-
-	p {
-		position: absolute;
-		top: 10px;
-		left: 10px;
-		margin: 0;
-	}
-
-	.wolf {
-		position: absolute;
-		bottom: 0;
-		font-size: 8px;
-		left: 0;
-		opacity: 0.5;
-	}
-`
-
-export const Container = styled.div`
-	display: flex;
 `
 
 export const getCode = (name: string): string => {
@@ -79,15 +136,6 @@ export const getCode = (name: string): string => {
 		.split("")
 		.map(item => ("000" + item.charCodeAt(0)).substr(-3))
 		.join("")
-}
-
-const getNickName = ({ name, code }: { name: string; code: string }) => {
-	const search = listPlayers.filter(
-		item => name === item.name && code === getCode(name)
-	)
-
-	if (search.length === 1) return search[0].pseudo
-	return `Relou_${name}`
 }
 
 const refresh = async ({
@@ -112,6 +160,30 @@ const refresh = async ({
 				code: "2",
 				nickName: "Chef",
 				time: new Date().getTime() - 11000,
+			},
+			{
+				name: "sebastien",
+				code: "1",
+				nickName: "Seb",
+				time: new Date().getTime(),
+			},
+			{
+				name: "sebastien",
+				code: "1",
+				nickName: "Seb",
+				time: new Date().getTime(),
+			},
+			{
+				name: "sebastien",
+				code: "1",
+				nickName: "Seb",
+				time: new Date().getTime(),
+			},
+			{
+				name: "sebastien",
+				code: "1",
+				nickName: "Seb",
+				time: new Date().getTime(),
 			},
 			{
 				name: "sebastien",
@@ -171,28 +243,27 @@ const getPlayerStatusStr = (timePlayer: number): string => {
 	return ""
 }
 
+const createLine = (carac: string, size: number) =>
+	createArray(size)
+		.map(() => carac)
+		.join("")
+
 const updateTable = (players: Player[], me: Player): string => {
 	const player = "JOUEUR"
 	const maxLength = Math.max(...players.map(player => player.nickName.length))
 	const diff = maxLength - player.length
 
-	const addBar = createArray(Math.max(diff, 0))
-		.map(() => "-")
-		.join("")
-	const addSpace = createArray(Math.max(diff, 0))
-		.map(() => " ")
-		.join("")
-	const closeTab = createArray(Math.max(diff, 0) + player.length)
-		.map(() => "-")
-		.join("")
+	const addBar = createLine("-", Math.max(diff, 0))
+	const addSpace = createLine(" ", Math.max(diff, 0))
+	const closeTab = createLine("-", Math.max(diff, 0) + player.length)
+
 	const playersStr = players
 		.filter(p => getPlayerStatus(p.time) !== "disconnected")
 		.map(p => {
-			const addSpace = createArray(
+			const addSpace = createLine(
+				" ",
 				Math.max(Math.max(maxLength, player.length) - p.nickName.length, 0)
 			)
-				.map(() => " ")
-				.join("")
 
 			const replace = `<span class="${getPlayerStatus(p.time)}">$1</span>`
 
@@ -206,43 +277,54 @@ const updateTable = (players: Player[], me: Player): string => {
 	const lastStr =
 		players.length > 0 ? `   +-${closeTab}-+------------+------------+` : ""
 
-	return `
-Liste des joueurs : 
-
-   +-------${addBar}-+------------+------------+			   
+	return `   +-------${addBar}-+------------+------------+			   
    | ${player} ${addSpace}| STATUS     | PERSONNAGE |
    +-------${addBar}-+------------+------------+
 ${playersStr}
 ${lastStr}`
 }
 
-const card = ({ width, height }: { height: number; width: number }): string => {
-	const content = (carac: () => string) =>
-		createArray(width)
-			.map(() => carac())
-			.join("")
-	const topBot = "+" + content(() => "-") + "+"
+const card = (): string => {
+	const body = `+---------------------+
+|@                     @|	
+|@                     @|	
+|@        ╔═══╗        @|
+|@        ║╔═╗║        @|
+|@        ╚╝╔╝║        @|
+|@          ║╔╝        @|
+|@          ╔╗         @|
+|@          ╚╝         @|
+|@                     @|	
+|@                     @|	
++---------------------+
+`.replace(/@(.*)@/g, '<span class="line">$1</span>')
 
-	const body = createArray(height)
-		.map(() => `|${content(() => ["#", " ", " "][rand(0, 2)])}|`)
-		.join("\n")
-
-	return `
-Votre Carte : 
-
-${topBot}
-${body}
-${topBot}
-	`
+	return body
 }
 
-const Animation = ({ args }: { args?: string[] }) => {
+const displayCard = async (
+	ref: MutableRefObject<HTMLPreElement>,
+	show: boolean
+) => {
+	if (ref?.current) {
+		const lines = Array.from(ref.current.querySelectorAll(".line"))
+		for (let line of lines) {
+			await new Promise(resolve => setTimeout(resolve, 200))
+			if (show) line.classList.add("hidden")
+			else line.classList.remove("hidden")
+		}
+	}
+}
+
+const Animation = ({ code }: { code?: string }) => {
 	const [me, setMe] = useState<Player>()
 	const [all, setAll] = useState<Player[]>([])
+	const refCard = useRef<HTMLPreElement>(null)
+	const [cardIsDisplayed, setCardIsDisplayed] = useState<boolean>(false)
 
 	useEffect(() => {
-		const [name, code] = args
-		const nickName = getNickName({ name, code })
+		const name = getName(code)
+		const nickName = getNickName(name)
 		setMe({ name, nickName, code, time: new Date().getTime() })
 
 		refresh({ name, nickName, code }).then(data => {
@@ -259,7 +341,7 @@ const Animation = ({ args }: { args?: string[] }) => {
 		}
 	}, [])
 
-	const cardHTML = useMemo(() => card({ width: 20, height: 15 }), [])
+	const cardHTML = useMemo(() => card(), [])
 
 	return (
 		<WrapperContainer3D>
@@ -274,20 +356,42 @@ const Animation = ({ args }: { args?: string[] }) => {
 				}}
 				start={{ H: 10, V: 20 }}
 			>
-				<Content>
+				<Content
+					onClick={() => {
+						displayCard(refCard, !cardIsDisplayed)
+						setCardIsDisplayed(prev => !prev)
+					}}
+				>
 					<p>
 						Retro : Starlord
 						<br />
 						Thème : Loup-Garou
 					</p>
 					<Container>
-						<pre dangerouslySetInnerHTML={{ __html: updateTable(all, me) }} />
-						<pre
-							dangerouslySetInnerHTML={{
-								__html: cardHTML,
-							}}
-						/>
-						<pre
+						<TableContainer>
+							<Table
+								dangerouslySetInnerHTML={{ __html: updateTable(all, me) }}
+							/>
+						</TableContainer>
+
+						<CardContainer>
+							<Photo>
+								<Image
+									alt="personnage"
+									src="/obama.png"
+									fill={true}
+									objectFit="contain"
+								/>
+							</Photo>
+							<Card
+								ref={refCard}
+								dangerouslySetInnerHTML={{
+									__html: cardHTML,
+								}}
+							/>
+						</CardContainer>
+
+						<Wolf
 							className="wolf"
 							dangerouslySetInnerHTML={{
 								__html: wolfAscii(),

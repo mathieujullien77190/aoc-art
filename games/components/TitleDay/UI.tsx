@@ -14,6 +14,7 @@ export const Close = styled.div`
 	background: black;
 	justify-content: center;
 	align-items: center;
+	transition: all 0.3s ease-in;
 `
 
 export const Container = styled.div`

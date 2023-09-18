@@ -8,6 +8,7 @@ import { title, highlightFlower, plantFlowers } from "./asciArt"
 import { displayList, loadScript, getScript } from "./aocCommands"
 
 import { Games } from "_games/Games"
+import { isValidPlayer } from "_games/components/days/retro"
 import { gamesConfig } from "_games/constants"
 
 import { setProperties } from "_store/global/"
@@ -137,7 +138,8 @@ export const commands: BaseCommand[] = [
 		restricted: true,
 		name: "retro",
 		action: ({ args }) => {
-			return "Retro : running"
+			if (isValidPlayer(args[0])) return "Retro : running"
+			return "Code incorrect"
 		},
 		redux: ({ args }) => {
 			if (getScript(args, gamesConfig)) {
@@ -150,7 +152,11 @@ export const commands: BaseCommand[] = [
 		},
 
 		JSX: ({ args }) => {
-			return <Games day="retro" year="XXXX" args={args} />
+			return isValidPlayer(args[0]) ? (
+				<Games day="retro" year="XXXX" args={args} />
+			) : (
+				<></>
+			)
 		},
 		display: {
 			animation: false,

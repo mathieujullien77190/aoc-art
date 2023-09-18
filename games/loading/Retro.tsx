@@ -7,7 +7,7 @@ const LazyComponent = lazy(() => import("_games/components/days/retro"))
 
 const Game = ({ args }: { args?: string[] }) => (
 	<Dynamic>
-		<LazyComponent args={args} />
+		<LazyComponent code={args[0]} />
 	</Dynamic>
 )
 

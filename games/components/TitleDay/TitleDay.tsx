@@ -12,7 +12,7 @@ const getPosition = (currentPos: number): CloseStyles => {
 		{ top: "10px", right: "50%" },
 		{ top: "10px", right: "75%" },
 		{ top: "10px", right: "25%" },
-		{ bottom: "5px", right: "90px" },
+		{ top: "calc(100% - 30px)", right: "90px" },
 	]
 
 	return list[currentPos % list.length]
@@ -35,22 +35,24 @@ export const TitleDay = ({
 
 	return (
 		<>
-			<S.Container>
-				{!special && (
-					<a href={AOCUrl} target="_blank">
-						<>
-							{year} | jour {day}
-						</>
-						{!isMobile && (
+			{title && (
+				<S.Container>
+					{!special && (
+						<a href={AOCUrl} target="_blank">
 							<>
-								{" "}
-								: <span>{title}</span>
+								{year} | jour {day}
 							</>
-						)}
-					</a>
-				)}
-				{special && <>{title}</>}
-			</S.Container>
+							{!isMobile && (
+								<>
+									{" "}
+									: <span>{title}</span>
+								</>
+							)}
+						</a>
+					)}
+					{special && <>{title}</>}
+				</S.Container>
+			)}
 			{showClose && (
 				<S.Close
 					style={{ ...getPosition(posClose) }}
