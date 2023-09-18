@@ -99,7 +99,7 @@ export const gamesConfig: GameConfig[] = [
 	{
 		day: "retro",
 		year: "XXXX",
-		title: "Retro starlord",
+		title: "",
 		special: true,
 		component: ({ args }) => <Retro args={args} />,
 	},

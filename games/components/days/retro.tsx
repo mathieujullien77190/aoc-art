@@ -1,5 +1,5 @@
 /** @format */
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useMemo } from "react"
 import styled from "styled-components"
 import { createArray } from "_games/helpers/utils"
 import { rand } from "_games/helpers/math"
@@ -24,7 +24,7 @@ export const listPlayers = [
 	{ name: "marilyn", pseudo: "MarYlIne" },
 ]
 
-const TIME_REFRESH = 500000
+const TIME_REFRESH = 5000
 const PLAYER_ACTIVE = TIME_REFRESH * 2
 const PLAYER_DISCONNECTED = TIME_REFRESH * 4
 
@@ -60,6 +60,14 @@ const Content = styled.div`
 		left: 10px;
 		margin: 0;
 	}
+
+	.wolf {
+		position: absolute;
+		bottom: 0;
+		font-size: 8px;
+		left: 0;
+		opacity: 0.5;
+	}
 `
 
 export const Container = styled.div`
@@ -93,11 +101,28 @@ const refresh = async ({
 		nickName,
 	})
 
-	const response = await fetch(`api/refresh?${query}`).then(response =>
-		response.json()
-	)
+	// const response = await fetch(`api/refresh?${query}`).then(response =>
+	// 	response.json()
+	// )
 
-	return response.data
+	return {
+		players: [
+			{
+				name: "romain",
+				code: "2",
+				nickName: "Chef",
+				time: new Date().getTime() - 11000,
+			},
+			{
+				name: "sebastien",
+				code: "1",
+				nickName: "Seb",
+				time: new Date().getTime(),
+			},
+			{ name, code, nickName, time: new Date().getTime() },
+		],
+		start: false,
+	}
 }
 
 const getPlayerStatus = (timePlayer: number): Status => {
@@ -105,6 +130,36 @@ const getPlayerStatus = (timePlayer: number): Status => {
 	if (timePlayer + PLAYER_ACTIVE > currentTime) return "active"
 	if (timePlayer + PLAYER_DISCONNECTED > currentTime) return "inactive"
 	return "disconnected"
+}
+
+const wolfAscii = () => {
+	return `
+                              __
+                            .d$$b
+                          .' TO$;\\
+                         /  : TP._;
+                        / _.;  :Tb|
+                       /   /   ;j$j
+                   _.-"       d$$$$
+                 .' ..       d$$$$;
+                /  /P'      d$$$$P. |\\
+               /   "      .d$$$P' |\\^"l
+             .'           \`T$P^"""""  :
+         ._.'      _.'                ;
+      \`-.-".-'-' ._.       _.-"    .-"
+    \`.-" _____  ._              .-"
+   -(.g$$$$$$$b.              .'
+     ""^^T$$$P^)            .(:
+       _/  -"  /.'         /:/;
+    ._.'-'\`-'  ")/         /;/;
+ \`-.-"..--""   " /         /  ;
+.-" ..--""        -'          :
+..--""--.-"         (\\      .-(\\
+  ..--""              \`-\\(\\/;\`
+    _.                      :
+                            ;\`-
+                           :\\
+                           ;`
 }
 
 const getPlayerStatusStr = (timePlayer: number): string => {
@@ -116,7 +171,7 @@ const getPlayerStatusStr = (timePlayer: number): string => {
 	return ""
 }
 
-const updateTable = (players: Player[]): string => {
+const updateTable = (players: Player[], me: Player): string => {
 	const player = "JOUEUR"
 	const maxLength = Math.max(...players.map(player => player.nickName.length))
 	const diff = maxLength - player.length
@@ -141,22 +196,22 @@ const updateTable = (players: Player[]): string => {
 
 			const replace = `<span class="${getPlayerStatus(p.time)}">$1</span>`
 
-			return `| @${p.nickName}@${addSpace} | #${getPlayerStatusStr(
-				p.time
-			)}# | -          |`
+			return `${p.name === me.name ? "-> " : "   "}| @${
+				p.nickName
+			}@${addSpace} | #${getPlayerStatusStr(p.time)}# | -          |`
 				.replace(/@(.*)@/g, replace)
 				.replace(/#(.*)#/g, replace)
 		})
 		.join("\n")
 	const lastStr =
-		players.length > 0 ? `+-${closeTab}-+------------+------------+` : ""
+		players.length > 0 ? `   +-${closeTab}-+------------+------------+` : ""
 
 	return `
 Liste des joueurs : 
 
-+-------${addBar}-+------------+------------+			   
-| ${player} ${addSpace}| STATUS     | PERSONNAGE |
-+-------${addBar}-+------------+------------+
+   +-------${addBar}-+------------+------------+			   
+   | ${player} ${addSpace}| STATUS     | PERSONNAGE |
+   +-------${addBar}-+------------+------------+
 ${playersStr}
 ${lastStr}`
 }
@@ -204,6 +259,8 @@ const Animation = ({ args }: { args?: string[] }) => {
 		}
 	}, [])
 
+	const cardHTML = useMemo(() => card({ width: 20, height: 15 }), [])
+
 	return (
 		<WrapperContainer3D>
 			<D3
@@ -211,19 +268,29 @@ const Animation = ({ args }: { args?: string[] }) => {
 				margin={-100}
 				zoom={{ value: 10, min: 1, max: 20, step: 1, bigStep: 2 }}
 				control={{
-					mouse: { activate: true, smoothing: 400, speed: 3 },
-					keyboard: true,
-					UI: true,
+					mouse: { activate: false, smoothing: 400, speed: 3 },
+					keyboard: false,
+					UI: false,
 				}}
-				start={{ H: 20, V: 40 }}
+				start={{ H: 10, V: 20 }}
 			>
 				<Content>
-					<p>Retro : Starlord</p>
+					<p>
+						Retro : Starlord
+						<br />
+						Thème : Loup-Garou
+					</p>
 					<Container>
-						<pre dangerouslySetInnerHTML={{ __html: updateTable(all) }} />
+						<pre dangerouslySetInnerHTML={{ __html: updateTable(all, me) }} />
 						<pre
 							dangerouslySetInnerHTML={{
-								__html: card({ width: 20, height: 15 }),
+								__html: cardHTML,
+							}}
+						/>
+						<pre
+							className="wolf"
+							dangerouslySetInnerHTML={{
+								__html: wolfAscii(),
 							}}
 						/>
 					</Container>

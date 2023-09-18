@@ -9,11 +9,13 @@ import { isMobile } from "react-device-detect"
 const getPosition = (currentPos: number): CloseStyles => {
 	const list = [
 		{ top: "10px", right: "10px" },
+		{ top: "10px", right: "50%" },
+		{ top: "10px", right: "75%" },
+		{ top: "10px", right: "25%" },
 		{ bottom: "5px", right: "90px" },
-		{ bottom: "10px", left: "10px" },
 	]
 
-	return list[currentPos % 3]
+	return list[currentPos % list.length]
 }
 
 const fuck = 3
