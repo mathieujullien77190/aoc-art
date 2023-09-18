@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import { createArray } from "_games/helpers/utils"
+import { rand } from "_games/helpers/math"
 
 import D3 from "_games/components/D3"
 import { WrapperContainer3D } from "_games/components/Containers"
@@ -20,6 +21,7 @@ export const listPlayers = [
 	{ name: "romain", pseudo: "Chef" },
 	{ name: "charlotte", pseudo: "Chacha" },
 	{ name: "sebastien", pseudo: "Seb" },
+	{ name: "marilyn", pseudo: "MarYlIne" },
 ]
 
 const TIME_REFRESH = 500000
@@ -33,6 +35,31 @@ const Content = styled.div`
 	align-items: center;
 	width: 100%;
 	border: dashed 2px white;
+	background-color: #1a1a1a;
+	position: relative;
+
+	.active {
+		color: green;
+	}
+
+	.inactive {
+		color: orange;
+	}
+
+	.disconnected {
+		color: red;
+	}
+
+	.empty {
+		background-color: #ced4df;
+	}
+
+	p {
+		position: absolute;
+		top: 10px;
+		left: 10px;
+		margin: 0;
+	}
 `
 
 export const Container = styled.div`
@@ -80,24 +107,12 @@ const getPlayerStatus = (timePlayer: number): Status => {
 	return "disconnected"
 }
 
-const getPlayerStatusColor = (status: Status): string => {
-	return (
-		{ inactive: "orange", active: "green", disconnected: "red" }[status] ??
-		"red"
-	)
-}
+const getPlayerStatusStr = (timePlayer: number): string => {
+	const status = getPlayerStatus(timePlayer)
 
-const getPlayerStatusTimer = (timePlayer: number): number => {
-	return Math.floor((new Date().getTime() - timePlayer) / 1000)
-}
-
-const getPlayerText = (player: Player): string => {
-	const timer = getPlayerStatusTimer(player.time)
-	const status = getPlayerStatus(player.time)
-
-	if (status === "active") return `[actif] - ${player.nickName}`
-	if (status === "inactive") return `[inactif] (${timer}s) - ${player.nickName}`
-	if (status === "disconnected") return `[deconnecté] - ${player.nickName}`
+	if (status === "active") return `actif     `
+	if (status === "inactive") return `inactif   `
+	if (status === "disconnected") return `déconnecté`
 	return ""
 }
 
@@ -116,16 +131,25 @@ const updateTable = (players: Player[]): string => {
 		.map(() => "-")
 		.join("")
 	const playersStr = players
+		.filter(p => getPlayerStatus(p.time) !== "disconnected")
 		.map(p => {
 			const addSpace = createArray(
 				Math.max(Math.max(maxLength, player.length) - p.nickName.length, 0)
 			)
 				.map(() => " ")
 				.join("")
-			return `| ${p.nickName}${addSpace} | DECONNECTE | -          |`
+
+			const replace = `<span class="${getPlayerStatus(p.time)}">$1</span>`
+
+			return `| @${p.nickName}@${addSpace} | #${getPlayerStatusStr(
+				p.time
+			)}# | -          |`
+				.replace(/@(.*)@/g, replace)
+				.replace(/#(.*)#/g, replace)
 		})
 		.join("\n")
-	const lastStr = `+-${closeTab}-+------------+------------+`
+	const lastStr =
+		players.length > 0 ? `+-${closeTab}-+------------+------------+` : ""
 
 	return `
 Liste des joueurs : 
@@ -138,14 +162,14 @@ ${lastStr}`
 }
 
 const card = ({ width, height }: { height: number; width: number }): string => {
-	const content = (carac: string) =>
+	const content = (carac: () => string) =>
 		createArray(width)
-			.map(() => carac)
+			.map(() => carac())
 			.join("")
-	const topBot = "+" + content("-") + "+"
+	const topBot = "+" + content(() => "-") + "+"
 
 	const body = createArray(height)
-		.map(() => `|${content(" ")}|`)
+		.map(() => `|${content(() => ["#", " ", " "][rand(0, 2)])}|`)
 		.join("\n")
 
 	return `
@@ -161,26 +185,24 @@ const Animation = ({ args }: { args?: string[] }) => {
 	const [me, setMe] = useState<Player>()
 	const [all, setAll] = useState<Player[]>([])
 
-	const players = [{ nickName: "u" }, { nickName: "ddddddd" }] as Player[]
+	useEffect(() => {
+		const [name, code] = args
+		const nickName = getNickName({ name, code })
+		setMe({ name, nickName, code, time: new Date().getTime() })
 
-	// useEffect(() => {
-	// 	const [name, code] = args
-	// 	const nickName = getNickName({ name, code })
-	// 	setMe({ name, nickName, code, time: new Date().getTime() })
+		refresh({ name, nickName, code }).then(data => {
+			setAll(data.players)
+		})
+		const timer = setInterval(() => {
+			refresh({ name, nickName, code }).then(data => {
+				setAll(data.players)
+			})
+		}, TIME_REFRESH)
 
-	// 	refresh({ name, nickName, code }).then(data => {
-	// 		setAll(data.players)
-	// 	})
-	// 	const timer = setInterval(() => {
-	// 		refresh({ name, nickName, code }).then(data => {
-	// 			setAll(data.players)
-	// 		})
-	// 	}, TIME_REFRESH)
-
-	// 	return () => {
-	// 		clearInterval(timer)
-	// 	}
-	// }, [])
+		return () => {
+			clearInterval(timer)
+		}
+	}, [])
 
 	return (
 		<WrapperContainer3D>
@@ -196,23 +218,15 @@ const Animation = ({ args }: { args?: string[] }) => {
 				start={{ H: 20, V: 40 }}
 			>
 				<Content>
+					<p>Retro : Starlord</p>
 					<Container>
-						<pre>{updateTable(players)}</pre>
-						<pre>{card({ width: 20, height: 15 })}</pre>
+						<pre dangerouslySetInnerHTML={{ __html: updateTable(all) }} />
+						<pre
+							dangerouslySetInnerHTML={{
+								__html: card({ width: 20, height: 15 }),
+							}}
+						/>
 					</Container>
-
-					{/* <p>Bienvenue {me?.nickName}</p>
-				<ul>
-					{all.map(({ name, nickName, code, time }) => {
-						const status = getPlayerStatus(time)
-
-						return (
-							<li key={code} style={{ color: getPlayerStatusColor(status) }}>
-								{getPlayerText({ name, nickName, code, time })}
-							</li>
-						)
-					})}
-				</ul> */}
 				</Content>
 			</D3>
 		</WrapperContainer3D>
