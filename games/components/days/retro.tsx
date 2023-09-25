@@ -13,26 +13,38 @@ import { createArray } from "_games/helpers/utils"
 import D3 from "_games/components/D3"
 import { WrapperContainer3D } from "_games/components/Containers"
 
-type Player = {
+export type Player = {
 	name: string
 	code: string
 	nickName: string
 	time?: number
+	character?: string
 }
 
-type Status = "active" | "inactive" | "disconnected"
+export type Status = "active" | "inactive" | "disconnected"
 
 export const listPlayers = [
 	{ name: "mathieu", nickName: "Matou" },
 	{ name: "romain", nickName: "Chef" },
 	{ name: "charlotte", nickName: "Chacha" },
 	{ name: "sebastien", nickName: "Seb" },
-	{ name: "marilyn", nickName: "MarYlIne" },
+	{ name: "marilyn", nickName: "MarYlInE" },
+	{ name: "maxime", nickName: "Maxou" },
+	{ name: "nidavone", nickName: "Nida" },
+	{ name: "loris", nickName: "Titch" },
+	{ name: "steven", nickName: "Steven" },
 ]
 
 const TIME_REFRESH = 5000
 const PLAYER_ACTIVE = TIME_REFRESH * 2
 const PLAYER_DISCONNECTED = TIME_REFRESH * 4
+
+export const getCode = (name: string): string => {
+	return name
+		.split("")
+		.map(item => ("000" + item.charCodeAt(0)).substr(-3))
+		.join("")
+}
 
 export const getName = (code: string): string =>
 	code
@@ -50,6 +62,13 @@ export const getNickName = (name: string): string => {
 export const isValidPlayer = (code: string): boolean => {
 	const name = getName(code)
 	return getNickName(name) !== "unknown"
+}
+
+export const getPlayerStatus = (timePlayer: number): Status => {
+	const currentTime = new Date().getTime()
+	if (timePlayer + PLAYER_ACTIVE > currentTime) return "active"
+	if (timePlayer + PLAYER_DISCONNECTED > currentTime) return "inactive"
+	return "disconnected"
 }
 
 const Content = styled.div`
@@ -102,7 +121,7 @@ export const Card = styled.pre`
 	z-index: 1;
 
 	.line {
-		background: #1a1a1a;
+		background: #0e0e0e;
 		transition: all 0.5s ease-in;
 
 		&.hidden {
@@ -131,13 +150,6 @@ export const Table = styled.pre`
 	}
 `
 
-export const getCode = (name: string): string => {
-	return name
-		.split("")
-		.map(item => ("000" + item.charCodeAt(0)).substr(-3))
-		.join("")
-}
-
 const refresh = async ({
 	name,
 	nickName,
@@ -149,59 +161,11 @@ const refresh = async ({
 		nickName,
 	})
 
-	// const response = await fetch(`api/refresh?${query}`).then(response =>
-	// 	response.json()
-	// )
+	const response = await fetch(`api/refresh?${query}`).then(response =>
+		response.json()
+	)
 
-	return {
-		players: [
-			{
-				name: "romain",
-				code: "2",
-				nickName: "Chef",
-				time: new Date().getTime() - 11000,
-			},
-			{
-				name: "sebastien",
-				code: "1",
-				nickName: "Seb",
-				time: new Date().getTime(),
-			},
-			{
-				name: "sebastien",
-				code: "1",
-				nickName: "Seb",
-				time: new Date().getTime(),
-			},
-			{
-				name: "sebastien",
-				code: "1",
-				nickName: "Seb",
-				time: new Date().getTime(),
-			},
-			{
-				name: "sebastien",
-				code: "1",
-				nickName: "Seb",
-				time: new Date().getTime(),
-			},
-			{
-				name: "sebastien",
-				code: "1",
-				nickName: "Seb",
-				time: new Date().getTime(),
-			},
-			{ name, code, nickName, time: new Date().getTime() },
-		],
-		start: false,
-	}
-}
-
-const getPlayerStatus = (timePlayer: number): Status => {
-	const currentTime = new Date().getTime()
-	if (timePlayer + PLAYER_ACTIVE > currentTime) return "active"
-	if (timePlayer + PLAYER_DISCONNECTED > currentTime) return "inactive"
-	return "disconnected"
+	return response.data
 }
 
 const wolfAscii = () => {
@@ -267,9 +231,13 @@ const updateTable = (players: Player[], me: Player): string => {
 
 			const replace = `<span class="${getPlayerStatus(p.time)}">$1</span>`
 
+			const strCharacter = p.character
+				? p.character + createLine(" ", 11 - p.character.length) + "|"
+				: "-          |"
+
 			return `${p.name === me.name ? "-> " : "   "}| @${
 				p.nickName
-			}@${addSpace} | #${getPlayerStatusStr(p.time)}# | -          |`
+			}@${addSpace} | #${getPlayerStatusStr(p.time)}# | ${strCharacter}`
 				.replace(/@(.*)@/g, replace)
 				.replace(/#(.*)#/g, replace)
 		})
@@ -320,7 +288,6 @@ const Animation = ({ code }: { code?: string }) => {
 	const [me, setMe] = useState<Player>()
 	const [all, setAll] = useState<Player[]>([])
 	const refCard = useRef<HTMLPreElement>(null)
-	const [cardIsDisplayed, setCardIsDisplayed] = useState<boolean>(false)
 
 	useEffect(() => {
 		const name = getName(code)
@@ -329,10 +296,12 @@ const Animation = ({ code }: { code?: string }) => {
 
 		refresh({ name, nickName, code }).then(data => {
 			setAll(data.players)
+			setMe(data.players.filter(player => player.code === code)[0])
 		})
 		const timer = setInterval(() => {
 			refresh({ name, nickName, code }).then(data => {
 				setAll(data.players)
+				setMe(data.players.filter(player => player.code === code)[0])
 			})
 		}, TIME_REFRESH)
 
@@ -343,6 +312,10 @@ const Animation = ({ code }: { code?: string }) => {
 
 	const cardHTML = useMemo(() => card(), [])
 
+	useEffect(() => {
+		displayCard(refCard, !!me?.character)
+	}, [me])
+
 	return (
 		<WrapperContainer3D>
 			<D3
@@ -350,18 +323,13 @@ const Animation = ({ code }: { code?: string }) => {
 				margin={-100}
 				zoom={{ value: 10, min: 1, max: 20, step: 1, bigStep: 2 }}
 				control={{
-					mouse: { activate: false, smoothing: 400, speed: 3 },
-					keyboard: false,
-					UI: false,
+					mouse: { activate: true, smoothing: 400, speed: 3 },
+					keyboard: true,
+					UI: true,
 				}}
 				start={{ H: 10, V: 20 }}
 			>
-				<Content
-					onClick={() => {
-						displayCard(refCard, !cardIsDisplayed)
-						setCardIsDisplayed(prev => !prev)
-					}}
-				>
+				<Content>
 					<p>
 						Retro : Starlord
 						<br />
@@ -376,12 +344,14 @@ const Animation = ({ code }: { code?: string }) => {
 
 						<CardContainer>
 							<Photo>
-								<Image
-									alt="personnage"
-									src="/obama.png"
-									fill={true}
-									objectFit="contain"
-								/>
+								{me?.character && (
+									<Image
+										alt="personnage"
+										src={`/${me?.character}.png`}
+										fill={true}
+										objectFit="contain"
+									/>
+								)}
 							</Photo>
 							<Card
 								ref={refCard}

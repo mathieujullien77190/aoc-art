@@ -26,7 +26,14 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
 
 			const players = await Promise.all(
 				extractSubKeys("players", playerKeys).map(name =>
-					kv.hgetall(`players:${name}`).then(player => ({ ...player, name }))
+					kv.hgetall(`players:${name}`).then(player => ({
+						name,
+						nickName: player.nickName,
+						time: player.time,
+						code: request.query.code === player.code ? code : undefined,
+						character:
+							request.query.code === player.code ? player.character : undefined,
+					}))
 				)
 			)
 
