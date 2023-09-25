@@ -46,11 +46,15 @@ export const getCode = (name: string): string => {
 		.join("")
 }
 
-export const getName = (code: string): string =>
-	code
-		.match(/.{1,3}/g)
-		.map(item => String.fromCharCode(parseInt(item, 10)))
-		.join("")
+export const getName = (code: string): string => {
+	const extractCodes = code.match(/.{1,3}/g)
+
+	if (extractCodes && extractCodes.length > 0)
+		return extractCodes
+			.map(item => String.fromCharCode(parseInt(item, 10)))
+			.join("")
+	return ""
+}
 
 export const getNickName = (name: string): string => {
 	const search = listPlayers.filter(item => name === item.name)
@@ -313,7 +317,9 @@ const Animation = ({ code }: { code?: string }) => {
 	const cardHTML = useMemo(() => card(), [])
 
 	useEffect(() => {
-		displayCard(refCard, !!me?.character)
+		window.setTimeout(() => {
+			displayCard(refCard, !!me?.character)
+		}, 1000)
 	}, [me])
 
 	return (
