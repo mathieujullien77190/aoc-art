@@ -32,7 +32,7 @@ export const listPlayers = [
 	{ name: "maxime", nickName: "Maxou" },
 	{ name: "nidavone", nickName: "Nida" },
 	{ name: "loris", nickName: "Titch" },
-	{ name: "steven", nickName: "Steven" },
+	{ name: "guest", nickName: "guest" },
 ]
 
 const TIME_REFRESH = 5000
