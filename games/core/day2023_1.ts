@@ -3,7 +3,7 @@ import { input } from "_games/data/day2023_1"
 import { copy, extractTab1, createArray } from "_games/helpers/utils"
 import { createView } from "_games/helpers/view"
 
-const cut = 61
+const cut = 1000
 
 const search = [
 	"zero",
@@ -26,14 +26,17 @@ const simplify = (str, search, trans) => {
 	let res = ""
 	for (let i = 0; i < str.length; i++) {
 		const index = str.substr(i).indexOf(search)
-		if (index === 0) res += `${trans}`
+		if (index === 0) res += `#${trans}#`
 		res += str.substr(i, 1)
 	}
 	return res
 }
 
 const init = () => {
-	const data = extractTab1(input, "\n").filter((_, i) => i < cut)
+	const data = extractTab1(input.replace(/([0-9])/g, "@$1@"), "\n")
+	// .filter(
+	// 	(_, i) => i < cut
+	// )
 	// return data
 	// 	.reduce((acc, curr, i) => {
 	// 		acc[i % cut] = acc[i % cut] ? [...acc[i % cut], curr] : [curr]
@@ -70,18 +73,21 @@ const deleteLetter = (base: string[]) => {
 		line2 = line
 		for (let i = 0; i < line.length; i++) {
 			for (let k = 0; k < deleteLetters.length; k++) {
-				lineBis = line2.replace(deleteLetters[k], "")
+				lineBis = line2.replace(new RegExp(deleteLetters[k], "g"), "")
 
 				if (lineBis !== line2) {
 					const baseView = copy(base)
-					baseView[j] = line2
+					baseView[j] = lineBis
 					views.push(baseView)
 					line2 = lineBis
 				}
 			}
 		}
+
+		if (line2.length <= 3) line2 = `${line2}${line2}`
 		base[j] = line2
 	})
+
 	return views
 }
 
@@ -91,32 +97,30 @@ const deleteCenter = (base: string[]) => {
 	base.forEach((line, j) => {
 		line2 = line
 
-		while (line2.length > 2) {
-			line2 = line2.substr(0, 1) + line2.substr(2)
+		while (line2.length > 6) {
+			line2 = line2.substr(0, 3) + line2.substr(6)
 			const baseView = copy(base)
 			baseView[j] = line2
 			views.push(baseView)
 		}
 
-		if (line2.length === 1) line2 = `${line2}${line2}`
-
-		base[j] = line2
+		base[j] = "~" + line2.replace(/[#@]/g, "") + "~"
 	})
+	views.push(base)
 	return views
 }
 
 const sum = (base: string[]) => {
 	let views = []
-	let line
+	let baseView = copy(base)
 
-	for (let i = base.length - 1; i >= 0; i--) {
-		line = parseInt(base[0]) + parseInt(base[i])
-		const baseView = copy(base)
-		baseView[0] = line
-		views.push(baseView)
-		base[0] = line
-		base[i] = ""
-	}
+	base.reduce((acc, curr, i) => {
+		acc += parseInt(curr.replace(/~/g, ""))
+		baseView[0] = acc
+		views.push(baseView.filter((item, j) => j === 0 || j > i))
+		return acc
+	}, 0)
+
 	return views
 }
 
@@ -125,13 +129,11 @@ export const generateViews = () => {
 
 	const next1 = changeWordToNumber(start)
 
-	const next2 = deleteLetter(next1.at(-1))
+	const next2 = deleteLetter(copy(next1.at(-1)))
 
-	const next3 = deleteCenter(next2.at(-1))
+	const next3 = deleteCenter(copy(next2.at(-1)))
 
 	const next4 = sum(next3.at(-1))
-
-	console.log(next4)
 
 	return [
 		createView(start.join("\n")),
