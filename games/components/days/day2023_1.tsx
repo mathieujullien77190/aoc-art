@@ -16,7 +16,7 @@ const Game = styled.pre`
 `
 
 const Animation = () => {
-	const [speed, setSpeed] = useState<number>(20)
+	const [speed, setSpeed] = useState<number>(100)
 	const [reload, setReload] = useState<number>(0)
 	const [pause, setPause] = useState<boolean>(false)
 
@@ -27,10 +27,22 @@ const Animation = () => {
 			const newView = {
 				...view,
 				value: view.value
-					// .replace(/(\n)([0-9])/g, '$1<span style="color:red">$2</span>')
-					// .replace(/([0-9])(\n)/g, '<span style="color:red">$1</span>$2')
-					// .replace(/^([0-9])/g, '<span style="color:red">$1</span>'),
-					.replace(/([0-9])/g, '<span style="color:red">$1</span>'),
+					.replace(/(~)([0-9]{2})(~)/g, '<span style="color:orange">$2</span>')
+					.replace(
+						/(~)([0-9]{3})(~)/g,
+						'<span style="color:orange;font-size:20px;">$2</span>'
+					)
+					.replace(
+						/(~)([0-9]{4})(~)/g,
+						'<span style="color:orange;font-size:30px;">$2</span>'
+					)
+					.replace(
+						/(~)([0-9]{5})(~)/g,
+						'<span style="color:orange;font-size:40px;">$2</span>'
+					)
+					.replace(/(@)([0-9])(@)/g, '<span style="color:yellow">$2</span>')
+					.replace(/(#)([0-9])(#)/g, '<span style="color:red">$2</span>')
+					.replace(/[\n]{3}/g, ""),
 			}
 
 			return {
