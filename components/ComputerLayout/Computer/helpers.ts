@@ -6,7 +6,7 @@ export const getSpeed = (settings: Record<string, string>): number => {
 	if (settings?.settings3 === CPU.CQ) return 10
 	if (settings?.settings3 === CPU.C4) return 100
 	if (settings?.settings3 === CPU.C2) return 500
-	return 100
+	return 10
 }
 
 export const hasOldScreen = (settings: Record<string, string>): boolean => {
