@@ -89,12 +89,6 @@ export const gamesConfig: GameConfig[] = [
 		title: "Monkey Map",
 		component: () => <GameDay22 />,
 	},
-	// {
-	// 	day: "1",
-	// 	year: "2023",
-	// 	title: "Trebuchet?!",
-	// 	component: () => <GameDay20231 />,
-	// },
 	{
 		day: "playground",
 		year: "XXXX",
