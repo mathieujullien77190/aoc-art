@@ -4,7 +4,7 @@ export const displayList = (gamesConfig: GameConfig[]): string => {
 	return (
 		"\n" +
 		gamesConfig
-			.filter(script => !script.special)
+			//.filter(script => !script.special)
 			.map(
 				(script, index) =>
 					` > (+${index}+) ${script.year}-${`0${script.day}`.substr(-2)} : ${

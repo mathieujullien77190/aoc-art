@@ -14,11 +14,10 @@ export const TitleDay = ({
 	special,
 	onClose,
 }: TitleDayProps) => {
-
 	return (
 		<>
-			<S.Container >
-				{!special && (
+			{!special && (
+				<S.Container>
 					<a href={AOCUrl} target="_blank">
 						<>
 							{year} | jour {day}
@@ -30,9 +29,8 @@ export const TitleDay = ({
 							</>
 						)}
 					</a>
-				)}
-				{special && "Fonctions..."}
-			</S.Container>
+				</S.Container>
+			)}
 			<S.Close onClick={onClose}>✖️</S.Close>
 		</>
 	)

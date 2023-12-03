@@ -89,7 +89,7 @@ export const gamesConfig: GameConfig[] = [
 		component: () => <GameDay22 />,
 	},
 	{
-		day: "playground",
+		day: "XX",
 		year: "XXXX",
 		title: "Playground",
 		special: true,
