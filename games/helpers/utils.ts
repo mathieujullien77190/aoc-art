@@ -58,22 +58,36 @@ export const sortString = str =>
 
 export const copy = objectOrArray => JSON.parse(JSON.stringify(objectOrArray))
 
-export const getNeighbours = (arr, lineI, columnI, matrix) => {
-	return matrix
-		.map(item => {
-			if (
-				arr[lineI + item[0]] &&
-				arr[lineI + item[0]][columnI + item[1]] !== undefined
-			) {
-				return {
-					value: arr[lineI + item[0]][columnI + item[1]],
-					lineI: lineI + item[0],
-					columnI: columnI + item[1],
-				}
+export const getNeighbours = (arr, lineI, columnI, matrix, loop = false) => {
+	if (loop) {
+		const moduloColumn = arr[0].length
+		const moduloLine = arr.length
+		return matrix.map(item => {
+			return {
+				obj: arr[(lineI + item[0]) % moduloLine][
+					(columnI + item[1]) % moduloColumn
+				],
+				lineI: (lineI + item[0]) % moduloLine,
+				columnI: (columnI + item[1]) % moduloColumn,
 			}
-			return null
 		})
-		.filter(item => item !== null)
+	} else {
+		return matrix
+			.map(item => {
+				if (
+					arr[lineI + item[0]] &&
+					arr[lineI + item[0]][columnI + item[1]] !== undefined
+				) {
+					return {
+						value: arr[lineI + item[0]][columnI + item[1]],
+						lineI: lineI + item[0],
+						columnI: columnI + item[1],
+					}
+				}
+				return null
+			})
+			.filter(item => item !== null)
+	}
 }
 
 export const arr2DForEach = (arr, fn) => {
