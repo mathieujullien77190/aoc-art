@@ -1,5 +1,5 @@
-import { input } from "_games/data/2021"
-import { createView } from "_games/helpers/view"
+import { input, subMarine0 } from "_games/data/2021"
+import { createView, mergeView } from "_games/helpers/view"
 import { View, Position } from "_games/helpers/types"
 import { arr2DForEach, getNeighbours } from "_games/helpers/utils"
 
@@ -48,7 +48,7 @@ export const generateViews = (): View[] => {
 	let meta = []
 	let next1 = true
 	let next2 = true
-	let views = []
+	let views: View[] = []
 
 	do {
 		data = createArr(view.value)
@@ -69,6 +69,21 @@ export const generateViews = (): View[] => {
 			data = createArr(view.value)
 		}
 	} while (next1 || next2)
+
+	const baseView = views.at(-1)
+	const subMarineView = createView(subMarine0, true)
+
+	const startX = 0
+	const startY = 11
+	for (let i = 0; i < baseView.size.height; i++) {
+		view = mergeView(baseView, subMarineView, {
+			x: startX + i,
+			y: startY + i,
+		})
+		views.push(view)
+		views.push(view)
+		views.push(view)
+	}
 
 	return views
 }

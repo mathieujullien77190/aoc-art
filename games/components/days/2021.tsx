@@ -11,8 +11,8 @@ import { Wrapper } from "_games/components/Containers"
 import { View } from "_games/helpers/types"
 
 const Game = styled.pre`
-	font-size: 10px;
-	line-height: 6px;
+	font-size: 14px;
+	line-height: 10px;
 `
 
 const Animation = () => {
