@@ -13,7 +13,7 @@ const BaseWindow = (
 	}: WindowProps,
 	ref: Ref<HTMLDivElement>
 ) => {
-	const [mode, setMode] = useState<Mode>("medium")
+	const [mode, setMode] = useState<Mode>("full")
 	const [pos, setPos] = useState<Pos>({ x: 0, y: 0 })
 	const [size, setSize] = useState<Size>({ width: 0, height: 0, unit: "px" })
 	const [ready, setReady] = useState<boolean>(false)

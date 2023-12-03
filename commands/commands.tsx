@@ -281,7 +281,7 @@ export const commands: BaseCommand[] = [
 					description: "Active les animations",
 				},
 				{
-					pattern: "debug off",
+					pattern: "animation off",
 					description: "désactive les animations",
 				},
 			],
