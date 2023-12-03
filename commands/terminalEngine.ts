@@ -18,6 +18,8 @@ type CreateCommandProps = {
 	restricted: boolean
 }
 
+let i = 0
+
 export const createCommand = ({
 	commands,
 	commandPattern,
@@ -41,7 +43,7 @@ export const createCommand = ({
 				result: executeCommand({ commands, command: select, args }),
 				pattern: commandPattern,
 				timestamp,
-				id: `${timestamp}-${name}`,
+				id: `${timestamp}-${name}-${i++}`,
 				isRendered: false,
 				canExecute: true,
 			}
@@ -58,7 +60,7 @@ export const createCommand = ({
 				args,
 				result: executeCommand({ commands, command: error, args: [name] }),
 				timestamp,
-				id: `${timestamp}-${name}`,
+				id: `${timestamp}-${name}-${i++}`,
 				isRendered: false,
 				canExecute: false,
 			}
@@ -72,7 +74,7 @@ export const createCommand = ({
 			args,
 			result: executeCommand({ commands, command: error, args: [name] }),
 			timestamp,
-			id: `${timestamp}-${name}`,
+			id: `${timestamp}-${name}-${i++}`,
 			isRendered: false,
 			canExecute: false,
 		}
