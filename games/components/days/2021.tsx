@@ -3,11 +3,12 @@ import { useState } from "react"
 import styled from "styled-components"
 import { useAnim, prepareViewsHelpers } from "_games/components/hooks"
 
-import { data } from "_games/data/2021"
+import { generateViews } from "_games/core/2021"
 
 import Stats from "_games/components/Stats"
 import Controller, { AnimationValue } from "_games/components/Controls"
 import { Wrapper } from "_games/components/Containers"
+import { View } from "_games/helpers/types"
 
 const Game = styled.pre`
 	font-size: 10px;
@@ -20,14 +21,20 @@ const Animation = () => {
 
 	const [pause, setPause] = useState<boolean>(false)
 
-	const { out, stats } = useAnim<string>({
-		viewsFn: () => prepareViewsHelpers(() => data, false),
+	const { out, stats } = useAnim<View>({
+		viewsFn: () =>
+			prepareViewsHelpers(() => {
+				return generateViews()
+			}, true),
 
 		control: { pause, reload, speed },
 	})
 
 	return (
-		<Wrapper game={<Game>{out}</Game>} debounce={100}>
+		<Wrapper
+			game={<Game dangerouslySetInnerHTML={{ __html: out?.value }} />}
+			debounce={100}
+		>
 			<>
 				<Controller
 					controls={[

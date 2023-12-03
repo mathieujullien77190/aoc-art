@@ -9,9 +9,8 @@ import GameDay12 from "./loading/day12"
 import GameDay14 from "./loading/day14"
 import GameDay18 from "./loading/day18"
 import GameDay22 from "./loading/day22"
-import GameDay13 from "./loading/day13"
+// import GameDay13 from "./loading/day13"
 import GameDay15 from "./loading/day15"
-import GameDay20231 from "./loading/day2023_1"
 import GamePlayground from "./loading/playground"
 
 export type GameConfig = {
