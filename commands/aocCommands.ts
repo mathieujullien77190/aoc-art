@@ -27,7 +27,6 @@ export const getScript = (
 	if (arg && arg.match(/^[0-9]{1,2}$/gi) !== null) {
 		return gamesConfig[parseInt(arg, 10)]
 	} else if (arg && arg.match(/^[0-9]{4}\-[0-9]{1,2}$/gi)) {
-		debugger
 		const [year, day] = arg.split("-")
 
 		const search = gamesConfig.filter(
