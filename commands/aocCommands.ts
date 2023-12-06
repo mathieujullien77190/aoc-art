@@ -1,15 +1,14 @@
-import { GameConfig, gamesConfig } from "_games/constants"
+import { GameConfig } from "_games/constants"
 
 export const displayList = (gamesConfig: GameConfig[]): string => {
 	return (
 		"\n" +
 		gamesConfig
-			//.filter(script => !script.special)
 			.map(
 				(script, index) =>
 					` > (+${index}+) ${script.year}-${`0${script.day}`.substr(-2)} : ${
 						script.title
-					}`
+					} ${script.tag ? `[§${script.tag}§]` : ""}`
 			)
 			.join("\n")
 	)

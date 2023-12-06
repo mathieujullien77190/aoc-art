@@ -17,6 +17,7 @@ export type GameConfig = {
 	year: string
 	title: string
 	special?: boolean
+	tag?: "New" | "Best"
 	component: () => JSX.Element
 }
 
@@ -25,6 +26,7 @@ export const gamesConfig: GameConfig[] = [
 		day: "25",
 		year: "2021",
 		title: "Sea Cucumber",
+		tag: "New",
 		component: () => <Game2021 />,
 	},
 	{
@@ -55,6 +57,7 @@ export const gamesConfig: GameConfig[] = [
 		day: "12",
 		year: "2022",
 		title: "Hill Climbing Algorithm",
+		tag: "Best",
 		component: () => <GameDay12 />,
 	},
 	{
