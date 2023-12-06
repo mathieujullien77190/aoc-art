@@ -9,7 +9,6 @@ import GameDay12 from "./loading/day12"
 import GameDay14 from "./loading/day14"
 import GameDay18 from "./loading/day18"
 import GameDay22 from "./loading/day22"
-// import GameDay13 from "./loading/day13"
 import GameDay15 from "./loading/day15"
 import GamePlayground from "./loading/playground"
 
@@ -64,12 +63,6 @@ export const gamesConfig: GameConfig[] = [
 		title: "Chiton",
 		component: () => <GameDay15 />,
 	},
-	// {
-	// 	day: "13",
-	// 	year: "2021",
-	// 	title: "Transparent Origami",
-	// 	component: () => <GameDay13 />,
-	// },
 	{
 		day: "14",
 		year: "2022",
