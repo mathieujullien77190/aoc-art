@@ -7,6 +7,12 @@ export const metaText = meta => (
 	</S.MetaText>
 )
 
+export const metaTextIndex = meta => (
+	<S.MetaTextIndex>
+		<span>Index : {meta.index}</span>
+	</S.MetaTextIndex>
+)
+
 export const ViewPlan = ({
 	plans,
 	format = str => str,

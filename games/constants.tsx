@@ -27,7 +27,6 @@ export const gamesConfig: GameConfig[] = [
 		day: "25",
 		year: "2021",
 		title: "Sea Cucumber",
-		tag: "New",
 		component: () => <Game2021 />,
 	},
 	{
@@ -89,6 +88,7 @@ export const gamesConfig: GameConfig[] = [
 		day: "8",
 		year: "2023",
 		title: "Haunted Wasteland",
+		tag: "New",
 		component: () => <GameDay8 />,
 	},
 	{

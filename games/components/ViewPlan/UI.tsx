@@ -41,3 +41,18 @@ export const MetaText = styled.div`
 		font-weight: bold;
 	}
 `
+
+export const MetaTextIndex = styled.div`
+	width: 100%;
+	height: 100%;
+	transform: rotateX(90deg) rotateZ(0deg) translateZ(180px);
+	display: flex;
+	justify-content: center;
+	align-items: end;
+	position: absolute;
+	span {
+		background-color: black;
+		padding: 10px;
+		font-weight: bold;
+	}
+`
