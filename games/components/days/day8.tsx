@@ -43,7 +43,7 @@ const CustomViewPlanComponent = styled(ViewPlanComponent)`
 `
 
 const Animation = () => {
-	const [speed, setSpeed] = useState<number>(100)
+	const [speed, setSpeed] = useState<number>(40)
 	const [reload, setReload] = useState<number>(0)
 	const [pause, setPause] = useState<boolean>(false)
 
@@ -74,7 +74,7 @@ const Animation = () => {
 						reload,
 					},
 				]}
-				start={{ H: 20, V: 330 }}
+				start={{ H: 30, V: 330 }}
 				onControlChange={(name: string, value) => {
 					if (name === "animation") {
 						setSpeed((value as AnimationValue).speed)
@@ -99,7 +99,7 @@ const Animation = () => {
 						if (z === 2) return "#636363"
 						return "#ffd99f"
 					}}
-					getTranslateZ={z => z * 15}
+					getTranslateZ={z => (z > 0 ? (z - 3) * 15 : 0)}
 					preHighlight
 					metaComponent={metaTextIndex}
 					addStyle={(meta, z) => {
