@@ -10,6 +10,7 @@ import GameDay14 from "./loading/day14"
 import GameDay18 from "./loading/day18"
 import GameDay22 from "./loading/day22"
 import GameDay15 from "./loading/day15"
+import GameDay8 from "./loading/day8"
 import GamePlayground from "./loading/playground"
 
 export type GameConfig = {
@@ -83,6 +84,12 @@ export const gamesConfig: GameConfig[] = [
 		year: "2022",
 		title: "Monkey Map",
 		component: () => <GameDay22 />,
+	},
+	{
+		day: "8",
+		year: "2023",
+		title: "Haunted Wasteland",
+		component: () => <GameDay8 />,
 	},
 	{
 		day: "XX",
