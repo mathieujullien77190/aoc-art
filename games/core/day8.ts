@@ -79,7 +79,7 @@ const randomPointsView = (view: View): string => {
 	let txt = ""
 	for (let i = 0; i < view.value.length; i++) {
 		if (view.value[i] !== "\n") {
-			txt += rand(0, 5) === 0 ? "." : " "
+			txt += rand(0, 3) === 0 ? "." : " "
 		} else {
 			txt += "\n"
 		}
@@ -99,6 +99,7 @@ export const init = (): ViewPlan[] => {
 	const HEIGHT = height + 20
 	const DEC = 10
 	const TEMPEST_HEIGHT = 6
+	const TEMPEST_COEF = 10
 
 	const camelView = createView(camel, true)
 	const mountainView = createView(mountain, true)
@@ -108,7 +109,7 @@ export const init = (): ViewPlan[] => {
 	const backView = createEmptyView({ width: WIDTH, height: HEIGHT })
 	const backView2 = createEmptyView({ width: width, height: height })
 
-	const tempest = createArray(TEMPEST_HEIGHT * 5).map(() =>
+	const tempest = createArray(TEMPEST_HEIGHT * TEMPEST_COEF).map(() =>
 		randomPointsView(backView2)
 	)
 
@@ -133,7 +134,7 @@ export const init = (): ViewPlan[] => {
 		}).value
 
 		for (let j = 0; j < TEMPEST_HEIGHT; j++) {
-			copy.value.push(tempest[rand(0, TEMPEST_HEIGHT * 5 - 1)])
+			copy.value.push(tempest[rand(0, TEMPEST_HEIGHT * TEMPEST_COEF - 1)])
 		}
 
 		copy.meta = {
@@ -142,10 +143,10 @@ export const init = (): ViewPlan[] => {
 		}
 		all.push(copy)
 
-		for (let j = 0; j < rand(0, 15); j++) {
+		for (let j = 0; j < rand(0, 5); j++) {
 			copy2 = copyViewPlan(copy)
 			for (let j = 0; j < TEMPEST_HEIGHT; j++) {
-				copy2.value[3 + j] = tempest[rand(0, TEMPEST_HEIGHT * 5 - 1)]
+				copy2.value[3 + j] = tempest[rand(0, TEMPEST_HEIGHT * TEMPEST_COEF - 1)]
 			}
 			all.push(copy2)
 		}
