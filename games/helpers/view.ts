@@ -225,7 +225,8 @@ export const getChar = (view: View, pos: Position): string => {
 export const setChar = (view: View, pos: Position, str: string): View => {
 	const index = pos.y * (view.size.width + 1) + pos.x
 	return {
-		value: view.value.slice(0, index) + str + view.value.slice(index + 1),
+		value:
+			view.value.slice(0, index) + str + view.value.slice(index + str.length),
 		size: view.size,
 	}
 }
