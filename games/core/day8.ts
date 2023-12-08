@@ -1,5 +1,5 @@
 /** @format */
-import { input } from "_games/data/day8"
+import { input, camel } from "_games/data/day8"
 
 import { View, ViewPlan, Position } from "_games/helpers/types"
 import {
@@ -9,6 +9,8 @@ import {
 	setChar,
 	searchChar,
 	iterator,
+	mergeView,
+	createEmptyView,
 } from "_games/helpers/view"
 import {
 	copyViewPlan,
@@ -74,7 +76,7 @@ const highlight = (view: View, node: string) => {
 	const position = searchChar(view, node)
 	view = setChar(view, position, "###")
 
-	return view
+	return { view, position }
 }
 
 const data = extractData()
@@ -84,20 +86,29 @@ const directions = data[0][0]
 
 export const init = (): ViewPlan[] => {
 	const text = "Map of desert"
+	const WIDTH = 18 * 4 + 20
+	const HEIGHT = 41 + 20
+	const DEC = 10
+
+	const camelView = createView(camel, true)
 
 	const txtMap = createTxtMap(nodes)
-	const baseView = createView(txtMap)
-	const baseViewPlan = createEmptyViewPlanFromString([baseView.value], {
-		text,
-	})
+	const frontView = createView(txtMap)
+	const backView = createEmptyView({ width: WIDTH, height: HEIGHT })
+	const baseView = mergeView(backView, frontView, { x: DEC, y: DEC })
+	const baseViewPlan = createEmptyViewPlanFromString([baseView.value], {})
 
 	let all = []
 
-	console.log(highlight(baseView, "AAA").value)
-
 	nextNode(nodesMap, directions, a => {
 		const copy = copyViewPlan(baseViewPlan)
-		copy.value[0] = highlight(baseView, a).value
+		const calc = highlight(baseView, a)
+		copy.value[0] = calc.view.value
+		copy.value[1] = mergeView(backView, camelView, {
+			x: Math.floor(calc.position.x - camelView.size.width / 2) + 3,
+			y: Math.floor(HEIGHT / 2 - camelView.size.height),
+		}).value
+		copy.meta = { y: (-(20 - (calc.position.y - DEC))).toString() }
 		all.push(copy)
 	})
 

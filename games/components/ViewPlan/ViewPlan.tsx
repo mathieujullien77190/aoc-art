@@ -13,6 +13,7 @@ export const ViewPlan = ({
 	getTranslateZ = z => z,
 	getColor = () => "white",
 	metaComponent = () => <></>,
+	addStyle = () => ({}),
 	currentPlan = 0,
 	className,
 	preHighlight = false,
@@ -28,6 +29,7 @@ export const ViewPlan = ({
 						$translateZ={getTranslateZ(i)}
 						$color={getColor(i)}
 						key={i}
+						style={addStyle(plans.meta, i, currentPlan)}
 					>
 						{preHighlight ? (
 							<S.PreHighlight

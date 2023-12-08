@@ -16,6 +16,10 @@ import ViewPlanComponent, { metaText } from "_games/components/ViewPlan"
 import { AnimationValue } from "_games/components/Controls"
 
 const CustomViewPlanComponent = styled(ViewPlanComponent)`
+	&.z1 {
+		transform: rotateY(0deg) rotateZ(0deg) rotateX(0deg);
+	}
+
 	pre {
 		line-height: 20px;
 
@@ -34,7 +38,7 @@ const CustomViewPlanComponent = styled(ViewPlanComponent)`
 `
 
 const Animation = () => {
-	const [speed, setSpeed] = useState<number>(100)
+	const [speed, setSpeed] = useState<number>(1000)
 	const [reload, setReload] = useState<number>(0)
 	const [pause, setPause] = useState<boolean>(false)
 
@@ -82,16 +86,15 @@ const Animation = () => {
 							.replace(/(AAA)/g, '<span class="green">$1</span>')
 							.replace(/(ZZZ)/g, '<span class="yellow">$1</span>')
 					}
-					// getColor={z => {
-					// 	if (z === 0) return "white"
-					// 	if (z === 1) return colors.infoColor
-					// 	if (z === 2) return "#e8ffc5"
-					// 	if (z === 3) return colors.cmdColor
-					// 	return `hsl(28deg, 100%, ${Math.abs((z - 27) * 3 - 19)}%)`
-					// }}
+					getColor={z => {
+						if (z === 0) return "#636363"
+						if (z === 1) return "#ffab2c"
+					}}
 					getTranslateZ={z => z * 3}
-					metaComponent={metaText}
 					preHighlight
+					addStyle={(meta, z) => {
+						return z === 1 ? { transform: `translateZ(${+meta.y * 20}px)` } : {}
+					}}
 				/>
 			</D3>
 
