@@ -240,31 +240,32 @@ export const replaceChar = (view: View, str: string, replace: string): View => {
 
 export const getNeighbours = (
 	view: View,
-	pos: Position
+	pos: Position,
+	diff: number = 1
 ): { value: string; pos: Position; type: string }[] => {
 	let matrix = [
 		{
-			cond: pos.y - 1 >= 0,
-			pos: (pos.y - 1) * (view.size.width + 1) + pos.x,
-			realPos: { x: pos.x, y: pos.y - 1 },
+			cond: pos.y - diff >= 0,
+			pos: (pos.y - diff) * (view.size.width + diff) + pos.x,
+			realPos: { x: pos.x, y: pos.y - diff },
 			type: "T",
 		},
 		{
-			cond: pos.y + 1 < view.size.height,
-			pos: (pos.y + 1) * (view.size.width + 1) + pos.x,
-			realPos: { x: pos.x, y: pos.y + 1 },
+			cond: pos.y + diff < view.size.height,
+			pos: (pos.y + diff) * (view.size.width + diff) + pos.x,
+			realPos: { x: pos.x, y: pos.y + diff },
 			type: "B",
 		},
 		{
-			cond: pos.x - 1 >= 0,
-			pos: pos.y * (view.size.width + 1) + pos.x - 1,
-			realPos: { x: pos.x - 1, y: pos.y },
+			cond: pos.x - diff >= 0,
+			pos: pos.y * (view.size.width + diff) + pos.x - diff,
+			realPos: { x: pos.x - diff, y: pos.y },
 			type: "L",
 		},
 		{
-			cond: pos.x + 1 < view.size.width,
-			pos: pos.y * (view.size.width + 1) + pos.x + 1,
-			realPos: { x: pos.x + 1, y: pos.y },
+			cond: pos.x + diff < view.size.width,
+			pos: pos.y * (view.size.width + diff) + pos.x + diff,
+			realPos: { x: pos.x + diff, y: pos.y },
 			type: "R",
 		},
 	]

@@ -2,25 +2,24 @@
 import { useState } from "react"
 import styled from "styled-components"
 
-import { mapView, init } from "_games/core/day10"
+import { init } from "_games/core/day10"
 import { useAnim, prepareViewsHelpers } from "_games/components/hooks"
 
 import { View } from "_games/helpers/types"
-
 import Stats from "_games/components/Stats"
 import Controller, { AnimationValue } from "_games/components/Controls"
 import { Wrapper } from "_games/components/Containers"
 
 const Game = styled.pre`
 	margin: 0;
-	font-size: 6px;
-	line-height: 6px;
+	font-size: 16px;
+	line-height: 16px;
 	padding: 10px;
 
 	span.path {
 		color: red;
-		font-size: 6px;
-		line-height: 6px;
+		font-size: 16px;
+		line-height: 16px;
 	}
 `
 
@@ -32,7 +31,7 @@ const Animation = () => {
 	const { out, stats } = useAnim<View>({
 		viewsFn: () =>
 			prepareViewsHelpers(() => {
-				return init(mapView)
+				return init()
 			}, true),
 		control: { pause, reload, speed },
 	})
@@ -43,7 +42,7 @@ const Animation = () => {
 				<Game
 					dangerouslySetInnerHTML={{
 						__html: out?.value?.replace(
-							/(\@+)/g,
+							/(@+)/g,
 							'<span class="path">$1</span>'
 						),
 					}}
