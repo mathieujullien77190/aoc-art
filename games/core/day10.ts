@@ -110,7 +110,7 @@ const canGo = name => {
 }
 
 export const init = (): View[] => {
-	let timeViews = [mapView]
+	let timeViews = []
 
 	const HEIGHT_TEXT_VIEW = 5
 
