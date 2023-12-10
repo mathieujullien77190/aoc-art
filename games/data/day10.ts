@@ -1,5 +1,16 @@
 /** @format */
 
+export const input2 = `.F----7F7F7F7F-7....
+.|F--7||||||||FJ....
+.||.FJ||||||||L7....
+FJL7L7LJLJ||LJ.L-7..
+L--J.L7...LJS7F-7L7.
+....F-J..F7FJ|L7L7L7
+....L7.F7||L7|.L7L7|
+.....|FJLJ|FJ|F7|.LJ
+....FJL-7.||.||||...
+....L---J.LJ.LJLJ...`
+
 export const input = `L77FF.FJF|FL-7F7FF-F7F7FL.|.F-77.F--|.J7.FFLL--|7-7.7-L77F7-7.F-7F7-FF7F|77.|-JF7-FFF.L-7FFF7---|F7.|.FLF-JF-|-7---|F77FF-F-77FL77|-77.|-J.F
 L7F-|7LLFJFL-FJ7L|.FL.LJJF7.|.|L-FJFJJ7L.777L-7.F7F-|7.F-7L7-F7LF-7.|L-JJF7-J-L7|F-JJFJLJ-L||.|LL|JF7-7FJ-FJ.J.J.|FLLJ7-F-L-L|7LJ-7-JL7F7|FJ
 FF7|.-7F|J-|.|LFJJL-J7|.7FJ7L-77JLJJJ7F77JLJ77|-F--FJ.-JLL-J.LJJ.L|--7.J-JJ.|-F----LL-7FJJF||F--7F-7.F-7.L7-|.-LL-77JFJ.J7F-JL|.||L.FF||JLJ|
