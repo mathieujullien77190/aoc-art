@@ -21,10 +21,15 @@ const Game = styled.pre`
 		font-size: 16px;
 		line-height: 16px;
 	}
+	span.cross {
+		color: yellow;
+		font-size: 16px;
+		line-height: 16px;
+	}
 `
 
 const Animation = () => {
-	const [speed, setSpeed] = useState<number>(10)
+	const [speed, setSpeed] = useState<number>(20)
 	const [reload, setReload] = useState<number>(1)
 	const [pause, setPause] = useState<boolean>(false)
 
@@ -41,10 +46,9 @@ const Animation = () => {
 			game={
 				<Game
 					dangerouslySetInnerHTML={{
-						__html: out?.value?.replace(
-							/(@+)/g,
-							'<span class="path">$1</span>'
-						),
+						__html: out?.value
+							?.replace(/(@+)/g, '<span class="path">$1</span>')
+							.replace(/(X+)/g, '<span class="cross">$1</span>'),
 					}}
 				/>
 			}
