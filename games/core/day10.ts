@@ -1,5 +1,5 @@
 /** @format */
-import { input, input2 } from "_games/data/day10"
+import { input } from "_games/data/day10"
 
 import { View, Position } from "_games/helpers/types"
 import { dijkstra } from "_games/helpers/graph"
@@ -9,8 +9,9 @@ import {
 	getChar,
 	setChar,
 	searchChar,
-	copyView,
 	iterator,
+	createEmptyView,
+	mergeView,
 } from "_games/helpers/view"
 import { createArray } from "_games/helpers/utils"
 
@@ -23,35 +24,38 @@ const createKeyFromPosition = (pos: Position): string => {
 	return `${pos.x};${pos.y}`
 }
 
-const addSpaces = (view: View): View => {
+const addSpaces = (view: View, cb: (txt: string) => void): View => {
 	let txt = ""
 	let Y = 0
-	const mid =
-		"#\n" +
-		createArray(view.size.width * 2 + 1)
-			.map(() => "#")
-			.join("") +
-		"\n"
-	txt += mid.substr(2)
+	const mid = () => {
+		return (
+			" \n" +
+			createArray(view.size.width * 2 + 1)
+				.map(() => " ")
+				.join("") +
+			"\n"
+		)
+	}
+	txt += mid().substr(2)
 
 	iterator(view, (pos, str) => {
 		if (Y !== pos.y) {
-			txt += mid
+			txt += mid()
 		}
-		txt += "#" + str
+		txt += " " + str
 		Y = pos.y
+		cb(txt)
 	})
-	txt += mid
+	txt += mid()
 	return createView(txt)
 }
 
-let mapView = addSpaces(createView(input2))
-let mapView2
+let mapView = createView(input)
 
 const canGo2 = name => {
 	const pos = extractPositionFromKey(name)
-	let neighbours = getNeighbours(mapView2, pos, 1).filter(
-		item => getChar(mapView2, item.pos) !== "@"
+	let neighbours = getNeighbours(mapView, pos, 1).filter(
+		item => getChar(mapView, item.pos) !== "@"
 	)
 
 	const search = neighbours.map(item => ({
@@ -67,8 +71,8 @@ const canGo = name => {
 
 	let neighbours = getNeighbours(mapView, pos, 1)
 
-	if (value === "#")
-		neighbours = neighbours.filter(item => getChar(mapView, item.pos) !== "#")
+	if (value === " ")
+		neighbours = neighbours.filter(item => getChar(mapView, item.pos) !== " ")
 	if (value === "F")
 		neighbours = neighbours.filter(
 			item => item.type === "R" || item.type === "B"
@@ -100,66 +104,83 @@ const canGo = name => {
 
 	const search = neighbours.map(item => ({
 		name: createKeyFromPosition(item.pos),
-		value: value === "#" ? 0 : 1,
+		value: value === " " ? 0 : 1,
 	}))
 	return search
 }
 
 export const init = (): View[] => {
 	let timeViews = [mapView]
-	let tempView = copyView(mapView)
+
+	const HEIGHT_TEXT_VIEW = 5
+
+	let backView = createEmptyView({
+		width: mapView.size.width * 2 + 1,
+		height: mapView.size.height * 2 + HEIGHT_TEXT_VIEW,
+	})
+
+	mapView = addSpaces(mapView, txt => {
+		timeViews.push(mergeView(backView, createView(txt, true), { x: 0, y: 0 }))
+	})
 
 	const start = searchChar(mapView, "S")
-
-	tempView = setChar(tempView, start, " ")
-	timeViews.push(tempView)
 
 	const res = dijkstra(createKeyFromPosition(start), canGo, a => {
 		const pos = extractPositionFromKey(a.current.name)
 
-		tempView = copyView(tempView)
-		tempView = setChar(tempView, pos, "@")
-		timeViews.push(tempView)
+		mapView = setChar(mapView, pos, "@")
+
+		timeViews.push(
+			setChar(
+				mergeView(backView, mapView, { x: 0, y: 0 }),
+				{ x: 0, y: backView.size.height - 2 },
+				`Part 1 : ${a.current.calcValue}`
+			)
+		)
 	})
 
-	console.log(
-		"Part 1 ",
-		Math.max(...Object.values(res).map(item => item.calcValue))
+	backView = setChar(
+		backView,
+		{ x: 0, y: backView.size.height - 2 },
+		`Part 1 : ${Math.max(...Object.values(res).map(item => item.calcValue))}`
 	)
-
-	mapView2 = copyView(tempView)
+	backView = setChar(
+		backView,
+		{ x: 0, y: backView.size.height - 1 },
+		`Part 2 : -`
+	)
 
 	dijkstra(createKeyFromPosition({ x: 0, y: 0 }), canGo2, a => {
 		const pos = extractPositionFromKey(a.current.name)
 
-		tempView = copyView(tempView)
-		tempView = setChar(tempView, pos, "+")
-		timeViews.push(tempView)
+		mapView = setChar(mapView, pos, "+")
+		timeViews.push(mergeView(backView, mapView, { x: 0, y: 0 }))
 	})
 
-	console.log("Part 2 ", tempView.value.replace(/[\+@#\n]/gi, "").length)
-
-	iterator(tempView, (pos, str) => {
+	iterator(mapView, (pos, str) => {
 		if (str === "+") {
-			tempView = copyView(tempView)
-			tempView = setChar(tempView, pos, " ")
-			timeViews.push(tempView)
+			mapView = setChar(mapView, pos, " ")
+			timeViews.push(mergeView(backView, mapView, { x: 0, y: 0 }))
 		}
 	})
 
-	iterator(tempView, (pos, str) => {
+	iterator(mapView, (pos, str) => {
 		if (str === "@") {
-			tempView = copyView(tempView)
-			tempView = setChar(tempView, pos, " ")
-			timeViews.push(tempView)
+			mapView = setChar(mapView, pos, " ")
+			timeViews.push(mergeView(backView, mapView, { x: 0, y: 0 }))
 		}
 	})
 
-	iterator(tempView, (pos, str) => {
-		if (str === "#") {
-			tempView = copyView(tempView)
-			tempView = setChar(tempView, pos, " ")
-			timeViews.push(tempView)
+	iterator(mapView, (pos, str) => {
+		if (str !== " " && str) {
+			mapView = setChar(mapView, pos, "X")
+			timeViews.push(
+				setChar(
+					mergeView(backView, mapView, { x: 0, y: 0 }),
+					{ x: 0, y: backView.size.height - 1 },
+					`Part 2 : ${mapView.value.match(/x/gi).length}`
+				)
+			)
 		}
 	})
 
