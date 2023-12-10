@@ -241,33 +241,41 @@ export const replaceChar = (view: View, str: string, replace: string): View => {
 export const getNeighbours = (
 	view: View,
 	pos: Position
-): { value: string; pos: Position }[] => {
+): { value: string; pos: Position; type: string }[] => {
 	let matrix = [
 		{
 			cond: pos.y - 1 >= 0,
 			pos: (pos.y - 1) * (view.size.width + 1) + pos.x,
 			realPos: { x: pos.x, y: pos.y - 1 },
+			type: "T",
 		},
 		{
 			cond: pos.y + 1 < view.size.height,
 			pos: (pos.y + 1) * (view.size.width + 1) + pos.x,
 			realPos: { x: pos.x, y: pos.y + 1 },
+			type: "B",
 		},
 		{
 			cond: pos.x - 1 >= 0,
 			pos: pos.y * (view.size.width + 1) + pos.x - 1,
 			realPos: { x: pos.x - 1, y: pos.y },
+			type: "L",
 		},
 		{
 			cond: pos.x + 1 < view.size.width,
 			pos: pos.y * (view.size.width + 1) + pos.x + 1,
 			realPos: { x: pos.x + 1, y: pos.y },
+			type: "R",
 		},
 	]
 
 	return matrix
 		.filter(item => item.cond)
-		.map(item => ({ value: view.value[item.pos], pos: item.realPos }))
+		.map(item => ({
+			value: view.value[item.pos],
+			pos: item.realPos,
+			type: item.type,
+		}))
 		.filter(item => !!item.value)
 }
 
