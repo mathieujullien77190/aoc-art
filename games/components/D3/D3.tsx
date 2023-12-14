@@ -170,31 +170,33 @@ export const D3 = ({
 				</S.Cube>
 			</S.Container>
 
-			{control.UI && (
-				<Controller
-					controls={[
-						...addControl,
-						{ name: "separator" },
-						{ name: "reset", label: "Orientation : " },
-						{ name: "zoom", min: zoom.min, max: zoom.max, value: Z },
-						{ name: "rotation", type: "H", value: axes.values.H },
-						{ name: "rotation", type: "V", value: axes.values.V },
-					]}
-					onChange={(name, value) => {
-						if (name === "zoom") setZ(value as number)
-						if (name === "rotationH") {
-							fixed()
-							add({ H: (value as { diff: number }).diff, V: 0 }, false)
-						}
-						if (name === "rotationV") {
-							fixed()
-							add({ V: (value as { diff: number }).diff, H: 0 }, false)
-						}
-						if (name === "reset") handleReset()
-						onControlChange(name, value)
-					}}
-				/>
-			)}
+			<Controller
+				controls={
+					control.UI
+						? [
+								...addControl,
+								{ name: "separator" },
+								{ name: "reset", label: "Orientation : " },
+								{ name: "zoom", min: zoom.min, max: zoom.max, value: Z },
+								{ name: "rotation", type: "H", value: axes.values.H },
+								{ name: "rotation", type: "V", value: axes.values.V },
+						  ]
+						: [...addControl]
+				}
+				onChange={(name, value) => {
+					if (name === "zoom") setZ(value as number)
+					if (name === "rotationH") {
+						fixed()
+						add({ H: (value as { diff: number }).diff, V: 0 }, false)
+					}
+					if (name === "rotationV") {
+						fixed()
+						add({ V: (value as { diff: number }).diff, H: 0 }, false)
+					}
+					if (name === "reset") handleReset()
+					onControlChange(name, value)
+				}}
+			/>
 		</S.Wrapper>
 	)
 }

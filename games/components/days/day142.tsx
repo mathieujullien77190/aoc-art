@@ -16,6 +16,12 @@ import { AnimationValue } from "_games/components/Controls"
 const CustomViewPlanComponent = styled(ViewPlanComponent)`
 	transition: all 0.2s ease-out;
 
+	padding: 5px;
+
+	&.z0 {
+		border: solid 2px white;
+	}
+
 	pre {
 		font-size: 20px;
 		color: lightgray;
@@ -35,7 +41,7 @@ const Animation = () => {
 	const { out, stats } = useAnim<ViewPlan>({
 		viewsFn: () =>
 			prepareViewsHelpers(() => {
-				return init()
+				return init(50)
 			}, true),
 		control: { pause, reload, speed },
 	})
@@ -45,9 +51,13 @@ const Animation = () => {
 			<D3
 				size={{ width: 1000, height: 600 }}
 				margin={-100}
-				zoom={{ value: isMobile ? 2 : 5, min: 1, max: 20, step: 1, bigStep: 2 }}
+				zoom={{ value: isMobile ? 4 : 7, min: 1, max: 20, step: 1, bigStep: 2 }}
 				control={{
-					mouse: { activate: false, smoothing: 400, speed: 3 },
+					mouse: {
+						activate: true,
+						smoothing: 400,
+						speed: 3,
+					},
 					keyboard: false,
 					UI: false,
 				}}
@@ -70,8 +80,11 @@ const Animation = () => {
 			>
 				<CustomViewPlanComponent
 					plans={out}
-					format={str => str.replace(/(#+)/g, '<span class="red">$1</span>')}
+					format={str => {
+						return str.replace(/(#+)/g, '<span class="red">$1</span>')
+					}}
 					preHighlight
+					getTranslateZ={z => z * 80}
 					addStyle={(meta, z) => {
 						if (meta.text === "north")
 							return {
@@ -89,6 +102,7 @@ const Animation = () => {
 							return {
 								transform: `matrix3d(0.939693, 0.34202, 0, 0, 0, 0, 1, 0, 0.34202, -0.939693, 0, 0, 0, 0, 0, 1)`,
 							}
+						return {}
 					}}
 				/>
 			</D3>
