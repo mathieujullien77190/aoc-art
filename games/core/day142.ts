@@ -1,15 +1,32 @@
 /** @format */
 import { input } from "_games/data/day142"
-import { extractTab2 } from "../helpers/utils"
 import { ViewPlan } from "_games/helpers/types"
-
+import { createArray } from "_games/helpers/utils"
+import {
+	createEmptyView,
+	setChar,
+	copyView,
+	createView,
+} from "_games/helpers/view"
 import {
 	copyViewPlan,
 	createEmptyViewPlanFromString,
 } from "_games/helpers/viewPlan"
 
-const extractData = (): string[][] =>
-	extractTab2(input.replace(/\./g, " ").replace(/O/g, "o"), "\n", "")
+const extractData = (size: number): string[][] => {
+	const cleanInput = input.replace(/\./g, " ").replace(/O/g, "o")
+	const lines = cleanInput.split("\n")
+	let data = []
+
+	for (let i = 0; i < size; i++) {
+		data[i] = []
+		for (let j = 0; j < size; j++) {
+			data[i].push(lines[i][j])
+		}
+	}
+
+	return data
+}
 
 const pushNorth = (data: string[][], cb: (data) => void) => {
 	let action = true
@@ -91,42 +108,43 @@ const pushEast = (data: string[][], cb: (data) => void) => {
 	}
 }
 
-const data = extractData()
-
-export const init = (): ViewPlan[] => {
+export const init = (size): ViewPlan[] => {
 	let all = []
-	let copy
+	let copy, a
 
-	const base = createEmptyViewPlanFromString([input])
+	const data = extractData(size)
 
-	let stop = 0
-	while (stop < 25) {
+	let base = createEmptyView({ width: size, height: size })
+	copy = createEmptyViewPlanFromString([base.value])
+
+	for (a = 0; a < 100; a++) {
 		pushNorth(data, d => {
-			copy = copyViewPlan(base)
+			copy = copyViewPlan(copy)
 			copy.value[0] = d.map(line => line.join("")).join("\n")
 			copy.meta = { text: "north" }
 			all.push(copy)
 		})
 		pushWest(data, d => {
-			copy = copyViewPlan(base)
+			copy = copyViewPlan(copy)
 			copy.value[0] = d.map(line => line.join("")).join("\n")
 			copy.meta = { text: "west" }
 			all.push(copy)
 		})
 		pushSouth(data, d => {
-			copy = copyViewPlan(base)
+			copy = copyViewPlan(copy)
 			copy.value[0] = d.map(line => line.join("")).join("\n")
 			copy.meta = { text: "south" }
 			all.push(copy)
 		})
 		pushEast(data, d => {
-			copy = copyViewPlan(base)
+			copy = copyViewPlan(copy)
 			copy.value[0] = d.map(line => line.join("")).join("\n")
 			copy.meta = { text: "east" }
 			all.push(copy)
 		})
-		stop++
 	}
+
+	console.log("salut")
 
 	return all
 }
