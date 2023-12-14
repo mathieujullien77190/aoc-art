@@ -6,9 +6,11 @@ export const displayList = (gamesConfig: GameConfig[]): string => {
 		gamesConfig
 			.map(
 				(script, index) =>
-					` > (+${index}+) ${script.year}-${`0${script.day}`.substr(-2)} : ${
-						script.title
-					} ${script.tag ? `[§${script.tag}§]` : ""}`
+					` > (+${(" " + index).slice(-2)}+) ${
+						script.year
+					}-${`0${script.day}`.substr(-2)} : ${script.title} ${
+						script.tag ? `[§${script.tag}§]` : ""
+					}`
 			)
 			.join("\n")
 	)
