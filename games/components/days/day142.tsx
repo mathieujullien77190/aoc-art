@@ -54,7 +54,7 @@ const Animation = () => {
 				zoom={{ value: isMobile ? 4 : 7, min: 1, max: 20, step: 1, bigStep: 2 }}
 				control={{
 					mouse: {
-						activate: true,
+						activate: false,
 						smoothing: 400,
 						speed: 3,
 					},
