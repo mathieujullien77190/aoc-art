@@ -18,6 +18,7 @@ const CustomViewPlanComponent = styled(ViewPlanComponent)`
 
 	pre {
 		font-size: 20px;
+		color: lightgray;
 
 		span.red {
 			color: #515151;
