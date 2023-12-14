@@ -1,22 +1,15 @@
 /** @format */
 import { input } from "_games/data/day142"
-import { rand } from "../helpers/math"
-import { createArray, extractTab2 } from "../helpers/utils"
-import { View, ViewPlan } from "_games/helpers/types"
-import {
-	createView,
-	setChar,
-	searchChar,
-	mergeView,
-	createEmptyView,
-} from "_games/helpers/view"
+import { extractTab2 } from "../helpers/utils"
+import { ViewPlan } from "_games/helpers/types"
+
 import {
 	copyViewPlan,
 	createEmptyViewPlanFromString,
 } from "_games/helpers/viewPlan"
 
 const extractData = (): string[][] =>
-	extractTab2(input.replace(/\./g, " "), "\n", "")
+	extractTab2(input.replace(/\./g, " ").replace(/O/g, "o"), "\n", "")
 
 const pushNorth = (data: string[][], cb: (data) => void) => {
 	let action = true
@@ -28,7 +21,7 @@ const pushNorth = (data: string[][], cb: (data) => void) => {
 			for (let j = 0; j < data.length - 1; j++) {
 				o = data[j][i]
 				p = data[j + 1][i]
-				if (o == " " && p == "O") {
+				if (o == " " && p == "o") {
 					data[j][i] = p
 					data[j + 1][i] = " "
 					action = true
@@ -48,7 +41,7 @@ const pushSouth = (data: string[][], cb: (data) => void) => {
 			for (let j = data.length - 1; j > 0; j--) {
 				o = data[j][i]
 				p = data[j - 1][i]
-				if (o == " " && p == "O") {
+				if (o == " " && p == "o") {
 					data[j][i] = p
 					data[j - 1][i] = " "
 					action = true
@@ -68,7 +61,7 @@ const pushWest = (data: string[][], cb: (data) => void) => {
 			for (let i = 0; i < data[0].length; i++) {
 				o = data[i][j]
 				p = data[i][j + 1]
-				if (o == " " && p == "O") {
+				if (o == " " && p == "o") {
 					data[i][j] = p
 					data[i][j + 1] = " "
 					action = true
@@ -88,7 +81,7 @@ const pushEast = (data: string[][], cb: (data) => void) => {
 			for (let i = 0; i < data[0].length; i++) {
 				o = data[i][j]
 				p = data[i][j - 1]
-				if (o == " " && p == "O") {
+				if (o == " " && p == "o") {
 					data[i][j] = p
 					data[i][j - 1] = " "
 					action = true
