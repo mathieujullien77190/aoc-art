@@ -109,7 +109,7 @@ const Animation = () => {
 					format={str =>
 						str
 							.replace(/(\.+)/g, '<span class="out">$1</span>')
-							.replace(/(\x+)/g, '<span class="in">$1</span>')
+							.replace(/(x+)/g, '<span class="in">$1</span>')
 					}
 					getTranslateZ={z => z * 10 - 100}
 				/>
