@@ -35,7 +35,7 @@ export const highlightFlower = (text: any, baseStyles: CSSProperties) => {
 	]
 
 	list.forEach(item => {
-		result = reactStringReplace(result, item.reg, (match, i) => (
+		result = reactStringReplace(result, item.reg, match => (
 			<span
 				key={uniqid()}
 				style={{

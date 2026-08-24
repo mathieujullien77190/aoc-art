@@ -117,7 +117,7 @@ export const highlight = (
 				`\\${item.separator}([^\\${item.separator}]*)\\${item.separator}`,
 				"g"
 			),
-			(match, i) => {
+			match => {
 				let replace = match
 				let arg = []
 
