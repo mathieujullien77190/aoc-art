@@ -119,7 +119,7 @@ const SIZE_BLOCK = 5
 export const generateViews = (dataSize: number) => {
 	let stacks, viewBackGround, merge, save, moveBis
 
-	let moves = extractTab2(input, "\n", " ")
+	const moves = extractTab2(input, "\n", " ")
 		.map(item =>
 			item.map(item2 => parseInt(item2)).filter(item2 => !isNaN(item2))
 		)
@@ -135,7 +135,7 @@ export const generateViews = (dataSize: number) => {
 			(_, i, tab) => i < Math.floor((tab.length * dataSize) / 100)
 		) as Move[]
 
-	let data = copy(listStack)
+	const data = copy(listStack)
 	let views = []
 
 	moves.forEach((move, i, tab) => {

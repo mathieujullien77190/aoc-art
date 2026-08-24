@@ -158,7 +158,7 @@ export const init = (mapView: View): ViewPlan[] => {
 
 	const startEnd = { start: startChar, end: endChar }
 
-	let timePlans = []
+	const timePlans = []
 
 	const basePlans = createEmptyViewPlan(mapView.size, altitudeMax)
 

@@ -467,7 +467,7 @@ export const init = (): Story[] => {
 					text: `iterator(view, (pos, value) => {//code})`,
 					exec: () => {
 						const view = createView(viewData4)
-						let res = []
+						const res = []
 						iterator(view, (pos, value) => {
 							res.push({ pos, value })
 						})
@@ -481,7 +481,7 @@ export const init = (): Story[] => {
 					text: `iterator(view, (pos, value) => {//code}, { x: () => true, y: pos => pos.y === 0 })`,
 					exec: () => {
 						const view = createView(viewData4)
-						let res = []
+						const res = []
 						iterator(
 							view,
 							(pos, value) => {

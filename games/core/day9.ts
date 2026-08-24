@@ -32,7 +32,7 @@ const movePositionHead = (p, move) =>
 
 const init = (data, nb) => {
 	let positionH = { x: 0, y: 0 }
-	let positionT = createArray(nb).map(item => positionH)
+	const positionT = createArray(nb).map(item => positionH)
 
 	return data.reduce((acc, move) => {
 		for (let i = 1; i <= move.value; i++) {
@@ -75,9 +75,9 @@ export const generateViews = (dataSize: number, size: number) => {
 		createArray(maxY).map(() => createArray(maxX).map(() => " ")),
 		false
 	)
-	let trace = createView(".", false)
-	let snake = createView("#", false)
-	let head = createView("%", false)
+	const trace = createView(".", false)
+	const snake = createView("#", false)
+	const head = createView("%", false)
 	let back2
 
 	return positions.map((group: Position[]) => {

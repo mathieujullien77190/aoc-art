@@ -16,7 +16,7 @@ import {
 const extractData = (size: number): string[][] => {
 	const cleanInput = input.replace(/\./g, " ").replace(/O/g, "o")
 	const lines = cleanInput.split("\n")
-	let data = []
+	const data = []
 
 	for (let i = 0; i < size; i++) {
 		data[i] = []
@@ -109,12 +109,12 @@ const pushEast = (data: string[][], cb: (data) => void) => {
 }
 
 export const init = (size): ViewPlan[] => {
-	let all = []
+	const all = []
 	let copy, a
 
 	const data = extractData(size)
 
-	let base = createEmptyView({ width: size, height: size })
+	const base = createEmptyView({ width: size, height: size })
 	copy = createEmptyViewPlanFromString([base.value])
 
 	for (a = 0; a < 100; a++) {

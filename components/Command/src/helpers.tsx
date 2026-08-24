@@ -47,7 +47,7 @@ const frToLeet = (txt: string, advanced: boolean = false): string => {
 	const convertInput = (text, useAdvanced = "n") => {
 		for (let i = 0; i < text.length; i++) {
 			let alphabet
-			let letter = text[i].toLowerCase()
+			const letter = text[i].toLowerCase()
 
 			if (useAdvanced.toLowerCase() === "y") {
 				// Use advanced l33t speak alphabet

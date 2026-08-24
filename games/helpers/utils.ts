@@ -99,7 +99,7 @@ export const arr2DForEach = (arr, fn) => {
 }
 
 export const rotate90 = arr => {
-	let arr2 = createArray(Math.max(...arr.map(item => item.length))).map(
+	const arr2 = createArray(Math.max(...arr.map(item => item.length))).map(
 		() => []
 	)
 	arr2DForEach(arr, ({ item, indexLine, indexColumn }) => {

@@ -116,7 +116,7 @@ export const init = (): ViewPlan[] => {
 	const baseView = mergeView(backView, frontView, { x: DEC, y: DEC })
 	const baseViewPlan = createEmptyViewPlanFromString([baseView.value], {})
 
-	let all = []
+	const all = []
 	let i = 0
 	let copy, copy2
 

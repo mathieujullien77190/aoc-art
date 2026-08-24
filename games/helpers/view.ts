@@ -157,7 +157,7 @@ export const mergeViews = (
 }
 
 export const mergeView = (back: View, front: View, position: Position) => {
-	let copy = copyView(back)
+	const copy = copyView(back)
 	let line, first, last
 	const frontWidth = front.size.width + 1
 	const backWidth = back.size.width + 1
@@ -243,7 +243,7 @@ export const getNeighbours = (
 	pos: Position,
 	diff: number = 1
 ): { value: string; pos: Position; type: string }[] => {
-	let matrix = [
+	const matrix = [
 		{
 			cond: pos.y - diff >= 0,
 			pos: (pos.y - diff) * (view.size.width + diff) + pos.x,

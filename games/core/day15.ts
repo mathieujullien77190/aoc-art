@@ -38,7 +38,7 @@ const canGo = name => {
 }
 
 export const init = (mapView: View): View[] => {
-	let timeViews = []
+	const timeViews = []
 	let tempView = copyView(mapView)
 
 	const start = { x: 0, y: 0 }

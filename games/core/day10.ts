@@ -54,7 +54,7 @@ let mapView = createView(input)
 
 const canGo2 = name => {
 	const pos = extractPositionFromKey(name)
-	let neighbours = getNeighbours(mapView, pos, 1).filter(
+	const neighbours = getNeighbours(mapView, pos, 1).filter(
 		item => getChar(mapView, item.pos) !== "@"
 	)
 
@@ -110,7 +110,7 @@ const canGo = name => {
 }
 
 export const init = (): View[] => {
-	let timeViews = []
+	const timeViews = []
 
 	const HEIGHT_TEXT_VIEW = 5
 

@@ -66,7 +66,7 @@ export const dijkstra = (
 			}
 		})
 
-		for (let key in listNotView) {
+		for (const key in listNotView) {
 			if (listNotView[key].calcValue < minValue) {
 				minName = key
 				minValue = listNotView[key].calcValue
@@ -94,7 +94,7 @@ export const findBestPath = (
 ) => {
 	const res = dijkstra(start, canGo, debug)
 
-	let list: ElementGraph[] = []
+	const list: ElementGraph[] = []
 	let current = end
 
 	while (current) {

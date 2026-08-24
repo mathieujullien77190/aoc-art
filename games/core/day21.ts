@@ -30,24 +30,24 @@ export const init = (max: number): ViewPlan[] => {
 
 	let find = { [createKeyFromPosition(S)]: 1 }
 	let copy = copyView(baseView)
-	let all = []
-	let plan = createEmptyViewPlanFromString([baseView.value, baseView2.value])
+	const all = []
+	const plan = createEmptyViewPlanFromString([baseView.value, baseView2.value])
 
 	for (let i = 0; i < max; i++) {
-		let find2 = {}
+		const find2 = {}
 		copy = copyView(baseView2)
-		for (let key in find) {
+		for (const key in find) {
 			const neighbours = getNeighbours(
 				baseView,
 				extractPositionFromKey(key)
 			).filter(({ value }) => value !== "#")
 
-			for (let neighbour of neighbours) {
+			for (const neighbour of neighbours) {
 				find2[createKeyFromPosition(neighbour.pos)] = 1
 			}
 		}
 		find = {}
-		for (let neighbour in find2) {
+		for (const neighbour in find2) {
 			find[neighbour] = 1
 			copy = setChar(copy, extractPositionFromKey(neighbour), "+")
 		}

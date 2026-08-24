@@ -15,7 +15,7 @@ const move = (data: string[][], meta: Meta): View => {
 }
 
 const test = (data: string[][], type: ">" | "v") => {
-	let meta = []
+	const meta = []
 	arr2DForEach(data, ({ indexLine, indexColumn, item }) => {
 		if (item === type) {
 			const res = getNeighbours(
@@ -48,7 +48,7 @@ export const generateViews = (): View[] => {
 	let meta = []
 	let next1 = true
 	let next2 = true
-	let views: View[] = []
+	const views: View[] = []
 
 	do {
 		data = createArr(view.value)

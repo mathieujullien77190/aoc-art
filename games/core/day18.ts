@@ -35,7 +35,7 @@ const iterator = (
 }
 
 const add = (data: LPosition, addData: LPosition) => {
-	for (let i in addData) {
+	for (const i in addData) {
 		data[createKey(addData[i])] = addData[i]
 	}
 }
@@ -171,9 +171,9 @@ const isBetween = (blocks: Blocks): boolean =>
 
 const allCubesDirection = (blocks: Blocks): LPosition => {
 	const dim = ["x", "y", "z"]
-	let cubes: LPosition = {}
+	const cubes: LPosition = {}
 
-	for (let j in blocks) {
+	for (const j in blocks) {
 		const otherDim = dim.filter(item => item !== j)
 		const start = blocks[j].min[j]
 		const stop = blocks[j].max[j]
@@ -191,8 +191,8 @@ const allCubesDirection = (blocks: Blocks): LPosition => {
 }
 
 export const searchInsideCube = (data: Data) => {
-	let outside: LPosition = {}
-	let inside: LPosition = {}
+	const outside: LPosition = {}
+	const inside: LPosition = {}
 	let searchBlocks, badPos, potentialGood
 
 	for (let x = data.limits.xMin + 1; x < data.limits.xMax; x++) {
@@ -222,7 +222,7 @@ export const getPlan = (
 	inside: LPosition,
 	outside: LPosition,
 	limits: Limits,
-	z: Number
+	z: number
 ): string => {
 	const drawZ = createArray(limits.yMax - limits.yMin - 1).map(() =>
 		createArray(limits.xMax - limits.xMin - 1).map(() => " ")

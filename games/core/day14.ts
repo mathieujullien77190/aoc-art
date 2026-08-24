@@ -100,7 +100,7 @@ export const generateViews = () => {
 	const views = []
 	const start = { x: 500, y: 0 }
 
-	let posClip = { x: start.x - boundary.xMin, y: 12 }
+	const posClip = { x: start.x - boundary.xMin, y: 12 }
 
 	const back = construct(data, boundary)
 

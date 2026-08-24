@@ -3,7 +3,7 @@ import { input } from "_games/data/day4"
 import { extractTab3Int, createArray } from "_games/helpers/utils"
 
 const getViews = (size, view) => {
-	let views = []
+	const views = []
 	let filter
 	let k
 	let tot = 0

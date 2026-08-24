@@ -67,7 +67,7 @@ export const map = {
 
 export const organize = (draw: Matrix): Record<string, string> => {
 	const sizes = calcSize(draw)
-	let cube = {}
+	const cube = {}
 
 	for (let i = 0; i < sizes.sizeSide * sizes.nbLine; i++) {
 		for (let j = 0; j < sizes.sizeSide * sizes.nbCol; j++) {
@@ -88,7 +88,7 @@ export const organize = (draw: Matrix): Record<string, string> => {
 		}
 	}
 
-	for (let i in cube) {
+	for (const i in cube) {
 		cube[i] = cube[i].map(line => line.join("")).join("\n")
 	}
 
