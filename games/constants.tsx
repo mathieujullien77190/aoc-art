@@ -1,5 +1,7 @@
 /** @format */
 
+import type { JSX } from "react"
+
 import Game2021 from "./loading/2021"
 import GameDay1 from "./loading/day1"
 import GameDay4 from "./loading/day4"

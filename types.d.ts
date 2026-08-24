@@ -25,14 +25,14 @@ export type BaseCommand = {
 	name: string
 	action: Action
 	redux?: ({ args }: { args?: Command["args"] }) => unknown
-	JSX?: ({ args }: { args?: Command["args"] }) => JSX.Element
+	JSX?: ({ args }: { args?: Command["args"] }) => import("react").JSX.Element
 	help?: Help
 	testArgs?: Args
 	display?: {
 		hideCmd?: boolean
 		style?: CSSProperties
 		stylePre?: CSSProperties
-		highlight?: (txt: string) => JSX.Element[]
+		highlight?: (txt: string) => import("react").JSX.Element[]
 		trad?: boolean
 		reverse?: boolean
 		stepTime?: number

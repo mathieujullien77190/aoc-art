@@ -1,5 +1,7 @@
 /** @format */
 
+import type { JSX } from "react"
+
 import { RefObject } from "react"
 
 export type Pos = { x: number; y: number }

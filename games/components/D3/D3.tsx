@@ -24,7 +24,7 @@ export const D3 = ({
 	children,
 	onControlChange = () => {},
 }: D3Props) => {
-	const refCube = useRef<HTMLDivElement>()
+	const refCube = useRef<HTMLDivElement>(null)
 
 	const { axes, matrix, add, fixed, change } = useOrientation(start, refCube)
 

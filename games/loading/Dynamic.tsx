@@ -1,5 +1,7 @@
 /** @format */
 
+import type { JSX } from "react"
+
 import { Suspense } from "react"
 import styled from "styled-components"
 

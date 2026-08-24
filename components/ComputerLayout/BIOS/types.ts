@@ -1,5 +1,7 @@
 /** @format */
 
+import type { JSX } from "react"
+
 export type BIOSProps = { onExit?: () => void }
 
 export type ItemProps = {
