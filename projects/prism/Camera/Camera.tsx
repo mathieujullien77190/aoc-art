@@ -2,43 +2,38 @@
 
 import { useState } from "react"
 
-import CameraIdInput from "../CameraIdInput"
+import CameraSwitch from "../CameraSwitch"
 import ColumnsSwitch from "../ColumnsSwitch"
 import Feed from "../Feed"
 import HighlightFillSwitch from "../HighlightFillSwitch"
 import ModeSwitch from "../ModeSwitch"
-import PublicKeyInput from "../PublicKeyInput"
+import ReloadButton from "../ReloadButton"
 import ToleranceSlider from "../ToleranceSlider"
 import ZoneControls from "../ZoneControls"
 import {
+	CAMERAS,
 	DEFAULT_ASCII_COLS,
-	DEFAULT_CAMERA_ID,
 	DEFAULT_HIGHLIGHT_COLOR,
 	DEFAULT_HIGHLIGHT_FILL,
 	DEFAULT_HIGHLIGHT_TOLERANCE,
-	DEFAULT_PUBLIC_KEY,
 	HINT_PICK_COLOR,
 } from "../constants"
 import { buildStreamUrl } from "../helpers"
-import { replacePoint } from "./helpers"
 import { FeedMode, HighlightFill, Point } from "../types"
+import { replacePoint } from "./helpers"
 import { CameraProps } from "./types"
 import * as S from "./UI"
 
-/** une camera autonome : son flux, ses reglages, sa zone d'analyse */
+/** un bloc de visionnage : une camera choisie, ses reglages, sa zone */
 export const Camera = ({
-	label,
-	publicKey = DEFAULT_PUBLIC_KEY,
-	cameraId = DEFAULT_CAMERA_ID,
+	index = 0,
 	mode = "normal",
 	asciiCols = DEFAULT_ASCII_COLS,
 	highlightColor = DEFAULT_HIGHLIGHT_COLOR,
 	tolerance = DEFAULT_HIGHLIGHT_TOLERANCE,
 	highlightFill = DEFAULT_HIGHLIGHT_FILL,
-	zone: initialZone = [],
 }: CameraProps) => {
-	const [currentKey, setCurrentKey] = useState<string>(publicKey)
-	const [currentCamera, setCurrentCamera] = useState<string>(cameraId)
+	const [current, setCurrent] = useState<number>(index)
 	const [currentMode, setCurrentMode] = useState<FeedMode>(mode)
 	const [currentCols, setCurrentCols] = useState<number>(asciiCols)
 	const [currentColor, setCurrentColor] = useState<string>(highlightColor)
@@ -46,15 +41,27 @@ export const Camera = ({
 	const [currentFill, setCurrentFill] = useState<HighlightFill>(highlightFill)
 
 	// zone appliquee aux analyses, et brouillon en cours de trace
-	const [zone, setZone] = useState<Point[]>(initialZone)
+	const [zone, setZone] = useState<Point[]>(CAMERAS[index].zone)
 	const [draft, setDraft] = useState<Point[]>([])
 	const [editingZone, setEditingZone] = useState<boolean>(false)
 
-	const src = buildStreamUrl(currentKey, currentCamera)
+	// incremente pour forcer la reconstruction du flux
+	const [reloadKey, setReloadKey] = useState<number>(0)
+
+	const camera = CAMERAS[current]
+	const src = buildStreamUrl(camera.publicKey, camera.cameraId)
+
+	/** la zone appartient a la camera : changer de source charge la sienne */
+	const selectCamera = (next: number) => {
+		setCurrent(next)
+		setZone(CAMERAS[next].zone)
+		setDraft([])
+		setEditingZone(false)
+	}
 
 	return (
 		<S.Container>
-			<S.Title>{label}</S.Title>
+			<S.Title>{camera.label}</S.Title>
 
 			<S.Body>
 				<S.Viewer>
@@ -65,6 +72,7 @@ export const Camera = ({
 						highlightColor={currentColor}
 						tolerance={currentTolerance}
 						highlightFill={currentFill}
+						reloadKey={reloadKey}
 						zone={zone}
 						overlayPoints={editingZone ? draft : zone}
 						editingZone={editingZone}
@@ -77,14 +85,13 @@ export const Camera = ({
 				</S.Viewer>
 
 				<S.Settings>
-					<PublicKeyInput
-						value={currentKey}
-						onChange={setCurrentKey}
+					<CameraSwitch
+						value={current}
+						onChange={selectCamera}
 						disabled={editingZone}
 					/>
-					<CameraIdInput
-						value={currentCamera}
-						onChange={setCurrentCamera}
+					<ReloadButton
+						onClick={() => setReloadKey(prev => prev + 1)}
 						disabled={editingZone}
 					/>
 					<ZoneControls

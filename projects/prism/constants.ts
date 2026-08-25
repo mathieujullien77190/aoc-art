@@ -1,11 +1,5 @@
 /** @format */
 
-export const DEFAULT_PUBLIC_KEY = "8EvTXEBnos"
-
-// identifiant interne de la camera : propre a chaque appareil.
-// se lit dans la source de https://video.nest.com/live/<cle publique>
-export const DEFAULT_CAMERA_ID = "4908fe7443a14f0990743059f2f204f5"
-
 // l'hote n'est pas propre a la camera : plusieurs shards servent les memes flux
 export const STREAM_HOST = "https://stream-eu1-bravo.dropcam.com/nexus_aac"
 
@@ -19,14 +13,15 @@ export const MODE_LABELS = {
 	motion: "Motion",
 }
 
-export const LABEL_PUBLIC_KEY = "Public key"
-export const LABEL_CAMERA_ID = "Camera ID"
+export const LABEL_CAMERA_SOURCE = "Camera"
 export const LABEL_MODE = "Render"
 export const LABEL_ASCII_COLS = "Columns"
 export const LABEL_HIGHLIGHT_COLOR = "Color"
 export const LABEL_TOLERANCE = "Tolerance"
 export const LABEL_HIGHLIGHT_FILL = "Fill"
 export const LABEL_ZONE = "Zone"
+export const LABEL_STREAM = "Stream"
+export const ACTION_RELOAD = "Reload"
 export const ACTION_DRAW_ZONE = "Draw"
 export const ACTION_CLEAR_ZONE = "Clear"
 export const ACTION_SAVE_ZONE = "Save"
@@ -113,3 +108,8 @@ export const CAMERAS = [
 		],
 	},
 ]
+
+// chien de garde : un flux live fige ne remonte pas toujours d'erreur,
+// on surveille donc l'avancee de la lecture
+export const STALL_CHECK_MS = 2000
+export const STALL_TICKS = 3

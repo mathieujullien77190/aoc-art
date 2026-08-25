@@ -17,6 +17,7 @@ export const Feed = ({
 	highlightColor,
 	tolerance,
 	highlightFill,
+	reloadKey,
 	zone,
 	overlayPoints,
 	editingZone,
@@ -24,7 +25,7 @@ export const Feed = ({
 	onAddZonePoint,
 	onMoveZonePoint,
 }: FeedProps) => {
-	const videoRef = useHlsStream(src)
+	const videoRef = useHlsStream(src, reloadKey)
 
 	return (
 		<S.Container>

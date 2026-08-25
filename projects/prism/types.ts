@@ -22,6 +22,8 @@ export type FeedProps = {
 	highlightColor: string
 	tolerance: number
 	highlightFill: HighlightFill
+	/** incremente pour reconstruire le flux */
+	reloadKey: number
 	/** polygone applique aux analyses ; vide = toute l'image */
 	zone: Point[]
 	/** sommets affiches par l'overlay : brouillon pendant le trace */

@@ -1,17 +1,14 @@
 /** @format */
 
-import { FeedMode, HighlightFill, Point } from "../types"
+import { FeedMode, HighlightFill } from "../types"
 
 export type CameraProps = {
-	label: string
-	/** valeurs initiales ; chaque camera pilote ensuite les siennes */
-	publicKey?: string
-	cameraId?: string
+	/** index initial dans CAMERAS ; modifiable ensuite via le selecteur */
+	index?: number
+	/** valeurs initiales de rendu */
 	mode?: FeedMode
 	asciiCols?: number
 	highlightColor?: string
 	tolerance?: number
 	highlightFill?: HighlightFill
-	/** zone d'analyse initiale ; vide = toute l'image */
-	zone?: Point[]
 }

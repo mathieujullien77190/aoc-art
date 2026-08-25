@@ -96,11 +96,8 @@ const Home = () => {
 	}, [sendRestrictedCommand, sendCommand])
 
 	useEffect(() => {
-		if (start) {
-			sendCommand("aoc", dispatch)
-			if (location.hash.includes("#")) {
-				sendCommand(location.hash.substring(1).split("_").join(" "), dispatch)
-			}
+		if (start && location.hash.includes("#")) {
+			sendCommand(location.hash.substring(1).split("_").join(" "), dispatch)
 		}
 	}, [start])
 
