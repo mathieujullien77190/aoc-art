@@ -1,5 +1,5 @@
 /** @format */
-import { BaseCommand, Command, Args } from "_/types"
+import { BaseCommand, Command, Args, Translatable } from "_/types"
 
 const isAuthorizeArgs = (args: string[], testArgs: Args) => {
 	const test1 =
@@ -91,7 +91,7 @@ export const executeCommand = ({
 	commands,
 	command,
 	args,
-}: ExecuteCommandProps): string => {
+}: ExecuteCommandProps): Translatable => {
 	return command.action({
 		commands,
 		name: command.name,

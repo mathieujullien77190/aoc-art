@@ -1,4 +1,5 @@
 import { GameConfig } from "_games/constants"
+import { Translatable } from "_/types"
 
 export const displayList = (gamesConfig: GameConfig[]): string => {
 	return (
@@ -16,9 +17,10 @@ export const displayList = (gamesConfig: GameConfig[]): string => {
 	)
 }
 
-const textLoadScript = (gamesConfig: GameConfig) => {
-	return `§Année : ${gamesConfig.year} / Jour : ${gamesConfig.day}§\n\n${gamesConfig.title}`
-}
+const textLoadScript = (gamesConfig: GameConfig): Translatable => ({
+	fr: `§Année : ${gamesConfig.year} / Jour : ${gamesConfig.day}§\n\n${gamesConfig.title}`,
+	en: `§Year: ${gamesConfig.year} / Day: ${gamesConfig.day}§\n\n${gamesConfig.title}`,
+})
 
 export const getScript = (
 	args: string[],
@@ -46,7 +48,9 @@ export const getScript = (
 export const loadScript = (
 	args: string[],
 	gamesConfig: GameConfig[]
-): string => {
+): Translatable => {
 	const script = getScript(args, gamesConfig)
-	return script ? textLoadScript(script) : `Aucun script pour ce jour`
+	return script
+		? textLoadScript(script)
+		: { fr: "Aucun script pour ce jour", en: "No script for that day" }
 }

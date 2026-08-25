@@ -1,9 +1,15 @@
 /** @format */
 import { CSSProperties } from "react"
 
+/**
+ * Texte affichable : une chaine simple, ou une variante par langue.
+ * `leet`, `xleet` et `#` derivent de `fr`, ils n'ont pas d'entree propre.
+ */
+export type Translatable = string | { fr: string; en: string }
+
 export type Help = {
-	description?: string
-	patterns: { pattern: string; description: string }[]
+	description?: Translatable
+	patterns: { pattern: string; description: Translatable }[]
 }
 
 export type Action = ({
@@ -16,7 +22,7 @@ export type Action = ({
 	args?: Command["args"]
 	help?: Command["help"]
 	commands?: BaseCommand[]
-}) => string
+}) => Translatable
 
 export type Args = { authorize: string[]; empty: boolean }
 
@@ -45,7 +51,7 @@ export type Command = {
 	pattern: string
 	name: string
 	args: string[]
-	result: string
+	result: Translatable
 	restricted: boolean
 	visible?: boolean
 	timestamp?: number

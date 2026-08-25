@@ -1,9 +1,10 @@
 import React, { ReactNode } from "react"
 import reactStringReplace from "react-string-replace"
+import { Translatable } from "_/types"
 import { colors, app } from "_components/constants"
 import uniqid from "uniqid"
 
-export const trad = (input: string, lang: string) => {
+export const trad = (input: Translatable, lang: string) => {
 	if (lang === "leet") return frToLeet(input["fr"] || input)
 	if (lang === "xleet") return frToLeet(input["fr"] || input, true)
 	if (lang === "#")
