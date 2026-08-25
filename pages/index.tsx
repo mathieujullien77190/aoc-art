@@ -73,18 +73,18 @@ const Home = () => {
 		containerRef.current.scrollTo(0, 1000000)
 	}, [dispatch])
 
-	const handleClick = useCallback(() => {
-		if (isMobile) {
-			handleSetCursor(-1)
-		}
-	}, [isMobile])
-
 	const handleSetCursor = useCallback(
 		(direction: number) => {
 			dispatch(moveCursor(direction))
 		},
 		[dispatch]
 	)
+
+	const handleClick = useCallback(() => {
+		if (isMobile) {
+			handleSetCursor(-1)
+		}
+	}, [handleSetCursor])
 
 	const handleSendCommand = (commandPattern: string) => {
 		sendCommand(commandPattern, dispatch)
