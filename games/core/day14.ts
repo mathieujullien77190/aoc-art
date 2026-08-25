@@ -47,7 +47,7 @@ const construct = (data, boundary) => {
 
 	max = { x: 0, y: 0 }
 
-	data.forEach((path, j) => {
+	data.forEach(path => {
 		xSave = path[0].x
 		for (let i = 1; i < path.length; i++) {
 			curr = path[i]

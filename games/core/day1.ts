@@ -53,7 +53,7 @@ const clip = (allScreen, size) => {
 
 	return emptyArray(sizeLine).map((_, i) =>
 		lines
-			.map((item, j) => {
+			.map(item => {
 				return item.substr(0 - size - i, size)
 			})
 			.join("\n")

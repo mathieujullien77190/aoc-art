@@ -1,1 +1,1 @@
-export const createArray = (size: number) => [...Array(size)].map((_) => 0);
+export const createArray = (size: number) => [...Array(size)].map(() => 0);

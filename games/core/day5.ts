@@ -110,8 +110,6 @@ const createFil = (start: Position) => {
 	return createView(rotateFil, false)
 }
 
-const nbCaseMax = 40
-
 const X = 16
 const Y = 7
 const SIZE_BLOCK = 5

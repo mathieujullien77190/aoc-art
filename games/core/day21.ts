@@ -31,8 +31,6 @@ export const init = (max: number): ViewPlan[] => {
 	let find = { [createKeyFromPosition(S)]: 1 }
 	let copy = copyView(baseView)
 	const all = []
-	const plan = createEmptyViewPlanFromString([baseView.value, baseView2.value])
-
 	for (let i = 0; i < max; i++) {
 		const find2 = {}
 		copy = copyView(baseView2)

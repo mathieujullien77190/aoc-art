@@ -85,7 +85,7 @@ const Animation = () => {
 					}}
 					preHighlight
 					getTranslateZ={z => z * 80}
-					addStyle={(meta, z) => {
+					addStyle={meta => {
 						if (meta.text === "north")
 							return {
 								transform: `matrix3d(1, 0, 0, 0, 0, -0.34202, 0.939693, 0, 0, -0.939693, -0.34202, 0, 0, 0, 0, 1)`,

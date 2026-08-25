@@ -1,18 +1,14 @@
 /** @format */
-import { input, input2 } from "_games/data/day15"
+import { input } from "_games/data/day15"
 
-import { View, ViewPlan, Position } from "_games/helpers/types"
+import { View, Position } from "_games/helpers/types"
 import { findBestPath } from "_games/helpers/graph"
 import {
 	createView,
 	getNeighbours,
-	getChar,
 	setChar,
-	searchChar,
-	iterator,
 	copyView,
 	clipView,
-	extract,
 	mergeView,
 } from "_games/helpers/view"
 

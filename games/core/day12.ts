@@ -64,8 +64,6 @@ export const getLettersPlan = (
 	maxWidth: number,
 	startEnd: StartEnd
 ): ViewPlan => {
-	const min = getCode(startEnd.start)
-
 	iterator(
 		mapView,
 		pos => {

@@ -1,6 +1,5 @@
 /** @format */
 
-import { useState } from "react"
 import { TitleDayProps } from "./types"
 
 import * as S from "./UI"

@@ -117,7 +117,6 @@ export const init = (): ViewPlan[] => {
 	const baseViewPlan = createEmptyViewPlanFromString([baseView.value], {})
 
 	const all = []
-	let i = 0
 	let copy, copy2
 
 	nextNode(nodesMap, directions, (a, index) => {
@@ -150,8 +149,6 @@ export const init = (): ViewPlan[] => {
 			}
 			all.push(copy2)
 		}
-
-		i++
 	})
 
 	return all

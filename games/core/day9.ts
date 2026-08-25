@@ -32,7 +32,7 @@ const movePositionHead = (p, move) =>
 
 const init = (data, nb) => {
 	let positionH = { x: 0, y: 0 }
-	const positionT = createArray(nb).map(item => positionH)
+	const positionT = createArray(nb).map(() => positionH)
 
 	return data.reduce((acc, move) => {
 		for (let i = 1; i <= move.value; i++) {

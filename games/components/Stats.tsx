@@ -2,8 +2,6 @@
 import { useState } from "react"
 import styled from "styled-components"
 
-import { colors } from "_components/constants"
-
 import { isMobile } from "react-device-detect"
 
 const Container = styled.div`

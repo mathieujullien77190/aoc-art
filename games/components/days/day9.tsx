@@ -24,7 +24,7 @@ const Game = styled.pre`
 
 const Animation = () => {
 	const [speed, setSpeed] = useState<number>(20)
-	const [dataSize, setDataSize] = useState<number>(50)
+	const [dataSize] = useState<number>(50)
 	const [reload, setReload] = useState<number>(0)
 	const [pause, setPause] = useState<boolean>(false)
 

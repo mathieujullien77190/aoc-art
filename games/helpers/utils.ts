@@ -48,7 +48,7 @@ export const count = arr => arr.reduce((acc, curr) => acc + curr, 0)
 
 export const sort = arr => [...arr].sort((a, b) => a - b)
 
-export const createArray = size => [...Array(size)].map(_ => 0)
+export const createArray = size => [...Array(size)].map(() => 0)
 
 export const sortString = str =>
 	str

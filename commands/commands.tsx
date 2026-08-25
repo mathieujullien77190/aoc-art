@@ -187,7 +187,7 @@ export const commands: BaseCommand[] = [
 	{
 		restricted: true,
 		name: "closeaoc",
-		action: ({ args }) => {
+		action: () => {
 			return "script close"
 		},
 		redux: () => {

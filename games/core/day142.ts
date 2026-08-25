@@ -1,13 +1,7 @@
 /** @format */
 import { input } from "_games/data/day142"
 import { ViewPlan } from "_games/helpers/types"
-import { createArray } from "_games/helpers/utils"
-import {
-	createEmptyView,
-	setChar,
-	copyView,
-	createView,
-} from "_games/helpers/view"
+import { createEmptyView } from "_games/helpers/view"
 import {
 	copyViewPlan,
 	createEmptyViewPlanFromString,

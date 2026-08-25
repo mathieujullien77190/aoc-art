@@ -28,7 +28,7 @@ const getViews = (size, view) => {
 export const generateViews = (size: number, dataSize: number) => {
 	const output = extractTab3Int(input, "\n", ",", "-")
 		.filter((_, i, tab) => i < Math.floor((tab.length * dataSize) / 100))
-		.map((line, i) => {
+		.map(line => {
 			const p1 = createArray(line[0][1] - line[0][0] + 1).map(
 				(_, i) => i + line[0][0]
 			)
@@ -48,7 +48,7 @@ export const generateViews = (size: number, dataSize: number) => {
 			return base3
 		})
 
-	const output2 = [...output, ...createArray(size).map(item => [" "])]
+	const output2 = [...output, ...createArray(size).map(() => [" "])]
 
 	return getViews(size, output2).map(view => ({
 		value: view
