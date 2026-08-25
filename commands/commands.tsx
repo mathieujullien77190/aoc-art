@@ -363,12 +363,12 @@ export const commands: BaseCommand[] = [
 		},
 		display: {
 			stylePre: {
-				fontSize: "calc(100vw/60)",
+				fontSize: "calc(100cqw/60)",
 				color: colors.appColor,
 				transform: "scaleX(-1)",
 				textAlign: "right",
 			},
-			highlight: text => highlightFlower(text, { fontSize: "calc(100vw/60)" }),
+			highlight: text => highlightFlower(text, { fontSize: "calc(100cqw/60)" }),
 			trad: false,
 			reverse: true,
 			stepTime: 1,

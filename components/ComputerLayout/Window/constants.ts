@@ -20,3 +20,6 @@ export const COLORS = {
 };
 
 export const ANIM_TIME = 300;
+
+// en dessous, la fenetre est toujours pleine et non redimensionnable
+export const COMPACT_MAX_WIDTH = 1024;

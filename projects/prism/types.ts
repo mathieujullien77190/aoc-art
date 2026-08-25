@@ -24,6 +24,8 @@ export type FeedProps = {
 	highlightFill: HighlightFill
 	/** incremente pour reconstruire le flux */
 	reloadKey: number
+	/** le flux diffuse-t-il quelque chose de visible */
+	streamOn: boolean
 	/** polygone applique aux analyses ; vide = toute l'image */
 	zone: Point[]
 	/** sommets affiches par l'overlay : brouillon pendant le trace */
@@ -36,4 +38,6 @@ export type FeedProps = {
 	onAddZonePoint?: (point: Point) => void
 	/** deplace un sommet existant */
 	onMoveZonePoint?: (index: number, point: Point) => void
+	/** signale si le flux diffuse quelque chose de visible */
+	onStreamStatus?: (on: boolean) => void
 }

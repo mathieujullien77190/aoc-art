@@ -4,9 +4,12 @@ import AsciiVideo from "../AsciiVideo"
 import HighlightVideo from "../HighlightVideo"
 import MotionVideo from "../MotionVideo"
 import ZoneOverlay from "../ZoneOverlay"
-import { useHlsStream } from "../hooks"
+import { useHlsStream, useStreamStatus } from "../hooks"
 import { FeedProps } from "../types"
 import * as S from "./UI"
+
+// defini au niveau module : un litteral par rendu relancerait l'effet
+const noop = () => {}
 
 /** une camera : un flux HLS, rendu selon le mode choisi */
 export const Feed = ({
@@ -18,14 +21,18 @@ export const Feed = ({
 	tolerance,
 	highlightFill,
 	reloadKey,
+	streamOn,
 	zone,
 	overlayPoints,
 	editingZone,
 	onPickColor,
 	onAddZonePoint,
 	onMoveZonePoint,
+	onStreamStatus = noop,
 }: FeedProps) => {
 	const videoRef = useHlsStream(src, reloadKey)
+
+	useStreamStatus(videoRef, onStreamStatus)
 
 	return (
 		<S.Container>
@@ -40,10 +47,10 @@ export const Feed = ({
 					playsInline
 					crossOrigin="anonymous"
 				/>
-				{mode === "ascii" && (
+				{streamOn && mode === "ascii" && (
 					<AsciiVideo videoRef={videoRef} cols={asciiCols} />
 				)}
-				{mode === "highlight" && (
+				{streamOn && mode === "highlight" && (
 					<HighlightVideo
 						videoRef={videoRef}
 						color={highlightColor}
@@ -53,17 +60,19 @@ export const Feed = ({
 						onPick={onPickColor}
 					/>
 				)}
-				{mode === "motion" && (
+				{streamOn && mode === "motion" && (
 					<MotionVideo videoRef={videoRef} zone={zone} />
 				)}
 
-				{/* toujours au-dessus ; ne capte les clics que pendant le trace */}
-				<ZoneOverlay
-					points={overlayPoints}
-					editing={editingZone}
-					onAddPoint={onAddZonePoint}
-					onMovePoint={onMoveZonePoint}
-				/>
+				{/* au-dessus des rendus ; ne capte les clics que pendant le trace */}
+				{streamOn && (
+					<ZoneOverlay
+						points={overlayPoints}
+						editing={editingZone}
+						onAddPoint={onAddZonePoint}
+						onMovePoint={onMoveZonePoint}
+					/>
+				)}
 			</S.Frame>
 		</S.Container>
 	)

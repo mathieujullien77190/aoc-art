@@ -26,16 +26,7 @@ export const ZoneControls = ({
 	onClear = () => {},
 }: ZoneControlsProps) => (
 	<S.Container>
-		<S.Head>
-			{LABEL_ZONE}
-			<S.Count>
-				{editing
-					? `${draftCount} pts`
-					: zoneCount
-						? `${zoneCount} pts`
-						: "full frame"}
-			</S.Count>
-		</S.Head>
+		<S.Head>{LABEL_ZONE}</S.Head>
 
 		<S.Buttons>
 			{editing ? (

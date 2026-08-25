@@ -2,6 +2,7 @@ import { useEffect, useState, Ref, forwardRef } from "react"
 import { WindowProps, Pos, Size, Mode } from "./types"
 import * as S from "./UI"
 import { ANIM_TIME } from "./constants"
+import { useIsCompact } from "./hooks"
 
 const BaseWindow = (
 	{
@@ -13,7 +14,12 @@ const BaseWindow = (
 	}: WindowProps,
 	ref: Ref<HTMLDivElement>
 ) => {
-	const [mode, setMode] = useState<Mode>("medium")
+	const isCompact = useIsCompact()
+	const [userMode, setUserMode] = useState<Mode>("medium")
+
+	// sous le seuil la fenetre reste pleine et non redimensionnable.
+	// "close" passe quand meme, sinon l'animation de fermeture disparaitrait
+	const mode: Mode = isCompact && userMode !== "close" ? "full" : userMode
 	const [pos, setPos] = useState<Pos>({ x: 0, y: 0 })
 	const [size, setSize] = useState<Size>({ width: 0, height: 0, unit: "px" })
 	const [ready, setReady] = useState<boolean>(false)
@@ -53,16 +59,16 @@ const BaseWindow = (
 	}, [show, mode])
 
 	const handleResize = () => {
-		setMode(prev => (prev === "full" ? "medium" : "full"))
+		setUserMode(prev => (prev === "full" ? "medium" : "full"))
 	}
 
 	const handleClose = () => {
 		setReady(false)
-		setMode("close")
+		setUserMode("close")
 		window.setTimeout(() => {
 			onClose()
 
-			setMode("medium")
+			setUserMode("medium")
 		}, ANIM_TIME + 100)
 	}
 
@@ -94,7 +100,7 @@ const BaseWindow = (
 					$followMouse={followMouse}
 				>
 					<S.topBar
-						onDoubleClick={handleResize}
+						onDoubleClick={isCompact ? undefined : handleResize}
 						onMouseDown={() => {
 							if (mode !== "full") setFollowMouse(true)
 						}}
@@ -104,7 +110,11 @@ const BaseWindow = (
 					>
 						<S.Title>{title}</S.Title>
 						<S.Actions>
-							<span onClick={handleResize}>{mode === "full" ? "-" : "+"}</span>
+							{!isCompact && (
+								<span onClick={handleResize}>
+									{mode === "full" ? "-" : "+"}
+								</span>
+							)}
 							<span onClick={handleClose}>x</span>
 						</S.Actions>
 					</S.topBar>

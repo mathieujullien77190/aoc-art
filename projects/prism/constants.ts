@@ -113,3 +113,12 @@ export const CAMERAS = [
 // on surveille donc l'avancee de la lecture
 export const STALL_CHECK_MS = 2000
 export const STALL_TICKS = 3
+
+// etat du flux : la lecture doit avancer ET l'image ne pas etre noire
+export const STATUS_CHECK_MS = 2000
+// echantillon minuscule : on ne juge qu'une moyenne, pas un detail
+export const STATUS_SAMPLE_WIDTH = 32
+// en dessous de cette luminance moyenne, l'image est consideree noire
+export const STATUS_MIN_LUMINANCE = 6
+export const STATUS_ON = "ON"
+export const STATUS_OFF = "OFF"

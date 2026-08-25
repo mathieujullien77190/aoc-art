@@ -2,7 +2,15 @@
 
 import { useEffect, useRef } from "react"
 
-import { HLS_MIME, STALL_CHECK_MS, STALL_TICKS } from "./constants"
+import {
+	HLS_MIME,
+	STALL_CHECK_MS,
+	STALL_TICKS,
+	STATUS_CHECK_MS,
+	STATUS_MIN_LUMINANCE,
+	STATUS_SAMPLE_WIDTH,
+} from "./constants"
+import { frameHeight, luminance } from "./helpers"
 import { VideoRef } from "./types"
 
 /** sous-ensemble de hls.js reellement utilise ici */
@@ -97,4 +105,60 @@ export const useHlsStream = (src: string, reloadKey = 0): VideoRef => {
 	}, [src, reloadKey])
 
 	return videoRef
+}
+
+/**
+ * Signale si le flux diffuse quelque chose de visible.
+ *
+ * Le seul critere est la luminance moyenne : une camera coupee, un flux
+ * absent ou une image noire donnent tous le meme resultat a l'ecran, donc
+ * le meme verdict. Inutile de distinguer les causes.
+ *
+ * `onChange` doit etre stable — un setter de useState convient.
+ */
+export const useStreamStatus = (
+	videoRef: VideoRef,
+	onChange: (on: boolean) => void
+) => {
+	useEffect(() => {
+		const video = videoRef.current
+		if (!video) return
+
+		// echantillon minuscule : on ne juge qu'une moyenne, pas un detail
+		const canvas = document.createElement("canvas")
+		canvas.width = STATUS_SAMPLE_WIDTH
+		canvas.height = frameHeight(STATUS_SAMPLE_WIDTH)
+		const ctx = canvas.getContext("2d", { willReadFrequently: true })
+
+		let previous: boolean | null = null
+
+		const check = () => {
+			let on = false
+
+			// HAVE_CURRENT_DATA : sans image a lire, le flux est eteint
+			if (ctx && video.readyState >= 2) {
+				try {
+					ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
+					const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height)
+
+					let total = 0
+					for (let i = 0; i < data.length; i += 4)
+						total += luminance(data[i], data[i + 1], data[i + 2])
+
+					on = total / (data.length / 4) > STATUS_MIN_LUMINANCE
+				} catch {
+					// canvas teinte : l'image est illisible, on ne peut pas juger.
+					// declarer OFF ici serait un faux negatif
+					on = true
+				}
+			}
+
+			if (on === previous) return
+			previous = on
+			onChange(on)
+		}
+
+		const timer = window.setInterval(check, STATUS_CHECK_MS)
+		return () => window.clearInterval(timer)
+	}, [videoRef, onChange])
 }

@@ -39,7 +39,7 @@ const BaseWindows = ({
 
       <Icon
         open={openWindow === "prism"}
-        name="PRISM"
+        name="1/PRISM"
         image="📡"
         onClick={() => {
           toggle("prism");
@@ -62,7 +62,7 @@ const BaseWindows = ({
       <Window
         show={openWindow === "prism"}
         container={globalRef}
-        title="PRISM"
+        title="1/PRISM"
         onClose={() => {
           setOpenWindow(null);
         }}

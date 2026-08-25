@@ -17,6 +17,8 @@ import {
 	DEFAULT_HIGHLIGHT_FILL,
 	DEFAULT_HIGHLIGHT_TOLERANCE,
 	HINT_PICK_COLOR,
+	STATUS_OFF,
+	STATUS_ON,
 } from "../constants"
 import { buildStreamUrl } from "../helpers"
 import { FeedMode, HighlightFill, Point } from "../types"
@@ -48,6 +50,13 @@ export const Camera = ({
 	// incremente pour forcer la reconstruction du flux
 	const [reloadKey, setReloadKey] = useState<number>(0)
 
+	// setStreamOn est stable : il peut servir de callback au hook d'etat
+	const [streamOn, setStreamOn] = useState<boolean>(false)
+
+	// un flux eteint n'a rien a tracer : on quitte le mode edition sans
+	// toucher a l'etat, qui reprendra si le flux revient
+	const editing = editingZone && streamOn
+
 	const camera = CAMERAS[current]
 	const src = buildStreamUrl(camera.publicKey, camera.cameraId)
 
@@ -61,7 +70,10 @@ export const Camera = ({
 
 	return (
 		<S.Container>
-			<S.Title>{camera.label}</S.Title>
+			<S.Title>
+				{camera.label} :{" "}
+				<S.Status $on={streamOn}>{streamOn ? STATUS_ON : STATUS_OFF}</S.Status>
+			</S.Title>
 
 			<S.Body>
 				<S.Viewer>
@@ -73,14 +85,16 @@ export const Camera = ({
 						tolerance={currentTolerance}
 						highlightFill={currentFill}
 						reloadKey={reloadKey}
+						streamOn={streamOn}
 						zone={zone}
-						overlayPoints={editingZone ? draft : zone}
-						editingZone={editingZone}
+						overlayPoints={editing ? draft : zone}
+						editingZone={editing}
 						onPickColor={setCurrentColor}
 						onAddZonePoint={point => setDraft(prev => [...prev, point])}
 						onMoveZonePoint={(index, point) =>
 							setDraft(prev => replacePoint(prev, index, point))
 						}
+						onStreamStatus={setStreamOn}
 					/>
 				</S.Viewer>
 
@@ -88,58 +102,62 @@ export const Camera = ({
 					<CameraSwitch
 						value={current}
 						onChange={selectCamera}
-						disabled={editingZone}
+						disabled={editing}
 					/>
 					<ReloadButton
 						onClick={() => setReloadKey(prev => prev + 1)}
-						disabled={editingZone}
+						disabled={editing}
 					/>
-					<ZoneControls
-						draftCount={draft.length}
-						zoneCount={zone.length}
-						editing={editingZone}
-						onDraw={() => {
-							// on repart de la zone appliquee : Draw sert a la modifier,
-							// pas seulement a en tracer une nouvelle
-							setDraft(zone)
-							setEditingZone(true)
-						}}
-						onSave={() => {
-							setZone(draft)
-							setEditingZone(false)
-						}}
-						onCancel={() => {
-							setDraft([])
-							setEditingZone(false)
-						}}
-						onClear={() => setZone([])}
-					/>
-					<ModeSwitch
-						value={currentMode}
-						onChange={setCurrentMode}
-						disabled={editingZone}
-					/>
-					{currentMode === "ascii" && (
-						<ColumnsSwitch
-							value={currentCols}
-							onChange={setCurrentCols}
-							disabled={editingZone}
-						/>
-					)}
-					{currentMode === "highlight" && (
+					{streamOn && (
 						<>
-							<S.Hint>{HINT_PICK_COLOR}</S.Hint>
-							<S.Swatch $color={currentColor}>{currentColor}</S.Swatch>
-							<ToleranceSlider
-								value={currentTolerance}
-								onChange={setCurrentTolerance}
-								disabled={editingZone}
+							<ZoneControls
+								draftCount={draft.length}
+								zoneCount={zone.length}
+								editing={editing}
+								onDraw={() => {
+									// on repart de la zone appliquee : Draw sert a la
+									// modifier, pas seulement a en tracer une nouvelle
+									setDraft(zone)
+									setEditingZone(true)
+								}}
+								onSave={() => {
+									setZone(draft)
+									setEditingZone(false)
+								}}
+								onCancel={() => {
+									setDraft([])
+									setEditingZone(false)
+								}}
+								onClear={() => setZone([])}
 							/>
-							<HighlightFillSwitch
-								value={currentFill}
-								onChange={setCurrentFill}
-								disabled={editingZone}
+							<ModeSwitch
+								value={currentMode}
+								onChange={setCurrentMode}
+								disabled={editing}
 							/>
+							{currentMode === "ascii" && (
+								<ColumnsSwitch
+									value={currentCols}
+									onChange={setCurrentCols}
+									disabled={editing}
+								/>
+							)}
+							{currentMode === "highlight" && (
+								<>
+									<S.Hint>{HINT_PICK_COLOR}</S.Hint>
+									<S.Swatch $color={currentColor}>{currentColor}</S.Swatch>
+									<ToleranceSlider
+										value={currentTolerance}
+										onChange={setCurrentTolerance}
+										disabled={editing}
+									/>
+									<HighlightFillSwitch
+										value={currentFill}
+										onChange={setCurrentFill}
+										disabled={editing}
+									/>
+								</>
+							)}
 						</>
 					)}
 				</S.Settings>

@@ -18,6 +18,10 @@ export const Title = styled.div`
 	color: ${colors.infoColor};
 `
 
+export const Status = styled.span<{ $on: boolean }>`
+	color: ${({ $on }) => ($on ? colors.appColor : colors.restrictedColor)};
+`
+
 export const Body = styled.div`
 	display: flex;
 	gap: 16px;

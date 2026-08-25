@@ -11,16 +11,9 @@ export const Container = styled.div`
 `
 
 export const Head = styled.span`
-	display: flex;
-	justify-content: space-between;
-	gap: 8px;
 	font-size: 12px;
 	letter-spacing: 1px;
 	color: ${colors.infoColor};
-`
-
-export const Count = styled.span`
-	color: ${colors.importantColor};
 `
 
 export const Buttons = styled.div`
