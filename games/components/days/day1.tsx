@@ -1,5 +1,5 @@
 /** @format */
-import { useState } from "react"
+import { useState, useRef } from "react"
 import styled from "styled-components"
 
 import { useAnim, prepareViewsHelpers } from "_games/components/hooks"
@@ -16,7 +16,8 @@ const Game = styled.pre`
 const pos = Math.floor(60 / 2) - 3
 
 const Animation = () => {
-	let theBest = 0
+	// survit aux rendus (vitesse, pause), remis à zéro au début de chaque cycle
+	const theBest = useRef<number>(0)
 	const [speed, setSpeed] = useState<number>(20)
 	const [reload, setReload] = useState<number>(0)
 	const [dataSize, setDataSize] = useState<number>(100)
@@ -29,10 +30,11 @@ const Animation = () => {
 			const item2 = view.substring(pos, pos + 6)
 			const item3 = view.substring(pos + 6)
 
-			theBest = extractMax(item2, theBest)
+			if (i === 0) theBest.current = 0
+			theBest.current = extractMax(item2, theBest.current)
 
 			return {
-				view: `${item1}<span style="color:red;">${item2}</span>${item3}\n\nScan : <span style="color:red;">${item2}</span>\nBest : ${theBest}`,
+				view: `${item1}<span style="color:red;">${item2}</span>${item3}\n\nScan : <span style="color:red;">${item2}</span>\nBest : ${theBest.current}`,
 
 				i,
 			}
