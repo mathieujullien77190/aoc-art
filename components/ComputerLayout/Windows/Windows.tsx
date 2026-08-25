@@ -24,7 +24,7 @@ const BaseWindows = ({
     <S.Container ref={globalRef} >
       <Icon
         open={displayWindow}
-        name="Flower Cmder"
+        name="Flower Shell"
         image="🌼"
         onClick={() => {
           setDisplayWindow(prev => !prev);
@@ -35,7 +35,7 @@ const BaseWindows = ({
       <Window
         show={displayWindow}
         container={globalRef}
-        title="Flower Cmder"
+        title="Flower Shell"
         onClose={() => {
           setDisplayWindow(false);
           onCloseWindow()

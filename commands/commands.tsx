@@ -47,12 +47,14 @@ export const commands: BaseCommand[] = [
 		name: "welcome",
 		action: () => {
 			return [
+	
+				"Pour visualiser les ASCII Art AOC tapez : `aoc list`",
+				"Pour visualiser un ASCII Art AOC tapez : `aoc [index]` (ex: aoc 5)",
 				"\n",
-				`Bienvenue, Vous êtes sur $${app.name}$.`,
+				"Pour plus d'informations sur l'auteur tapez : `about`",
 				"\n",
-				"Pour voir le ASCII Art d'un jour précis tapez : `aoc [index]` ou `aoc [date]` ou `aoc [string]`",
-				"Pour lister tout les scripts tapez : `aoc list`",
-				"Pour obtenir plus d'information tapez : `help` ",
+				"Pour afficher toutes les commandes tapez : `help`",
+				"\n",
 			].join("\n")
 		},
 		help: {
@@ -79,8 +81,8 @@ export const commands: BaseCommand[] = [
 		display: {
 			hideCmd: true,
 			style: { alignItems: "center" },
-			stylePre: { fontSize: "calc(100vw/100)" },
-			highlight: text => highlightFlower(text, { fontSize: "calc(100vw/100)" }),
+			stylePre: { fontSize: "calc(100vw/130)" },
+			highlight: text => highlightFlower(text, { fontSize: "calc(100vw/130)" }),
 			trad: false,
 		},
 	},

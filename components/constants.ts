@@ -13,7 +13,7 @@ export const colors = {
 }
 
 export const app = {
-	name: "AOC Art",
+	name: "Flower Shell",
 	logo: "🌼",
 	author: "JULLIEN Mathieu",
 	alias: "SuperMatou",
