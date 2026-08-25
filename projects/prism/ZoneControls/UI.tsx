@@ -10,10 +10,17 @@ export const Container = styled.div`
 	gap: 6px;
 `
 
-export const Text = styled.span`
+export const Head = styled.span`
+	display: flex;
+	justify-content: space-between;
+	gap: 8px;
 	font-size: 12px;
 	letter-spacing: 1px;
 	color: ${colors.infoColor};
+`
+
+export const Count = styled.span`
+	color: ${colors.importantColor};
 `
 
 export const Buttons = styled.div`
@@ -41,4 +48,11 @@ export const Button = styled.button<{ $active: boolean }>`
 		cursor: default;
 		opacity: 0.4;
 	}
+`
+
+export const Hint = styled.div`
+	font-size: 11px;
+	font-style: italic;
+	color: ${colors.textColor};
+	opacity: 0.7;
 `

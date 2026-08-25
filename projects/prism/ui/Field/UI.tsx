@@ -33,6 +33,12 @@ export const Input = styled.input`
 		border-color: ${colors.importantColor};
 	}
 
+
+	&:disabled {
+		cursor: default;
+		opacity: 0.4;
+	}
+
 	&[type="color"] {
 		height: 28px;
 		padding: 2px;

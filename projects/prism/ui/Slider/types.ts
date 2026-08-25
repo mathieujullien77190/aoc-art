@@ -9,4 +9,5 @@ export type SliderProps = {
 	/** affiche a droite du libelle, ex "25°" */
 	display?: string
 	onChange?: (value: number) => void
+	disabled?: boolean
 }

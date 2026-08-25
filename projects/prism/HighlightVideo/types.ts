@@ -1,6 +1,6 @@
 /** @format */
 
-import { HighlightFill, VideoRef } from "../types"
+import { HighlightFill, Point, VideoRef } from "../types"
 
 export type HighlightVideoProps = {
 	videoRef: VideoRef
@@ -10,6 +10,8 @@ export type HighlightVideoProps = {
 	tolerance: number
 	/** rendu des zones retenues : leur couleur, ou des aplats opaques */
 	fill: HighlightFill
+	/** polygone d'analyse ; vide = toute l'image */
+	zone: Point[]
 	/** appele au clic, avec la couleur du pixel vise */
 	onPick?: (color: string) => void
 }

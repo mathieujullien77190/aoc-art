@@ -5,19 +5,18 @@ import { MouseEvent, useEffect, useRef } from "react"
 import {
 	HIGHLIGHT_BLOCK_COLS,
 	HIGHLIGHT_CELL_COVERAGE,
-	HIGHLIGHT_MIN_SATURATION,
 	HIGHLIGHT_WIDTH,
 	RENDER_FPS,
 } from "../constants"
 import {
+	buildZoneMask,
 	frameHeight,
 	hexToRgb,
 	hue,
-	hueDistance,
 	luminance,
 	rgbToHex,
-	saturation,
 } from "../helpers"
+import { matchesHue } from "./helpers"
 import { HighlightVideoProps } from "./types"
 import * as S from "./UI"
 
@@ -34,6 +33,7 @@ export const HighlightVideo = ({
 	color,
 	tolerance,
 	fill,
+	zone,
 	onPick = () => {},
 }: HighlightVideoProps) => {
 	const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -53,6 +53,9 @@ export const HighlightVideo = ({
 
 		const [red, green, blue] = hexToRgb(color)
 		const target = hue(red, green, blue)
+
+		// calcule une fois par changement de zone, pas a chaque image
+		const mask = buildZoneMask(zone, width, height)
 
 		// grille de la mosaique : cellules carrees.
 		// allouee une fois, pas a chaque image
@@ -103,9 +106,8 @@ export const HighlightVideo = ({
 					const b = data[i + 2]
 
 					const keep =
-						target >= 0 &&
-						saturation(r, g, b) >= HIGHLIGHT_MIN_SATURATION &&
-						hueDistance(hue(r, g, b), target) <= tolerance
+						(!mask || mask[y * width + x] === 1) &&
+						matchesHue(r, g, b, target, tolerance)
 
 					if (keep && asBlocks) {
 						hits[
@@ -139,7 +141,7 @@ export const HighlightVideo = ({
 		frame = window.requestAnimationFrame(draw)
 
 		return () => window.cancelAnimationFrame(frame)
-	}, [videoRef, color, tolerance, fill])
+	}, [videoRef, color, tolerance, fill, zone])
 
 	/**
 	 * Pipette. On echantillonne la video brute et non le canvas affiche :

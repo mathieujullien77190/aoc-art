@@ -10,4 +10,5 @@ export type ToggleProps = {
 	options: ToggleOption[]
 	value: string
 	onChange?: (value: string) => void
+	disabled?: boolean
 }

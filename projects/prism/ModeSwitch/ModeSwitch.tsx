@@ -10,11 +10,16 @@ const options = MODES.map(mode => ({
 	label: MODE_LABELS[mode],
 }))
 
-export const ModeSwitch = ({ value, onChange = () => {} }: ModeSwitchProps) => (
+export const ModeSwitch = ({
+	value,
+	onChange = () => {},
+	disabled = false,
+}: ModeSwitchProps) => (
 	<Toggle
 		label={LABEL_MODE}
 		options={options}
 		value={value}
 		onChange={next => onChange(next as FeedMode)}
+		disabled={disabled}
 	/>
 )

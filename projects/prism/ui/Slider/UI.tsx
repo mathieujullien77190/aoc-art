@@ -30,4 +30,9 @@ export const Range = styled.input`
 	margin: 0;
 	cursor: pointer;
 	accent-color: ${colors.importantColor};
+
+	&:disabled {
+		cursor: default;
+		opacity: 0.4;
+	}
 `

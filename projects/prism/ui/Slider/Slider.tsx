@@ -3,7 +3,6 @@
 import { SliderProps } from "./types"
 import * as S from "./UI"
 
-/** curseur libelle : presentation seule, aucune logique */
 export const Slider = ({
 	label,
 	value,
@@ -12,6 +11,7 @@ export const Slider = ({
 	step = 1,
 	display,
 	onChange = () => {},
+	disabled = false,
 }: SliderProps) => (
 	<S.Container>
 		<S.Head>
@@ -24,6 +24,7 @@ export const Slider = ({
 			min={min}
 			max={max}
 			step={step}
+			disabled={disabled}
 			onChange={event => onChange(Number(event.target.value))}
 		/>
 	</S.Container>

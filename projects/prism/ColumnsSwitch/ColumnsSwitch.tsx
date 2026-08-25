@@ -13,11 +13,13 @@ const options = ASCII_COLS_OPTIONS.map(cols => ({
 export const ColumnsSwitch = ({
 	value,
 	onChange = () => {},
+	disabled = false,
 }: ColumnsSwitchProps) => (
 	<Toggle
 		label={LABEL_ASCII_COLS}
 		options={options}
 		value={String(value)}
 		onChange={next => onChange(Number(next))}
+		disabled={disabled}
 	/>
 )

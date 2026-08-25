@@ -3,12 +3,12 @@
 import { ToggleProps } from "./types"
 import * as S from "./UI"
 
-/** groupe de boutons a choix unique : presentation seule, aucune logique */
 export const Toggle = ({
 	label,
 	options,
 	value,
 	onChange = () => {},
+	disabled = false,
 }: ToggleProps) => (
 	<S.Container>
 		<S.Text>{label}</S.Text>
@@ -18,6 +18,7 @@ export const Toggle = ({
 					key={option.value}
 					type="button"
 					$active={option.value === value}
+					disabled={disabled}
 					onClick={() => onChange(option.value)}
 				>
 					{option.label}

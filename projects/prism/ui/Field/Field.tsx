@@ -3,7 +3,6 @@
 import { FieldProps } from "./types"
 import * as S from "./UI"
 
-/** champ libelle : presentation seule, aucune logique */
 export const Field = ({
 	label,
 	value,
@@ -12,6 +11,7 @@ export const Field = ({
 	max,
 	onChange = () => {},
 	onBlur = () => {},
+	disabled = false,
 }: FieldProps) => (
 	<S.Container>
 		<S.Text>{label}</S.Text>
@@ -22,6 +22,7 @@ export const Field = ({
 			max={max}
 			spellCheck={false}
 			autoComplete="off"
+			disabled={disabled}
 			onChange={event => onChange(event.target.value)}
 			onBlur={onBlur}
 		/>

@@ -17,11 +17,13 @@ const options = HIGHLIGHT_FILLS.map(fill => ({
 export const HighlightFillSwitch = ({
 	value,
 	onChange = () => {},
+	disabled = false,
 }: HighlightFillSwitchProps) => (
 	<Toggle
 		label={LABEL_HIGHLIGHT_FILL}
 		options={options}
 		value={value}
 		onChange={next => onChange(next as HighlightFill)}
+		disabled={disabled}
 	/>
 )

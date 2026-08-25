@@ -1,9 +1,11 @@
 /** @format */
 
-import { STREAM_BASE } from "./constants"
+import { STREAM_HOST } from "./constants"
+import { Point } from "./types"
 
-export const buildStreamUrl = (publicKey: string): string =>
-	`${STREAM_BASE}?public=${encodeURIComponent(publicKey)}`
+export const buildStreamUrl = (publicKey: string, cameraId: string): string =>
+	`${STREAM_HOST}/${encodeURIComponent(cameraId)}/playlist.m3u8` +
+	`?public=${encodeURIComponent(publicKey)}`
 
 /** un glyphe monospace est ~2x plus haut que large : 16/9 puis moitie */
 export const asciiRows = (cols: number): number =>
@@ -56,3 +58,47 @@ export const hexToRgb = (hex: string): [number, number, number] => {
 
 export const rgbToHex = (r: number, g: number, b: number): string =>
 	"#" + [r, g, b].map(v => v.toString(16).padStart(2, "0")).join("")
+
+/** appartenance a un polygone, par lancer de rayon */
+export const isInsidePolygon = (
+	x: number,
+	y: number,
+	points: Point[]
+): boolean => {
+	let inside = false
+	for (let i = 0, j = points.length - 1; i < points.length; j = i++) {
+		const a = points[i]
+		const b = points[j]
+		if (
+			a.y > y !== b.y > y &&
+			x < ((b.x - a.x) * (y - a.y)) / (b.y - a.y) + a.x
+		)
+			inside = !inside
+	}
+	return inside
+}
+
+/**
+ * Masque d'appartenance a la zone, calcule une fois par changement de
+ * polygone plutot qu'a chaque image. null = aucune restriction.
+ */
+export const buildZoneMask = (
+	points: Point[],
+	cols: number,
+	rows: number
+): Uint8Array | null => {
+	if (points.length < 3) return null
+
+	const mask = new Uint8Array(cols * rows)
+	for (let row = 0; row < rows; row++) {
+		for (let col = 0; col < cols; col++) {
+			const inside = isInsidePolygon(
+				(col + 0.5) / cols,
+				(row + 0.5) / rows,
+				points
+			)
+			mask[row * cols + col] = inside ? 1 : 0
+		}
+	}
+	return mask
+}

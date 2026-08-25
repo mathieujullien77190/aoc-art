@@ -2,31 +2,11 @@
 
 import { useEffect, useRef } from "react"
 
-import { ASCII_RAMP, RENDER_FPS } from "../constants"
-import { asciiRows, luminance } from "../helpers"
+import { RENDER_FPS } from "../constants"
+import { asciiRows } from "../helpers"
+import { toAscii } from "./helpers"
 import { AsciiVideoProps } from "./types"
 import * as S from "./UI"
-
-const toAscii = (
-	data: Uint8ClampedArray,
-	cols: number,
-	rows: number
-): string => {
-	const last = ASCII_RAMP.length - 1
-	const lines: string[] = []
-
-	for (let y = 0; y < rows; y++) {
-		let line = ""
-		for (let x = 0; x < cols; x++) {
-			const i = (y * cols + x) * 4
-			const lum = luminance(data[i], data[i + 1], data[i + 2])
-			line += ASCII_RAMP[Math.round((lum / 255) * last)]
-		}
-		lines.push(line)
-	}
-
-	return lines.join("\n")
-}
 
 /** rend le flux en ascii, a partir de la luminance de chaque bloc */
 export const AsciiVideo = ({ videoRef, cols }: AsciiVideoProps) => {

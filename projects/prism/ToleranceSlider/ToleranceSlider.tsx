@@ -7,6 +7,7 @@ import { ToleranceSliderProps } from "./types"
 export const ToleranceSlider = ({
 	value,
 	onChange = () => {},
+	disabled = false,
 }: ToleranceSliderProps) => (
 	<Slider
 		label={LABEL_TOLERANCE}
@@ -15,5 +16,6 @@ export const ToleranceSlider = ({
 		max={TOLERANCE_MAX}
 		display={`${value}°`}
 		onChange={onChange}
+		disabled={disabled}
 	/>
 )

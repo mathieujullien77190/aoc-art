@@ -2,6 +2,8 @@
 
 import AsciiVideo from "../AsciiVideo"
 import HighlightVideo from "../HighlightVideo"
+import MotionVideo from "../MotionVideo"
+import ZoneOverlay from "../ZoneOverlay"
 import { useHlsStream } from "../hooks"
 import { FeedProps } from "../types"
 import * as S from "./UI"
@@ -15,13 +17,18 @@ export const Feed = ({
 	highlightColor,
 	tolerance,
 	highlightFill,
+	zone,
+	overlayPoints,
+	editingZone,
 	onPickColor,
+	onAddZonePoint,
+	onMoveZonePoint,
 }: FeedProps) => {
 	const videoRef = useHlsStream(src)
 
 	return (
 		<S.Container>
-			<S.Label>{label}</S.Label>
+			{label && <S.Label>{label}</S.Label>}
 			<S.Frame $grayscale={mode === "grayscale"}>
 				{/* crossOrigin : sans lui le canvas ASCII serait teinte
 				    quand Safari lit le HLS nativement */}
@@ -41,9 +48,21 @@ export const Feed = ({
 						color={highlightColor}
 						tolerance={tolerance}
 						fill={highlightFill}
+						zone={zone}
 						onPick={onPickColor}
 					/>
 				)}
+				{mode === "motion" && (
+					<MotionVideo videoRef={videoRef} zone={zone} />
+				)}
+
+				{/* toujours au-dessus ; ne capte les clics que pendant le trace */}
+				<ZoneOverlay
+					points={overlayPoints}
+					editing={editingZone}
+					onAddPoint={onAddZonePoint}
+					onMovePoint={onMoveZonePoint}
+				/>
 			</S.Frame>
 		</S.Container>
 	)

@@ -1,27 +1,39 @@
 /** @format */
 
-export const DEFAULT_PUBLIC_KEY = "OjVWJxIwdx"
+export const DEFAULT_PUBLIC_KEY = "8EvTXEBnos"
 
-export const STREAM_BASE =
-	"https://stream-eu1-bravo.dropcam.com/nexus_aac/b23a48c2a1d64c7cba32bd1ace85d274/playlist.m3u8"
+// identifiant interne de la camera : propre a chaque appareil.
+// se lit dans la source de https://video.nest.com/live/<cle publique>
+export const DEFAULT_CAMERA_ID = "4908fe7443a14f0990743059f2f204f5"
 
-export const MODES = ["normal", "grayscale", "ascii", "highlight"] as const
+// l'hote n'est pas propre a la camera : plusieurs shards servent les memes flux
+export const STREAM_HOST = "https://stream-eu1-bravo.dropcam.com/nexus_aac"
+
+export const MODES = ["normal", "grayscale", "ascii", "highlight", "motion"] as const
 
 export const MODE_LABELS = {
 	normal: "Normal",
 	grayscale: "Grayscale",
 	ascii: "ASCII",
 	highlight: "Highlight",
+	motion: "Motion",
 }
 
-export const LABEL_CAMERA = "CAMERA 01"
-export const LABEL_SETTINGS = "SETTINGS"
 export const LABEL_PUBLIC_KEY = "Public key"
+export const LABEL_CAMERA_ID = "Camera ID"
 export const LABEL_MODE = "Render"
 export const LABEL_ASCII_COLS = "Columns"
 export const LABEL_HIGHLIGHT_COLOR = "Color"
 export const LABEL_TOLERANCE = "Tolerance"
 export const LABEL_HIGHLIGHT_FILL = "Fill"
+export const LABEL_ZONE = "Zone"
+export const ACTION_DRAW_ZONE = "Draw"
+export const ACTION_CLEAR_ZONE = "Clear"
+export const ACTION_SAVE_ZONE = "Save"
+export const ACTION_CANCEL_ZONE = "Cancel"
+export const HINT_DRAW_ZONE = "Click the video to add points, then Save"
+// un polygone a besoin d'au moins trois sommets
+export const ZONE_MIN_POINTS = 3
 export const HINT_PICK_COLOR = "Click the video to pick a color"
 
 export const HLS_MIME = "application/vnd.apple.mpegurl"
@@ -57,3 +69,47 @@ export const DEFAULT_HIGHLIGHT_FILL = "color"
 export const HIGHLIGHT_BLOCK_COLS = 120
 // part minimale de pixels retenus pour qu'une cellule soit remplie
 export const HIGHLIGHT_CELL_COVERAGE = 0.25
+
+// grille d'analyse du mouvement
+export const MOTION_COLS = 80
+// ecart moyen de luminance, par cellule, au dela duquel elle est dite active
+export const MOTION_THRESHOLD = 10
+// en dessous de ce nombre de cellules, le groupe est ignore (bruit de compression)
+export const MOTION_MIN_CELLS = 4
+export const MOTION_COLOR = "#77CDF1"
+
+// polygone d'analyse
+export const ZONE_COLOR = "#FFCC6A"
+export const ZONE_POINT_RADIUS = 3
+// tolerance de saisie d'un sommet, en pixels canvas
+export const ZONE_HIT_RADIUS = 8
+
+/**
+ * Cameras affichees, dans l'ordre. En ajouter une = un bloc de plus.
+ * Les zones sont en coordonnees normalisees (0..1), trois decimales
+ * suffisent : 0.001 vaut ~0.6 px sur le canvas d'analyse.
+ */
+export const CAMERAS = [
+	{
+		label: "CAMERA 01",
+		publicKey: "8EvTXEBnos",
+		cameraId: "4908fe7443a14f0990743059f2f204f5",
+		zone: [
+			{ x: 0.475, y: 0.85 },
+			{ x: 0.484, y: 0.455 },
+			{ x: 0.764, y: 0.438 },
+			{ x: 0.75, y: 0.708 },
+		],
+	},
+	{
+		label: "CAMERA 02",
+		publicKey: "OjVWJxIwdx",
+		cameraId: "b23a48c2a1d64c7cba32bd1ace85d274",
+		zone: [
+			{ x: 0.359, y: 0.546 },
+			{ x: 0.932, y: 0.479 },
+			{ x: 0.938, y: 0.652 },
+			{ x: 0.376, y: 0.73 },
+		],
+	},
+]

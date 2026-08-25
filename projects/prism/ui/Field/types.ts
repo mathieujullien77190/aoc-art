@@ -8,4 +8,5 @@ export type FieldProps = {
 	max?: number
 	onChange?: (value: string) => void
 	onBlur?: () => void
+	disabled?: boolean
 }
