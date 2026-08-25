@@ -20,8 +20,6 @@ const EmptyItem = () => {
 	return <S.EmptyItem />
 }
 
-let move = (e: KeyboardEvent) => {}
-
 export const BIOS = ({ onExit = () => {} }: BIOSProps) => {
 	const [current, setCurrent] = useState<number>(0)
 	const [settings, setSettings] = useState<Record<string, string>>()
@@ -32,9 +30,7 @@ export const BIOS = ({ onExit = () => {} }: BIOSProps) => {
 	}, [])
 
 	useEffect(() => {
-		document.body.removeEventListener("keyup", move)
-
-		move = (e: KeyboardEvent) => {
+		const move = (e: KeyboardEvent) => {
 			const currentItem = getItem(current)
 
 			if (e.code === "ArrowDown") {
@@ -56,7 +52,8 @@ export const BIOS = ({ onExit = () => {} }: BIOSProps) => {
 		}
 
 		document.body.addEventListener("keyup", move)
-		;() => {
+
+		return () => {
 			document.body.removeEventListener("keyup", move)
 		}
 	}, [current, message])

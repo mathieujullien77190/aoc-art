@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
 import { ChoicesProps } from "./types";
 
@@ -14,21 +14,18 @@ export const Choices = ({
   value,
   onChange = () => {},
 }: ChoicesProps) => {
-  const move = useRef((e: KeyboardEvent) => {});
-
   useEffect(() => {
-    document.body.removeEventListener("keyup", move.current);
-
-    move.current = (e: KeyboardEvent) => {
+    const move = (e: KeyboardEvent) => {
       if (e.code === "Enter" && currentItem.id === current) {
         const choice = nextChoice(currentItem.choices, value);
         onChange(choice);
       }
     };
 
-    document.body.addEventListener("keyup", move.current);
-    () => {
-      document.body.removeEventListener("keyup", move.current);
+    document.body.addEventListener("keyup", move);
+
+    return () => {
+      document.body.removeEventListener("keyup", move);
     };
   }, [current, value]);
 
