@@ -8,6 +8,7 @@ import * as S from "./UI";
 import Window from "../Window";
 import Icon from "../Icon";
 import Date from "../Date";
+import Prism from "_projects/prism";
 
 
 const BaseWindows = ({
@@ -16,33 +17,57 @@ const BaseWindows = ({
   onCloseWindow = () => { }
 }: WindowsProps, ref: Ref<HTMLDivElement>) => {
 
-  const [displayWindow, setDisplayWindow] = useState<boolean>(true);
+  // une seule fenetre ouverte a la fois : elles s'affichent au meme endroit
+  const [openWindow, setOpenWindow] = useState<"shell" | "prism" | null>("shell");
+
+  const toggle = (name: "shell" | "prism") =>
+    setOpenWindow(prev => (prev === name ? null : name));
 
   const globalRef = useRef<HTMLDivElement>(null);
 
   return (
     <S.Container ref={globalRef} >
       <Icon
-        open={displayWindow}
+        open={openWindow === "shell"}
         name="Flower Shell"
         image="🌼"
         onClick={() => {
-          setDisplayWindow(prev => !prev);
+          toggle("shell");
           onCloseWindow()
         }}
       />
 
+      <Icon
+        open={openWindow === "prism"}
+        name="PRISM"
+        image="📡"
+        onClick={() => {
+          toggle("prism");
+        }}
+      />
+
       <Window
-        show={displayWindow}
+        show={openWindow === "shell"}
         container={globalRef}
         title="Flower Shell"
         onClose={() => {
-          setDisplayWindow(false);
+          setOpenWindow(null);
           onCloseWindow()
         }}
         ref={ref}
       >
         {children}
+      </Window>
+
+      <Window
+        show={openWindow === "prism"}
+        container={globalRef}
+        title="PRISM"
+        onClose={() => {
+          setOpenWindow(null);
+        }}
+      >
+        <Prism />
       </Window>
 
       <S.Bar>
