@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, Ref, forwardRef } from "react"
+import { useEffect, useState, Ref, forwardRef } from "react"
 import { WindowProps, Pos, Size, Mode } from "./types"
 import * as S from "./UI"
 import { ANIM_TIME } from "./constants"
@@ -17,7 +17,7 @@ const BaseWindow = (
 	const [pos, setPos] = useState<Pos>({ x: 0, y: 0 })
 	const [size, setSize] = useState<Size>({ width: 0, height: 0, unit: "px" })
 	const [ready, setReady] = useState<boolean>(false)
-	const followMouse = useRef<boolean>(false)
+	const [followMouse, setFollowMouse] = useState<boolean>(false)
 
 	useEffect(() => {
 		if (show) {
@@ -67,19 +67,19 @@ const BaseWindow = (
 	}
 
 	useEffect(() => {
+		if (!followMouse) return
+
 		const handlerMousemove = e => {
-			if (followMouse.current) {
-				setPos(prev => ({
-					x: prev.x + e.movementX,
-					y: prev.y + e.movementY,
-				}))
-			}
+			setPos(prev => ({
+				x: prev.x + e.movementX,
+				y: prev.y + e.movementY,
+			}))
 		}
 		document.addEventListener("mousemove", handlerMousemove)
 		return () => {
 			document.removeEventListener("mousemove", handlerMousemove)
 		}
-	}, [])
+	}, [followMouse])
 
 	return (
 		<>
@@ -91,15 +91,15 @@ const BaseWindow = (
 					}}
 					$size={size}
 					$mode={mode}
-					$followMouse={followMouse.current}
+					$followMouse={followMouse}
 				>
 					<S.topBar
 						onDoubleClick={handleResize}
 						onMouseDown={() => {
-							if (mode !== "full") followMouse.current = true
+							if (mode !== "full") setFollowMouse(true)
 						}}
 						onMouseUp={() => {
-							followMouse.current = false
+							setFollowMouse(false)
 						}}
 					>
 						<S.Title>{title}</S.Title>
