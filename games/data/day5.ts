@@ -1,5 +1,3 @@
-/** @format */
-
 export const input = `move 6 from 9 to 3
 move 2 from 2 to 1
 move 1 from 8 to 2

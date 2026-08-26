@@ -1,4 +1,3 @@
-/** @format */
 import { input } from "_games/data/day4"
 import { extractTab3Int, createArray } from "_games/helpers/utils"
 

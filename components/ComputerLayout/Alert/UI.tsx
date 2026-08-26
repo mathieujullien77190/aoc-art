@@ -1,5 +1,3 @@
-/** @format */
-
 import styled from "styled-components";
 import { Pos } from "./types";
 import { COLORS, FULL } from "./constants";

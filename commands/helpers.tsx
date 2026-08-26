@@ -1,5 +1,3 @@
-/** @format */
-
 import { commands as baseCommands } from "_commands/commands"
 import { createCommand, findCommand } from "_commands/terminalEngine"
 

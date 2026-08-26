@@ -1,5 +1,3 @@
-/** @format */
-
 import type { JSX } from "react"
 
 import { RefObject } from "react"

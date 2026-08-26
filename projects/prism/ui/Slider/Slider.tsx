@@ -1,5 +1,3 @@
-/** @format */
-
 import { SliderProps } from "./types"
 import * as S from "./UI"
 

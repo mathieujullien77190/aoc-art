@@ -1,4 +1,3 @@
-/** @format */
 import { combineReducers } from "redux"
 
 import { reducer as history } from "./history"

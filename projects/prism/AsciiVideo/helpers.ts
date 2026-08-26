@@ -1,5 +1,3 @@
-/** @format */
-
 import { ASCII_RAMP } from "../constants"
 import { luminance } from "../helpers"
 

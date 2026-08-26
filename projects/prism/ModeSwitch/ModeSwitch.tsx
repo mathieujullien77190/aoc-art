@@ -1,5 +1,3 @@
-/** @format */
-
 import Toggle from "../ui/Toggle"
 import { LABEL_MODE, MODES, MODE_LABELS } from "../constants"
 import { FeedMode } from "../types"

@@ -1,5 +1,3 @@
-/** @format */
-
 import { Point } from "../types"
 
 /** remplace un sommet sans muter la liste d'origine */

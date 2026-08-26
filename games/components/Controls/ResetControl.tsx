@@ -1,5 +1,3 @@
-/** @format */
-
 import { ResetControlProps } from "./types"
 
 import { Action } from "_games/components/Action"

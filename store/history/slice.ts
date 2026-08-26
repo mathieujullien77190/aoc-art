@@ -1,5 +1,3 @@
-/** @format */
-
 import { createSlice } from "@reduxjs/toolkit"
 import { Command } from "_/types"
 

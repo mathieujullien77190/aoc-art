@@ -1,5 +1,3 @@
-/** @format */
-
 import React, { useCallback, useEffect, useRef } from "react"
 
 import { sendRestrictedCommand, sendCommand } from "_commands/helpers"

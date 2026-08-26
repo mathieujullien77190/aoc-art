@@ -1,5 +1,3 @@
-/** @format */
-
 import { FREQ, CPU, ERROR } from "../BIOS"
 
 export const getSpeed = (settings: Record<string, string>): number => {

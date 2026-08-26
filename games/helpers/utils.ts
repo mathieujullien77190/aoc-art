@@ -1,5 +1,3 @@
-/** @format */
-
 export const extractTab1 = (d, separator) => {
 	return d.split(separator)
 }

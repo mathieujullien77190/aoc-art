@@ -1,5 +1,3 @@
-/** @format */
-
 import { RootState } from "../root"
 import { useAppSelector } from "_store/hooks"
 import { createSelector } from "reselect"

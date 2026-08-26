@@ -1,5 +1,3 @@
-/** @format */
-
 export const FULL = {
 	width: 180,
 	height: 110,

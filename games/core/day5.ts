@@ -1,4 +1,3 @@
-/** @format */
 import { input, listStack } from "_games/data/day5"
 import { createArray, rotate90, extractTab2, copy } from "_games/helpers/utils"
 import { createView, mergeView } from "_games/helpers/view"

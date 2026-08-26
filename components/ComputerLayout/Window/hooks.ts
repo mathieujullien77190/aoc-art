@@ -1,5 +1,3 @@
-/** @format */
-
 import { useSyncExternalStore } from "react"
 
 import { COMPACT_MAX_WIDTH } from "./constants"

@@ -1,5 +1,3 @@
-/** @format */
-
 import { useMemo } from "react"
 import { configureStore } from "@reduxjs/toolkit"
 import { rootReducer } from "./root"

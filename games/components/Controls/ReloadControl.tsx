@@ -1,4 +1,3 @@
-/** @format */
 import { useState } from "react"
 
 import { ReloadControlProps } from "./types"

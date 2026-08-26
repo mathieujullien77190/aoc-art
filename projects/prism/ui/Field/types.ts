@@ -1,5 +1,3 @@
-/** @format */
-
 export type FieldProps = {
 	label: string
 	value: string

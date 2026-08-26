@@ -1,5 +1,3 @@
-/** @format */
-
 import { RefObject } from "react"
 
 import { HIGHLIGHT_FILLS, MODES } from "./constants"

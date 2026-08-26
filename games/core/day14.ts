@@ -1,5 +1,3 @@
-/** @format */
-
 import { input } from "_games/data/day14"
 import { createArray, extractTab2 } from "_games/helpers/utils"
 import { createView, mergeView, areEqual, clipView } from "_games/helpers/view"

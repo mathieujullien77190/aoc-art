@@ -1,5 +1,3 @@
-/** @format */
-
 import { BIOS } from "./BIOS"
 
 export default BIOS

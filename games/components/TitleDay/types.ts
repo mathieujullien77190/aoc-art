@@ -1,5 +1,3 @@
-/** @format */
-
 export type TitleDayProps = {
 	year: string
 	day: string

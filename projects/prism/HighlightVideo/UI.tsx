@@ -1,5 +1,3 @@
-/** @format */
-
 import styled from "styled-components"
 
 /** recouvre la video : le canvas remplace l'image, il ne s'y superpose pas */

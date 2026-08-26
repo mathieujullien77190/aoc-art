@@ -1,5 +1,3 @@
-/** @format */
-
 import Toggle from "../ui/Toggle"
 import { ASCII_COLS_OPTIONS, LABEL_ASCII_COLS } from "../constants"
 import { ColumnsSwitchProps } from "./types"

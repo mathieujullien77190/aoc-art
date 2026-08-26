@@ -1,5 +1,3 @@
-/** @format */
-
 import {
 	MESSAGE_DELAY_MS,
 	MESSAGE_FADE_MS,

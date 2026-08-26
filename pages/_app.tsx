@@ -1,5 +1,3 @@
-/** @format */
-
 import React from "react"
 import { Provider } from "react-redux"
 import type { AppProps } from "next/app"

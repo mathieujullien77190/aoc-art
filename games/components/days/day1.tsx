@@ -1,4 +1,3 @@
-/** @format */
 import { useState, useRef } from "react"
 import styled from "styled-components"
 

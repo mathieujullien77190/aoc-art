@@ -1,5 +1,3 @@
-/** @format */
-
 import { Point, VideoRef } from "../types"
 
 export type MotionVideoProps = {

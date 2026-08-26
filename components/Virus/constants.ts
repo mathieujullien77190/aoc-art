@@ -1,5 +1,3 @@
-/** @format */
-
 /** cote d'un bloc, en pixels */
 export const PIXEL_SIZE = 10
 

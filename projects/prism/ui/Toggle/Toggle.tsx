@@ -1,5 +1,3 @@
-/** @format */
-
 import { ToggleProps } from "./types"
 import * as S from "./UI"
 

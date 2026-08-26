@@ -1,5 +1,3 @@
-/** @format */
-
 import { useRef } from "react"
 
 import { useVirus } from "./hooks"

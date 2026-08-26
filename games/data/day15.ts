@@ -1,4 +1,3 @@
-/** @format */
 export const input2 = `1163751742
 1381373672`
 

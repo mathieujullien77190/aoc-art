@@ -1,5 +1,3 @@
-/** @format */
-
 import { createArray } from "./utils"
 import { View, ViewPlan, Position, Size } from "./types"
 import { createEmptyView, searchChar, getChar } from "./view"

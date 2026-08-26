@@ -1,5 +1,3 @@
-/** @format */
-
 import { createArray } from "./utils"
 import { View, Position, Size } from "./types"
 

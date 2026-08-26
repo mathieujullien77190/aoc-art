@@ -1,5 +1,3 @@
-/** @format */
-
 import { useEffect, useRef } from "react"
 
 import { RENDER_FPS } from "../constants"

@@ -1,5 +1,3 @@
-/** @format */
-
 import { ACTION_RELOAD, LABEL_STREAM } from "../constants"
 import { ReloadButtonProps } from "./types"
 import * as S from "./UI"

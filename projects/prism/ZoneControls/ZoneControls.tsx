@@ -1,5 +1,3 @@
-/** @format */
-
 import {
 	ACTION_CANCEL_ZONE,
 	ACTION_CLEAR_ZONE,

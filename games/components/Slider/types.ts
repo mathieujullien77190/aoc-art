@@ -1,5 +1,3 @@
-/** @format */
-
 export type SliderProps = {
 	label: string
 	max: number

@@ -1,4 +1,3 @@
-/** @format */
 import { BaseCommand, Command } from "_/types"
 
 export type CommandProps = {

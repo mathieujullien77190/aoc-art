@@ -1,5 +1,3 @@
-/** @format */
-
 import AsciiVideo from "../AsciiVideo"
 import HighlightVideo from "../HighlightVideo"
 import MotionVideo from "../MotionVideo"

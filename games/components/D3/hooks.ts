@@ -1,5 +1,3 @@
-/** @format */
-
 import { useState, useCallback, useEffect, MutableRefObject } from "react"
 
 import { AxesValue } from "./types"

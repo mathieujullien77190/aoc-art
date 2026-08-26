@@ -1,4 +1,3 @@
-/** @format */
 import { input } from "_games/data/day15"
 
 import { View, Position } from "_games/helpers/types"

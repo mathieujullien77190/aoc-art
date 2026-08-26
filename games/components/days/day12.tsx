@@ -1,4 +1,3 @@
-/** @format */
 import { useState } from "react"
 import { isMobile } from "react-device-detect"
 

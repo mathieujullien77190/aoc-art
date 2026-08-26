@@ -1,4 +1,3 @@
-/** @format */
 import {
 	viewData1,
 	viewData2,

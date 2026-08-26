@@ -1,5 +1,3 @@
-/** @format */
-
 import { STREAM_HOST } from "./constants"
 import { Point } from "./types"
 

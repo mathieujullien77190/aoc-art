@@ -1,5 +1,3 @@
-/** @format */
-
 export const input = `L 1
 R 1
 L 1

@@ -1,5 +1,3 @@
-/** @format */
-
 import { Controller } from "./Controller"
 
 export * from "./types"

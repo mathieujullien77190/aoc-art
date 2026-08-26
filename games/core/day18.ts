@@ -1,5 +1,3 @@
-/** @format */
-
 import { input } from "_games/data/day18"
 import { createArray, extractTab2 } from "_games/helpers/utils"
 import { createEmptyViewPlanFromString } from "_games/helpers/viewPlan"

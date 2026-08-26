@@ -1,5 +1,3 @@
-/** @format */
-
 export const input = `3344
 8938
 7923

@@ -1,5 +1,3 @@
-/** @format */
-
 import { SpeedControlProps } from "./types"
 
 import Slider from "_games/components/Slider"

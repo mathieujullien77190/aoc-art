@@ -1,5 +1,3 @@
-/** @format */
-
 import { HighlightFill, Point, VideoRef } from "../types"
 
 export type HighlightVideoProps = {

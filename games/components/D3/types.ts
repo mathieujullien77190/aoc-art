@@ -1,5 +1,3 @@
-/** @format */
-
 import type { JSX } from "react"
 
 import { Size } from "_games/helpers/types"

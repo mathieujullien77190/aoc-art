@@ -1,4 +1,3 @@
-/** @format */
 import { useState, useRef, Ref, forwardRef } from "react";
 
 import { WindowsProps } from "./types";

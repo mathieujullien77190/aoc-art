@@ -1,5 +1,3 @@
-/** @format */
-
 import { input } from "_games/data/day22"
 import { createArray, extractTab1 } from "_games/helpers/utils"
 import { pgcd } from "_games/helpers/math"

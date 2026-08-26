@@ -1,5 +1,3 @@
-/** @format */
-
 import styled from "styled-components"
 
 /** recouvre la video : l'image est redessinee ici, avec les cadres par-dessus */

@@ -1,5 +1,3 @@
-/** @format */
-
 import { rand } from "_components/ComputerLayout/helpers/math"
 import { GLYPH_COLS, GLYPH_GAP, GLYPH_ROWS } from "./constants"
 import type { Block } from "./types"

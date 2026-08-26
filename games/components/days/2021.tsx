@@ -1,4 +1,3 @@
-/** @format */
 import { useState } from "react"
 import styled from "styled-components"
 import { useAnim, prepareViewsHelpers } from "_games/components/hooks"

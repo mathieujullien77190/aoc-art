@@ -1,5 +1,3 @@
-/** @format */
-
 export const input = `10,16,14
 16,8,8
 6,15,11

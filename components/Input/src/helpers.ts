@@ -1,5 +1,3 @@
-/** @format */
-
 export const cleanCommand = (cmd: string) => {
 	return cmd
 		.trim()

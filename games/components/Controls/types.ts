@@ -1,4 +1,3 @@
-/** @format */
 import type { JSX } from "react"
 
 import { SliderProps } from "../Slider"

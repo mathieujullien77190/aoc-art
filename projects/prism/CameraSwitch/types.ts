@@ -1,5 +1,3 @@
-/** @format */
-
 export type CameraSwitchProps = {
 	/** index dans CAMERAS */
 	value: number

@@ -1,4 +1,3 @@
-/** @format */
 import { input } from "_games/data/day142"
 import { ViewPlan } from "_games/helpers/types"
 import { createEmptyView } from "_games/helpers/view"

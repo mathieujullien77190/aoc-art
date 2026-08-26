@@ -1,5 +1,3 @@
-/** @format */
-
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
 	enabled: process.env.ANALYZE === "true",
 	openAnalyzer: process.env.ANALYZE === "true",

@@ -1,5 +1,3 @@
-/** @format */
-
 import Toggle from "../ui/Toggle"
 import { CAMERAS, LABEL_CAMERA_SOURCE } from "../constants"
 import { CameraSwitchProps } from "./types"

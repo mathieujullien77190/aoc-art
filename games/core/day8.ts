@@ -1,4 +1,3 @@
-/** @format */
 import { input, camel, mountain } from "_games/data/day8"
 import { rand } from "../helpers/math"
 import { createArray } from "../helpers/utils"

@@ -1,5 +1,3 @@
-/** @format */
-
 import { useEffect, useState, useMemo } from "react"
 
 import { read } from "_games/helpers/view"

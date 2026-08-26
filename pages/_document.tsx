@@ -1,4 +1,3 @@
-/** @format */
 import { Fragment } from "react"
 
 import Document, {

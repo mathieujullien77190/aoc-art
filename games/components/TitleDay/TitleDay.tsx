@@ -1,5 +1,3 @@
-/** @format */
-
 import { TitleDayProps } from "./types"
 
 import * as S from "./UI"

@@ -1,5 +1,3 @@
-/** @format */
-
 import { VideoRef } from "../types"
 
 export type AsciiVideoProps = {

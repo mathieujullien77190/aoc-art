@@ -1,5 +1,3 @@
-/** @format */
-
 import { FieldProps } from "./types"
 import * as S from "./UI"
 

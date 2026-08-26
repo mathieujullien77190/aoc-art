@@ -1,5 +1,3 @@
-/** @format */
-
 import { ZoomControlProps } from "./types"
 
 import Slider from "_games/components/Slider"

@@ -1,5 +1,3 @@
-/** @format */
-
 export type ZoneControlsProps = {
 	/** sommets du brouillon en cours de trace */
 	draftCount: number

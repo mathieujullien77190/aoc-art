@@ -1,5 +1,3 @@
-/** @format */
-
 import { lazy } from "react"
 import Dynamic from "./Dynamic"
 

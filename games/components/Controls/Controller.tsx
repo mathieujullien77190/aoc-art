@@ -1,5 +1,3 @@
-/** @format */
-
 import React, { useState, useRef } from "react"
 
 import { ControllerProps } from "./types"

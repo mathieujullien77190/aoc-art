@@ -1,4 +1,3 @@
-/** @format */
 import { Command } from "_/types"
 
 export type TerminalProps = {

@@ -1,5 +1,3 @@
-/** @format */
-
 import { FeedMode, HighlightFill } from "../types"
 
 export type CameraProps = {

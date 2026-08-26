@@ -1,5 +1,3 @@
-/** @format */
-
 import { RefObject, useEffect } from "react"
 
 import { PER_TICK, PIXEL_SIZE, TICK_MS } from "./constants"

@@ -1,5 +1,3 @@
-/** @format */
-
 type MotionBoxesInput = {
 	/** 1 si la cellule bouge */
 	moving: Uint8Array

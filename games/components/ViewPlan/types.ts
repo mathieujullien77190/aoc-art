@@ -1,4 +1,3 @@
-/** @format */
 import type { JSX } from "react"
 
 import { ViewPlan } from "_games/helpers/types"

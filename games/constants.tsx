@@ -1,5 +1,3 @@
-/** @format */
-
 import type { JSX } from "react"
 
 import Game2021 from "./loading/2021"

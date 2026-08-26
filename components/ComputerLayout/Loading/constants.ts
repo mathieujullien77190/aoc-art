@@ -1,5 +1,3 @@
-/** @format */
-
 export const FULL = {
 	padding: "12px",
 }

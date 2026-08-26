@@ -1,5 +1,3 @@
-/** @format */
-
 import { input } from "_games/data/day1"
 
 const baseBoat = `        

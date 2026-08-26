@@ -1,5 +1,3 @@
-/** @format */
-
 export type IconProps = {
 	name: string
 	image: string

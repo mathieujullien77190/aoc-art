@@ -1,5 +1,3 @@
-/** @format */
-
 import { BaseCommand, Help, Translatable } from "_/types"
 
 import { colors, app } from "_components/constants"

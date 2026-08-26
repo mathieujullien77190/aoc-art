@@ -1,5 +1,3 @@
-/** @format */
-
 export const FULL = {
 	heightBar: "30px",
 	padding: "12px",

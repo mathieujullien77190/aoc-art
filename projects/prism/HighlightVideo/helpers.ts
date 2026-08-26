@@ -1,5 +1,3 @@
-/** @format */
-
 import { HIGHLIGHT_MIN_SATURATION } from "../constants"
 import { hue, hueDistance, saturation } from "../helpers"
 

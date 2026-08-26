@@ -1,5 +1,3 @@
-/** @format */
-
 import { Translatable } from "_/types"
 
 /** langue de repli : leet, xleet et # en derivent tous */

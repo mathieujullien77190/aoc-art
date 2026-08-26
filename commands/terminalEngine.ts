@@ -1,4 +1,3 @@
-/** @format */
 import { BaseCommand, Command, Args, Translatable } from "_/types"
 
 const isAuthorizeArgs = (args: string[], testArgs: Args) => {

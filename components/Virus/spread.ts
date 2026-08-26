@@ -1,5 +1,3 @@
-/** @format */
-
 import { rand } from "_components/ComputerLayout/helpers/math"
 import {
 	BLAST_RADIUS,

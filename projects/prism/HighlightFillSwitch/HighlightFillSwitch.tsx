@@ -1,5 +1,3 @@
-/** @format */
-
 import Toggle from "../ui/Toggle"
 import {
 	HIGHLIGHT_FILLS,

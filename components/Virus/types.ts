@@ -1,5 +1,3 @@
-/** @format */
-
 /** carre du mot, en pixels ecran */
 export type Block = { x: number; y: number; size: number }
 

@@ -1,5 +1,3 @@
-/** @format */
-
 import Camera from "./Camera"
 import * as S from "./UI"
 

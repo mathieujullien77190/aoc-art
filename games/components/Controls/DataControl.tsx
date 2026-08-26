@@ -1,5 +1,3 @@
-/** @format */
-
 import { DataControlProps } from "./types"
 
 import Slider from "../Slider"

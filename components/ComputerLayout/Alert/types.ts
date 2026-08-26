@@ -1,5 +1,3 @@
-/** @format */
-
 export type Pos = { x: number; y: number }
 export type AlertProps = {
 	pos: Pos

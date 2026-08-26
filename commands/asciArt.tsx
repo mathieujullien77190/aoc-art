@@ -1,4 +1,3 @@
-/** @format */
 import { CSSProperties } from "react"
 import reactStringReplace from "react-string-replace"
 import { colors } from "_components/constants"

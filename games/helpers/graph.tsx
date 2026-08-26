@@ -1,5 +1,3 @@
-/** @format */
-
 export type Element = { name: string; value: number }
 export type ElementGraph = {
 	calcValue: number

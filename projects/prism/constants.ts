@@ -1,5 +1,3 @@
-/** @format */
-
 // l'hote n'est pas propre a la camera : plusieurs shards servent les memes flux
 export const STREAM_HOST = "https://stream-eu1-bravo.dropcam.com/nexus_aac"
 
