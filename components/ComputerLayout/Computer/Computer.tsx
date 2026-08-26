@@ -22,7 +22,7 @@ const code = () => {
 }
 
 const BaseComputer = (
-	{ children, onCloseWindow = () => {} }: ComputerProps,
+	{ children, onCloseWindow = () => {}, onRunCommand }: ComputerProps,
 	ref: Ref<HTMLDivElement>
 ) => {
 	const [power, setPower] = useState<boolean>(true)
@@ -72,10 +72,11 @@ const BaseComputer = (
 								{power && ready && (
 									<Windows
 										ref={ref}
-										onBlueScreen={() => {
-											if (hasFatalError(settings)) setFatalError(true)
+										onBlueScreen={force => {
+											if (force || hasFatalError(settings)) setFatalError(true)
 										}}
 										onCloseWindow={onCloseWindow}
+										onRunCommand={onRunCommand}
 									>
 										{children}
 									</Windows>

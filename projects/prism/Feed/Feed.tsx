@@ -2,6 +2,7 @@ import AsciiVideo from "../AsciiVideo"
 import HighlightVideo from "../HighlightVideo"
 import MotionVideo from "../MotionVideo"
 import ZoneOverlay from "../ZoneOverlay"
+import { usesZone } from "../helpers"
 import { useHlsStream, useStreamStatus } from "../hooks"
 import { FeedProps } from "../types"
 import * as S from "./UI"
@@ -63,7 +64,7 @@ export const Feed = ({
 				)}
 
 				{/* au-dessus des rendus ; ne capte les clics que pendant le trace */}
-				{streamOn && (
+				{streamOn && usesZone(mode) && (
 					<ZoneOverlay
 						points={overlayPoints}
 						editing={editingZone}

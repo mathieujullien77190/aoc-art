@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef } from "react"
 
 import { sendRestrictedCommand, sendCommand } from "_commands/helpers"
+import { browserLang } from "_commands/lang"
 
 import Layout from "_components/Layout"
 import Terminal from "_components/Terminal"
@@ -14,6 +15,7 @@ import {
 	useGetStart,
 } from "_store/history/"
 import {
+	setProperties,
 	useGetLanguage,
 	useGetAnimation,
 	useGetKeyboardOnFocus,
@@ -89,6 +91,14 @@ const Home = () => {
 	}
 
 	useEffect(() => {
+		const lang = browserLang()
+
+		// avant le boot : la premiere ligne s'ecrit deja dans la bonne langue
+		dispatch(setProperties({ key: "lang", value: lang }))
+
+		// _document fige l'attribut a fr, il vaut pour tout le monde
+		document.documentElement.lang = lang
+
 		sendRestrictedCommand("title", dispatch)
 		sendRestrictedCommand("welcome", dispatch)
 	}, [sendRestrictedCommand, sendCommand])
@@ -103,6 +113,7 @@ const Home = () => {
 		<Layout onClick={handleClick}>
 			<Computer
 				ref={containerRef}
+				onRunCommand={handleSendCommand}
 				onCloseWindow={() => {
 					sendCommand("clear", dispatch)
 				}}

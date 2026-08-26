@@ -3,6 +3,9 @@ export const STREAM_HOST = "https://stream-eu1-bravo.dropcam.com/nexus_aac"
 
 export const MODES = ["normal", "grayscale", "ascii", "highlight", "motion"] as const
 
+// modes qui traitent toute l'image : la zone n'y a pas d'effet
+export const ZONELESS_MODES = ["grayscale", "ascii"] as const
+
 export const MODE_LABELS = {
 	normal: "Normal",
 	grayscale: "Grayscale",

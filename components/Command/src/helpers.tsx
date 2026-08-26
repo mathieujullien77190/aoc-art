@@ -71,6 +71,20 @@ const frToLeet = (txt: string, advanced: boolean = false): string => {
 	return convertInput(txt, advanced ? "y" : "n")
 }
 
+/**
+ * Echappement : un marqueur precede de £ s'affiche tel quel au lieu de
+ * colorer. Le caractere ne sert a rien d'autre dans les textes du
+ * terminal, il n'y a donc pas besoin de l'echapper lui-meme.
+ */
+const ESCAPE = "£"
+
+/**
+ * Le marqueur echappe est range sous un caractere de la zone privee
+ * Unicode le temps de la passe de couleur : sans cela il ferait paire
+ * avec le marqueur suivant et colorerait tout ce qui les separe.
+ */
+const hidden = (index: number) => String.fromCharCode(0xe000 + index)
+
 export const highlight = (
 	text: string,
 	onClick: (name: string, arg: string[]) => void,
@@ -111,6 +125,12 @@ export const highlight = (
 		item => (item.separator !== "-" && lang === "xleet") || lang !== "xleet"
 	)
 
+	list.forEach((item, index) => {
+		result = (result as string)
+			.split(`${ESCAPE}${item.separator}`)
+			.join(hidden(index))
+	})
+
 	list.forEach(item => {
 		result = reactStringReplace(
 			result,
@@ -142,6 +162,11 @@ export const highlight = (
 				)
 			}
 		)
+	})
+
+	// les marqueurs echappes reprennent leur place, sans couleur
+	list.forEach((item, index) => {
+		result = reactStringReplace(result, hidden(index), () => item.separator)
 	})
 
 	return result

@@ -1,4 +1,4 @@
-import { Alert } from "./Alert";
+import { Alert } from "./Alert"
 
-export default Alert;
-export * from "./constants";
+export default Alert
+export * from "./constants"

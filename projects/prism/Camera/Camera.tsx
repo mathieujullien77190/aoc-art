@@ -18,7 +18,7 @@ import {
 	STATUS_OFF,
 	STATUS_ON,
 } from "../constants"
-import { buildStreamUrl } from "../helpers"
+import { buildStreamUrl, usesZone } from "../helpers"
 import { FeedMode, HighlightFill, Point } from "../types"
 import { replacePoint } from "./helpers"
 import { CameraProps } from "./types"
@@ -51,9 +51,12 @@ export const Camera = ({
 	// setStreamOn est stable : il peut servir de callback au hook d'etat
 	const [streamOn, setStreamOn] = useState<boolean>(false)
 
-	// un flux eteint n'a rien a tracer : on quitte le mode edition sans
-	// toucher a l'etat, qui reprendra si le flux revient
-	const editing = editingZone && streamOn
+	// la zone ne sert pas a tous les modes
+	const zoned = usesZone(currentMode)
+
+	// un flux eteint, ou un mode sans zone, n'a rien a tracer : on quitte
+	// le mode edition sans toucher a l'etat, qui reprendra le cas echeant
+	const editing = editingZone && streamOn && zoned
 
 	const camera = CAMERAS[current]
 	const src = buildStreamUrl(camera.publicKey, camera.cameraId)
@@ -108,26 +111,28 @@ export const Camera = ({
 					/>
 					{streamOn && (
 						<>
-							<ZoneControls
-								draftCount={draft.length}
-								zoneCount={zone.length}
-								editing={editing}
-								onDraw={() => {
-									// on repart de la zone appliquee : Draw sert a la
-									// modifier, pas seulement a en tracer une nouvelle
-									setDraft(zone)
-									setEditingZone(true)
-								}}
-								onSave={() => {
-									setZone(draft)
-									setEditingZone(false)
-								}}
-								onCancel={() => {
-									setDraft([])
-									setEditingZone(false)
-								}}
-								onClear={() => setZone([])}
-							/>
+							{zoned && (
+								<ZoneControls
+									draftCount={draft.length}
+									zoneCount={zone.length}
+									editing={editing}
+									onDraw={() => {
+										// on repart de la zone appliquee : Draw sert a la
+										// modifier, pas seulement a en tracer une nouvelle
+										setDraft(zone)
+										setEditingZone(true)
+									}}
+									onSave={() => {
+										setZone(draft)
+										setEditingZone(false)
+									}}
+									onCancel={() => {
+										setDraft([])
+										setEditingZone(false)
+									}}
+									onClear={() => setZone([])}
+								/>
+							)}
 							<ModeSwitch
 								value={currentMode}
 								onChange={setCurrentMode}

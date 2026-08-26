@@ -8,11 +8,20 @@ export const GlobalStyles = createGlobalStyle<{
 	width: 100%;
 	margin: 0;
 	font-family: monospace;
+
+	/* la taille de base se transmet par heritage. La poser sur * la
+	   rejouait sur chaque element, ce qui ecrasait les tailles locales :
+	   celle du terminal et celle de l'art ascii ne servaient a rien. */
+    font-size: ${({ isMobile }) => (isMobile ? "10px" : "17px")};
   }
 
-  *, input {
+  * {
 	-webkit-tap-highlight-color: transparent;
-    font-size: ${({ isMobile }) => (isMobile ? "10px" : "17px")};
+  }
+
+  /* les controles de formulaire n'heritent pas de la police par defaut */
+  input, button, textarea, select {
+	font: inherit;
   }
 `
 

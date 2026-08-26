@@ -4,6 +4,7 @@ import { colors, app } from "_components/constants"
 
 import { title, highlightFlower, plantFlowers } from "./asciArt"
 import { displayList, loadScript, getScript } from "./aocCommands"
+import { CV_SECTIONS, buildCV } from "./cv"
 import { LANGS, pick } from "./lang"
 
 import Virus from "_components/Virus"
@@ -68,21 +69,14 @@ export const commands: BaseCommand[] = [
 		name: "welcome",
 		action: () => ({
 			fr: [
-				"Pour visualiser les ASCII Art AOC tapez : `aoc list`",
-				"Pour visualiser un ASCII Art AOC tapez : `aoc [index]` (ex: aoc 5)",
-				"\n",
-				"Pour plus d'informations sur l'auteur tapez : `about`",
-				"\n",
-				"Pour afficher toutes les commandes tapez : `help`",
+				`Bienvenue sur $${app.name}$`,
+				"Commencez par taper la commande : `help`",
 				"\n",
 			].join("\n"),
 			en: [
-				"To browse the AOC ASCII art type: `aoc list`",
-				"To view one AOC ASCII art type: `aoc [index]` (ex: aoc 5)",
+				`$Welcome to ${app.name}$`,
 				"\n",
-				"For more about the author type: `about`",
-				"\n",
-				"To list every command type: `help`",
+				"Start by typing the command: `help`",
 				"\n",
 			].join("\n"),
 		}),
@@ -128,13 +122,13 @@ export const commands: BaseCommand[] = [
 	{
 		restricted: false,
 		name: "help",
-		action: ({ args, help, commands }) => {
+		action: ({ args, commands }) => {
 			if (args.length === 0) {
-				const own = textHelp(help)
+				//const own = textHelp(help)
 				const all = allCommandsHelp(commands)
 				return {
-					fr: `${own["fr"]}\nListe des commandes : \n\n${all.fr}`,
-					en: `${own["en"]}\nCommand list: \n\n${all.en}`,
+					fr: `\n${all.fr}`,
+					en: `\n${all.en}`,
 				}
 			}
 
@@ -195,6 +189,13 @@ export const commands: BaseCommand[] = [
 			},
 			patterns: [
 				{
+					pattern: "aoc list",
+					description: {
+						fr: "Liste tout les scripts",
+						en: "Lists every script",
+					},
+				},
+				{
 					pattern: "aoc [index]",
 					description: {
 						fr: '+aoc 1+ => Lancera "Calorie Counting"',
@@ -213,13 +214,6 @@ export const commands: BaseCommand[] = [
 					description: {
 						fr: '+aoc cuc+ => Lancera "Sea Cucumber"',
 						en: '+aoc cuc+ => runs "Sea Cucumber"',
-					},
-				},
-				{
-					pattern: "aoc list",
-					description: {
-						fr: "Liste tout les scripts",
-						en: "Lists every script",
 					},
 				},
 			],
@@ -288,6 +282,34 @@ export const commands: BaseCommand[] = [
 					description: {
 						fr: "Efface tout sauf l'historique",
 						en: "Clears everything except the history",
+					},
+				},
+			],
+		},
+	},
+	{
+		restricted: false,
+		name: "cv",
+		testArgs: { authorize: CV_SECTIONS, empty: true },
+		action: ({ args }) => buildCV(args[0]),
+		help: {
+			description: {
+				fr: "Affiche le CV de l'auteur, en entier ou par section",
+				en: "Shows the author's resume, whole or section by section",
+			},
+			patterns: [
+				{
+					pattern: "cv",
+					description: {
+						fr: "Affiche le CV complet",
+						en: "Shows the whole resume",
+					},
+				},
+				{
+					pattern: `cv [${CV_SECTIONS.join(" | ")}]`,
+					description: {
+						fr: "+cv xp+ => Affiche uniquement les expériences",
+						en: "+cv xp+ => shows the experience section only",
 					},
 				},
 			],

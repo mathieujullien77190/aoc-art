@@ -1,5 +1,9 @@
-import { STREAM_HOST } from "./constants"
-import { Point } from "./types"
+import { STREAM_HOST, ZONELESS_MODES } from "./constants"
+import { FeedMode, Point } from "./types"
+
+/** la zone a-t-elle un sens dans ce mode */
+export const usesZone = (mode: FeedMode): boolean =>
+	!ZONELESS_MODES.includes(mode as (typeof ZONELESS_MODES)[number])
 
 export const buildStreamUrl = (publicKey: string, cameraId: string): string =>
 	`${STREAM_HOST}/${encodeURIComponent(cameraId)}/playlist.m3u8` +

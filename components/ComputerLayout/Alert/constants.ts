@@ -1,10 +1,12 @@
 export const FULL = {
-	width: 180,
-	height: 110,
+	width: 300,
 	padding: "4px",
 	borderSize: "2px",
 	fontWeight: "bold",
 }
+
+// distance au coin du bureau ou se refugie le bouton fuyant, en pixels
+export const DODGE_INSET = 12
 
 export const COLORS = {
 	backgroundTitle: "#ed612e",

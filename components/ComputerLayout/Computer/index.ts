@@ -1,3 +1,3 @@
-import { Computer } from "./Computer";
+import { Computer } from "./Computer"
 
-export default Computer;
+export default Computer

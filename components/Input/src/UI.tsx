@@ -9,7 +9,7 @@ export const CustomInput = styled.input<{ $nbsLetters: number }>`
 	padding: 0;
 	margin: 0;
 	font-family: monospace;
-	width: ${({ $nbsLetters }) => $nbsLetters * 10 + 10}px;
+	width: ${({ $nbsLetters }) => $nbsLetters + 1}ch;
 	margin-left: 8px;
 `
 
