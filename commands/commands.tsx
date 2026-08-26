@@ -8,6 +8,8 @@ import { title, highlightFlower, plantFlowers } from "./asciArt"
 import { displayList, loadScript, getScript } from "./aocCommands"
 import { LANGS, pick } from "./lang"
 
+import Virus from "_components/Virus"
+
 import { Games } from "_games/Games"
 import { gamesConfig } from "_games/constants"
 
@@ -381,6 +383,26 @@ export const commands: BaseCommand[] = [
 					description: {
 						fr: `${app.logo}${app.logo}${app.logo} Plantez des fleurs ${app.logo}${app.logo}${app.logo}`,
 						en: `${app.logo}${app.logo}${app.logo} Plant some flowers ${app.logo}${app.logo}${app.logo}`,
+					},
+				},
+			],
+		},
+	},
+	{
+		restricted: false,
+		name: "stux",
+		action: () => ({
+			fr: "infection en cours, impossible d'interrompre le processus",
+			en: "infection in progress, the process cannot be stopped",
+		}),
+		JSX: () => <Virus />,
+		help: {
+			patterns: [
+				{
+					pattern: "stux",
+					description: {
+						fr: "fonctionnalité expérimentale et inutile",
+						en: "experimental and useless feature",
 					},
 				},
 			],
