@@ -3,14 +3,24 @@ import styled from "styled-components"
 import { COLORS, FULL } from "./constants"
 import { Pos } from "./types"
 
-export const Container = styled.div<{ $pos?: Pos }>`
-	position: absolute;
+type ContainerProps = { $pos?: Pos }
 
-	/* sans position donnee, la boite se pose au milieu du bureau */
-	${({ $pos }) =>
-		$pos
-			? `top: ${$pos.y}px; left: ${$pos.x}px;`
-			: "top: 50%; left: 50%; transform: translate(-50%, -50%);"}
+/**
+ * Sans position donnee, la boite se pose au milieu du bureau.
+ *
+ * Le placement sort en style inline plutot que dans le CSS : styled-
+ * components fabrique une classe par valeur interpolee, et une position
+ * qui suivrait la souris en produirait une par pixel.
+ */
+const place = ({ $pos }: ContainerProps) =>
+	$pos
+		? { top: `${$pos.y}px`, left: `${$pos.x}px` }
+		: { top: "50%", left: "50%", transform: "translate(-50%, -50%)" }
+
+export const Container = styled.div.attrs<ContainerProps>(props => ({
+	style: place(props),
+}))`
+	position: absolute;
 
 	border-style: solid;
 	border-width: ${FULL.borderSize};

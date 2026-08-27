@@ -12,32 +12,43 @@ import {
 } from "./constants"
 import { FULL as FULLWindows } from "../Windows/constants"
 
-export const Container = styled.div<{
+type ContainerProps = {
 	$mode: Mode
 	$rank: number
 	$drag: Pos
 	$followMouse: boolean
 	$layer: number
-}>`
+}
+
+/**
+ * Place de la fenetre, en pourcentage : aucune mesure du bureau n'est
+ * necessaire, et elle suit son redimensionnement. La cascade et le
+ * deplacement a la souris s'ajoutent en pixels.
+ *
+ * Elle sort en style inline, pas dans le CSS : styled-components fabrique
+ * une classe par valeur interpolee, et un glisser en produirait une par
+ * pixel parcouru — la console finissait par le signaler.
+ *
+ * Le deplacement passe par top/left et non par un transform : un ancetre
+ * transforme devient le referentiel des position: fixed qu'il contient,
+ * ce qui decalait le canvas plein ecran de stux.
+ */
+const place = ({ $mode, $rank, $drag }: ContainerProps) => {
+	if ($mode === "full") return { top: 0, left: 0 }
+	if ($mode === "close") return { top: "50%", left: "50%" }
+
+	const shift = $rank * CASCADE
+
+	return {
+		top: `calc(${MEDIUM_MARGIN}% + ${shift + $drag.y}px)`,
+		left: `calc(${MEDIUM_MARGIN}% + ${shift + $drag.x}px)`,
+	}
+}
+
+export const Container = styled.div.attrs<ContainerProps>(props => ({
+	style: place(props),
+}))`
 	position: absolute;
-
-	/* Place et gabarit en pourcentage : aucune mesure du bureau n'est
-	   necessaire, et la fenetre suit son redimensionnement. La cascade et
-	   le deplacement a la souris s'ajoutent en pixels.
-	
-	   Le deplacement passe par top/left et non par un transform : un
-	   ancetre transforme devient le referentiel des position: fixed qu'il
-	   contient, ce qui decalait le canvas plein ecran de stux. */
-	${({ $mode, $rank, $drag }) => {
-		if ($mode === "full") return "top: 0; left: 0;"
-		if ($mode === "close") return "top: 50%; left: 50%;"
-
-		const shift = $rank * CASCADE
-		return `
-			top: calc(${MEDIUM_MARGIN}% + ${shift + $drag.y}px);
-			left: calc(${MEDIUM_MARGIN}% + ${shift + $drag.x}px);
-		`
-	}}
 
 	${({ $mode }) => {
 		if ($mode === "close") return "width: 0; height: 0;"
