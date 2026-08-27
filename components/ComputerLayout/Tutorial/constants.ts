@@ -79,7 +79,7 @@ export const STEPS: Step[] = [
 		title: { fr: "C'est tout", en: "That's it" },
 		text: {
 			fr: "Cette icone rejoue le tutorial, la commande `tuto` aussi.",
-			en: "This icon replays the tutorial, the `tutorial` command too.",
+			en: "This icon replays the tutorial, the `tuto` command too.",
 		},
 	},
 ]
