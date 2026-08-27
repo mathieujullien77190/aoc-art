@@ -4,7 +4,6 @@ type useDisplayByLetterProps = {
 	baseTxt: string
 	canRendered: boolean
 	animation: boolean
-	lang: string
 	reverse: boolean
 	stepTime: number
 	stepSize: number
@@ -14,7 +13,6 @@ export const useDisplayByLetter = ({
 	baseTxt,
 	canRendered,
 	animation,
-	lang,
 	reverse,
 	stepTime = 10,
 	stepSize,
@@ -44,8 +42,7 @@ export const useDisplayByLetter = ({
 		}
 	}, [canRendered])
 
-	useEffect(() => {
-		if (finish) setTextTime(baseTxt)
-	}, [lang])
-	return { txt: textTime, finish }
+	// une fois l'animation terminee le texte affiche vaut deja baseTxt : le lire
+	// directement suffit a suivre un changement de langue, sans effet de resynchro
+	return { txt: finish ? baseTxt : textTime, finish }
 }

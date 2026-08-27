@@ -81,7 +81,7 @@ const Animation = () => {
 	const [reload, setReload] = useState<number>(0)
 	const [pause, setPause] = useState<boolean>(false)
 
-	const { out, stats } = useAnim<{ cube: Record<string, string>; meta: any }>({
+	const { out, stats } = useAnim<{ cube: Record<string, string>; meta: unknown }>({
 		viewsFn: () =>
 			prepareViewsHelpers(() => {
 				const cube = organize(draw)

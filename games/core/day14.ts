@@ -40,10 +40,10 @@ const fall = (back, pos) => {
 }
 
 const construct = (data, boundary) => {
-	let xSave, prev, pos, curr, direction, max
+	let xSave, prev, pos, curr, direction
 	const back = createBackground(boundary)
 
-	max = { x: 0, y: 0 }
+	const max = { x: 0, y: 0, p: 0 }
 
 	data.forEach(path => {
 		xSave = path[0].x

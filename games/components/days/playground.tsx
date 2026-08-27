@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import styled from "styled-components"
 
 import Function from "_games/components/Function"
@@ -14,11 +14,8 @@ const Container = styled.div`
 `
 
 const Animation = () => {
-	const [stories, setStories] = useState<Story[]>([])
-
-	useEffect(() => {
-		setStories(init())
-	}, [])
+	// init() est pur : on le joue a l'initialisation plutot que dans un effet
+	const [stories] = useState<Story[]>(() => init())
 
 	return (
 		<Container>

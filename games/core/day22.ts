@@ -224,17 +224,15 @@ const getListPosition = (cube, map, position, face, action) => {
 		valueOnMap,
 		currentAction,
 		change,
-		list,
 		matrix,
-		max,
 		currentFace
 
 	j = 0
-	list = []
+	const list = []
 	currentAction = action
 	currentFace = face
 	pos = { ...position }
-	max = action.value
+	const max = action.value
 
 	list.push({ position: pos, face: currentFace, action: currentAction })
 	do {
@@ -271,14 +269,14 @@ const drawPath = (cube, pos) => {
 }
 
 export const goN = (cube, map, actions, startPos, startFace) => {
-	let currentFace, currentPosition, newCube, currentAction, res, display
+	let currentFace, currentPosition, newCube, currentAction, res
 
 	currentPosition = { ...startPos }
 	currentFace = startFace
 
 	newCube = { ...cube }
 
-	display = []
+	const display = []
 
 	actions.forEach((action, j, tab) => {
 		res = getListPosition(cube, map, currentPosition, currentFace, {

@@ -37,7 +37,8 @@ export type BaseCommand = {
 		hideCmd?: boolean
 		style?: CSSProperties
 		stylePre?: CSSProperties
-		highlight?: (txt: string) => import("react").JSX.Element[]
+		/** rendu colore du resultat ; une chaine intacte est un rendu valide */
+		highlight?: (txt: string) => import("react").ReactNode
 		trad?: boolean
 		reverse?: boolean
 		stepTime?: number

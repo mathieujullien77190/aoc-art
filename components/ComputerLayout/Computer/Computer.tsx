@@ -2,6 +2,7 @@ import { useState, useEffect, Ref, forwardRef } from "react"
 import { ComputerProps } from "./types"
 import * as S from "./UI"
 import { getSpeed, hasOldScreen, hasFatalError } from "./helpers"
+import { useIsMounted } from "./hooks"
 
 import Windows from "../Windows"
 import Loading from "../Loading"
@@ -31,17 +32,21 @@ const BaseComputer = (
 	const [wantToGoBIOS, setWantToGoBIOS] = useState<boolean>(false)
 
 	const [fatalError, setFatalError] = useState<boolean>(false)
-	const [settings, setSettings] = useState<Record<string, string>>({})
-	const [build, setBuild] = useState<boolean>(false)
 
-	const gotoBios = (e: any) => {
-		if (e.code === "Delete" && !wantToGoBIOS) setWantToGoBIOS(true)
+	const build = useIsMounted()
+
+	// le storage n'existe pas au prerendu : lecture paresseuse au premier
+	// rendu client, puis relecture a la sortie du BIOS, qui vient d'ecrire
+	const [settings, setSettings] = useState<Record<string, string>>(() =>
+		typeof window === "undefined" ? {} : getStorage("settings") || {}
+	)
+
+	const gotoBios = (event: KeyboardEvent) => {
+		if (event.code === "Delete" && !wantToGoBIOS) setWantToGoBIOS(true)
 	}
 
 	useEffect(() => {
 		window.addEventListener("keyup", gotoBios)
-		setSettings(getStorage("settings"))
-		setBuild(true)
 		return () => {
 			window.removeEventListener("keyup", gotoBios)
 		}
@@ -88,7 +93,7 @@ const BaseComputer = (
 											setBios(false)
 											setReady(false)
 											setPower(false)
-											setSettings(getStorage("settings"))
+											setSettings(getStorage("settings") || {})
 											window.setTimeout(() => setPower(true), 500)
 										}}
 									/>

@@ -12,7 +12,7 @@ import Virus from "_components/Virus"
 import { Games } from "_games/Games"
 import { gamesConfig } from "_games/constants"
 
-import { setProperties } from "_store/global/"
+import { focusWindow, setProperties } from "_store/global/"
 import { clear } from "_store/history/"
 
 const RESTRICTED: Translatable = {
@@ -423,6 +423,27 @@ export const commands: BaseCommand[] = [
 					description: {
 						fr: "fonctionnalité expérimentale et inutile",
 						en: "experimental and useless feature",
+					},
+				},
+			],
+		},
+	},
+	{
+		restricted: false,
+		name: "prism",
+		action: () => ({
+			fr: "ouverture de 1/PRISM",
+			en: "opening 1/PRISM",
+		}),
+		// le bureau lit la pile des fenetres dans le store
+		redux: () => focusWindow("prism"),
+		help: {
+			patterns: [
+				{
+					pattern: "prism",
+					description: {
+						fr: "Ouvre 1/PRISM, les flux de caméras rendus en ASCII",
+						en: "Opens 1/PRISM, camera feeds rendered as ASCII",
 					},
 				},
 			],

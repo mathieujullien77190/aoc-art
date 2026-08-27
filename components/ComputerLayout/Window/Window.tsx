@@ -1,8 +1,11 @@
-import { useEffect, useState, Ref, forwardRef } from "react"
-import { WindowProps, Pos, Size, Mode } from "./types"
+import { useEffect, useRef, useState, Ref, forwardRef } from "react"
+import { WindowProps, Pos, Mode } from "./types"
 import * as S from "./UI"
-import { ANIM_TIME } from "./constants"
+import { ANIM_TIME, TOP_LAYER } from "./constants"
+import { clampDrag } from "./helpers"
 import { useIsCompact } from "./hooks"
+
+const NO_DRAG: Pos = { x: 0, y: 0 }
 
 const BaseWindow = (
 	{
@@ -10,6 +13,9 @@ const BaseWindow = (
 		container,
 		children,
 		title = "Sans titre",
+		layer = TOP_LAYER,
+		rank = 0,
+		onFocus = () => {},
 		onClose = () => {},
 	}: WindowProps,
 	ref: Ref<HTMLDivElement>
@@ -20,45 +26,31 @@ const BaseWindow = (
 	// sous le seuil la fenetre reste pleine et non redimensionnable.
 	// "close" passe quand meme, sinon l'animation de fermeture disparaitrait
 	const mode: Mode = isCompact && userMode !== "close" ? "full" : userMode
-	const [pos, setPos] = useState<Pos>({ x: 0, y: 0 })
-	const [size, setSize] = useState<Size>({ width: 0, height: 0, unit: "px" })
+
+	/**
+	 * Deplacement applique a la souris, en pixels, par-dessus une position
+	 * de base en pourcentage. Mesurer le bureau pour poser la fenetre
+	 * demandait un effet et un setState au montage ; le pourcentage donne
+	 * le meme placement, suit le redimensionnement, et se passe des deux.
+	 */
+	const [drag, setDrag] = useState<Pos>(NO_DRAG)
 	const [ready, setReady] = useState<boolean>(false)
 	const [followMouse, setFollowMouse] = useState<boolean>(false)
 
-	useEffect(() => {
-		if (show) {
-			const rect = container.current?.getBoundingClientRect()
+	const boxRef = useRef<HTMLDivElement>(null)
 
-			if (mode === "full" && rect) {
-				setPos({ x: 0, y: 0 })
-				setSize({ width: 100, height: 100, unit: "%" })
-				window.setTimeout(() => {
-					setReady(true)
-				}, ANIM_TIME + 100)
-			}
-			if (mode === "medium" && rect) {
-				setPos({ x: rect.width * 0.15, y: rect.height * 0.15 })
-				setSize({
-					width: rect.width * 0.7,
-					height: rect.height * 0.7,
-					unit: "px",
-				})
-				window.setTimeout(() => {
-					setReady(true)
-				}, ANIM_TIME + 100)
-			}
-			if (mode === "close" && rect) {
-				setPos({ x: rect.width / 2, y: rect.height / 2 })
-				setSize({
-					width: 0,
-					height: 0,
-					unit: "px",
-				})
-			}
-		}
+	// le contenu n'apparait qu'une fois la fenetre arrivee a sa taille
+	useEffect(() => {
+		if (!show || mode === "close") return
+
+		const timer = window.setTimeout(() => setReady(true), ANIM_TIME + 100)
+		return () => window.clearTimeout(timer)
 	}, [show, mode])
 
 	const handleResize = () => {
+		// changer de taille remet la fenetre a sa place : le deplacement
+		// d'avant n'a plus de sens dans le nouveau gabarit
+		setDrag(NO_DRAG)
 		setUserMode(prev => (prev === "full" ? "medium" : "full"))
 	}
 
@@ -68,6 +60,7 @@ const BaseWindow = (
 		window.setTimeout(() => {
 			onClose()
 
+			setDrag(NO_DRAG)
 			setUserMode("medium")
 		}, ANIM_TIME + 100)
 	}
@@ -75,37 +68,54 @@ const BaseWindow = (
 	useEffect(() => {
 		if (!followMouse) return
 
-		const handlerMousemove = e => {
-			setPos(prev => ({
-				x: prev.x + e.movementX,
-				y: prev.y + e.movementY,
+		const handlerMousemove = (event: MouseEvent) => {
+			setDrag(prev => ({
+				x: prev.x + event.movementX,
+				y: prev.y + event.movementY,
 			}))
 		}
+
+		/**
+		 * Le relachement tombe rarement sur la barre de titre, souvent
+		 * hors de la page : sans ecoute au niveau du document, la fenetre
+		 * resterait collee au curseur. Le blur couvre la souris relachee
+		 * en dehors de l'onglet, qui n'emet aucun mouseup.
+		 */
+		const handlerMouseup = () => {
+			setFollowMouse(false)
+
+			const area = container.current?.getBoundingClientRect()
+			const box = boxRef.current?.getBoundingClientRect()
+			if (area && box) setDrag(prev => clampDrag(prev, box, area))
+		}
+
 		document.addEventListener("mousemove", handlerMousemove)
+		document.addEventListener("mouseup", handlerMouseup)
+		window.addEventListener("blur", handlerMouseup)
+
 		return () => {
 			document.removeEventListener("mousemove", handlerMousemove)
+			document.removeEventListener("mouseup", handlerMouseup)
+			window.removeEventListener("blur", handlerMouseup)
 		}
-	}, [followMouse])
+	}, [followMouse, container])
 
 	return (
 		<>
 			{show && (
 				<S.Container
-					style={{
-						top: `${pos.y}px`,
-						left: `${pos.x}px`,
-					}}
-					$size={size}
+					ref={boxRef}
 					$mode={mode}
+					$rank={rank}
+					$drag={drag}
 					$followMouse={followMouse}
+					$layer={layer}
+					onMouseDown={onFocus}
 				>
 					<S.topBar
 						onDoubleClick={isCompact ? undefined : handleResize}
 						onMouseDown={() => {
 							if (mode !== "full") setFollowMouse(true)
-						}}
-						onMouseUp={() => {
-							setFollowMouse(false)
 						}}
 					>
 						<S.Title>{title}</S.Title>

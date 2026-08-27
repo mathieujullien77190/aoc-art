@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 
 import { isMobile } from "react-device-detect"
 
@@ -24,6 +24,14 @@ export const Slider = ({
 	const [localValue, setLocalValue] = useState<number>(
 		Math.floor(value / step) * step
 	)
+	const [prevValue, setPrevValue] = useState<number>(value)
+
+	// le curseur avance en local, mais le parent peut reprendre la main : on se
+	// realigne pendant le rendu quand il pousse une nouvelle valeur
+	if (prevValue !== value) {
+		setPrevValue(value)
+		setLocalValue(Math.floor(value / step) * step)
+	}
 
 	const nb = useMemo(
 		() => Math.floor(Math.abs(max - min) / step),
@@ -53,10 +61,6 @@ export const Slider = ({
 	)
 
 	const formatValue = (loop ? modulo(localValue, max) : localValue).toString()
-
-	useEffect(() => {
-		setLocalValue(Math.floor(value / step) * step)
-	}, [value])
 
 	return (
 		<S.ContainerSlider>

@@ -1,11 +1,12 @@
 import { commands as baseCommands } from "_commands/commands"
 import { createCommand, findCommand } from "_commands/terminalEngine"
 
+import { AppDispatch } from "_store/initStore"
 import { addCommand } from "_store/history/"
 
 export const sendRestrictedCommand = (
 	commandPattern: string,
-	dispatch: any
+	dispatch: AppDispatch
 ) => {
 	const cmd = createCommand({
 		commands: baseCommands,
@@ -34,7 +35,10 @@ export const sendRestrictedCommand = (
 	)
 }
 
-export const sendCommand = (commandPattern: string, dispatch: any) => {
+export const sendCommand = (
+	commandPattern: string,
+	dispatch: AppDispatch
+) => {
 	const cmd = createCommand({
 		commands: baseCommands,
 		commandPattern,

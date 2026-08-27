@@ -3,7 +3,7 @@ import { D3Props } from "./types"
 
 import * as S from "./UI"
 
-import { useOrientation } from "./hooks"
+import { AxesTransform, useOrientation } from "./hooks"
 
 import Controller from "_games/components/Controls"
 
@@ -28,11 +28,10 @@ export const D3 = ({
 
 	const { axes, matrix, add, fixed, change } = useOrientation(start, refCube)
 
-	const [init, setInit] = useState<boolean>(true)
 	const [mouse, setMouse] = useState<{
 		x: number
 		y: number
-		axes: any
+		axes: AxesTransform
 	} | null>(null)
 
 	const [Z, setZ] = useState<number>(zoom.value)
@@ -126,11 +125,11 @@ export const D3 = ({
 		}
 	}, [axes, Z])
 
+	// l'orientation de depart est posee a la frame suivante, pas au montage :
+	// le cube doit d'abord etre peint a plat pour que la transition se voie
 	useEffect(() => {
-		if (init) {
-			handleReset()
-		}
-		setInit(false)
+		const frame = requestAnimationFrame(() => handleReset())
+		return () => cancelAnimationFrame(frame)
 	}, [])
 
 	useEffect(() => {

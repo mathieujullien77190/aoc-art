@@ -22,12 +22,12 @@ const EmptyItem = () => {
 
 export const BIOS = ({ onExit = () => {} }: BIOSProps) => {
 	const [current, setCurrent] = useState<number>(0)
-	const [settings, setSettings] = useState<Record<string, string>>()
+	// le BIOS n'est monte qu'apres l'hydratation : lire le storage des
+	// l'initialisation est sans risque et evite un rendu a vide
+	const [settings, setSettings] = useState<Record<string, string>>(() =>
+		getStorage("settings")
+	)
 	const [message, setMessage] = useState<string>()
-
-	useEffect(() => {
-		setSettings(getStorage("settings"))
-	}, [])
 
 	useEffect(() => {
 		const move = (e: KeyboardEvent) => {

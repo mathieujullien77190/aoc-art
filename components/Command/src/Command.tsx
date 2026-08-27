@@ -31,7 +31,6 @@ const Command = ({
 			baseCommand?.display?.animation !== undefined
 				? baseCommand?.display?.animation
 				: animation,
-		lang,
 		reverse: baseCommand?.display?.reverse,
 		stepTime: baseCommand?.display?.stepTime,
 		stepSize: baseCommand?.display?.stepSize,

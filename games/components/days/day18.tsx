@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react"
+import { useState, useCallback } from "react"
 import styled from "styled-components"
 
 import { colors } from "_components/constants"
@@ -63,17 +63,18 @@ const Volcano = styled.pre`
 
 const Animation = () => {
 	const [color, setColor] = useState<number>(9)
-	const [basePlan, setBasePlan] = useState<ViewPlan>()
+
+	// calcul pur et fait une seule fois : l'initialiseur paresseux evite le
+	// rendu intermediaire sans plan que provoquait un effet de montage
+	const [basePlan] = useState<ViewPlan>(() => {
+		const test = searchInsideCube(data)
+
+		return getAllPlan(data.base, test.inside, test.outside, data.limits)
+	})
 
 	const handleClick = useCallback(e => {
 		e.preventDefault()
 		setColor(prev => (prev + 1 > 19 ? -1 : prev + 1))
-	}, [])
-
-	useEffect(() => {
-		const test = searchInsideCube(data)
-
-		setBasePlan(getAllPlan(data.base, test.inside, test.outside, data.limits))
 	}, [])
 
 	return (

@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react"
+import { useEffect, useState, useMemo, useRef } from "react"
 
 import { read } from "_games/helpers/view"
 
@@ -40,8 +40,12 @@ export const useAnim = <T>({
 	const [out, setOut] = useState<T>(undefined)
 	const [stats, setStats] = useState<Record<string, number>>({})
 	const [index, setIndex] = useState<number>(0)
-	const [timer, setTimer] = useState<number>(0)
 	const [reload, setReload] = useState<number>(control.reload)
+
+	// l'identifiant de l'interval ne sert qu'a l'annuler, jamais au rendu ; en
+	// ref il reste a jour pour le nettoyage au demontage, ce qu'un etat capture
+	// dans la cloture de l'effet ne garantissait pas
+	const timer = useRef<number>(0)
 
 	const viewsInfo = useMemo(() => viewsFn(), [data.dataSize])
 	const calcSpeed = useMemo(
@@ -51,20 +55,34 @@ export const useAnim = <T>({
 
 	useEffect(() => {
 		if (control.pause) {
-			clearInterval(timer)
+			clearInterval(timer.current)
 		}
 	}, [control.pause])
 
+	// le retour a l'index 0 part avec l'increment de reload dans le meme lot :
+	// l'effet de lecture repart donc bien du debut, comme avant
 	useEffect(() => {
-		setIndex(0)
-		clearInterval(timer)
-		window.setTimeout(() => setReload(prev => prev + 1), 100)
+		clearInterval(timer.current)
+		const restart = window.setTimeout(() => {
+			setIndex(0)
+			setReload(prev => prev + 1)
+		}, 100)
+
+		return () => {
+			clearTimeout(restart)
+		}
 	}, [control.reload])
 
 	useEffect(() => {
-		setIndex(0)
-		clearInterval(timer)
-		window.setTimeout(() => setReload(prev => prev + 1), 100)
+		clearInterval(timer.current)
+		const restart = window.setTimeout(() => {
+			setIndex(0)
+			setReload(prev => prev + 1)
+		}, 100)
+
+		return () => {
+			clearTimeout(restart)
+		}
 	}, [data.dataSize])
 
 	useEffect(() => {
@@ -78,36 +96,34 @@ export const useAnim = <T>({
 
 		let countView = 0
 
-		clearInterval(timer)
+		clearInterval(timer.current)
 
 		if (!control.pause) {
-			setTimer(
-				read<T>(viewsInfo.views, calcSpeed, index, args => {
-					const { view, i } = transform(args)
+			timer.current = read<T>(viewsInfo.views, calcSpeed, index, args => {
+				const { view, i } = transform(args)
 
-					action(args)
-					countView++
+				action(args)
+				countView++
 
-					setOut(view)
-					setStats({
-						timeViews,
-						nbViewSec,
-						nbsView: countView,
-						countView: i + 1,
-						totalView,
-						dataSize: data.dataSize,
-						speed: calcSpeed,
-					})
-
-					setIndex(i)
-
-					return true
+				setOut(view)
+				setStats({
+					timeViews,
+					nbViewSec,
+					nbsView: countView,
+					countView: i + 1,
+					totalView,
+					dataSize: data.dataSize,
+					speed: calcSpeed,
 				})
-			)
+
+				setIndex(i)
+
+				return true
+			})
 		}
 
 		return () => {
-			clearInterval(timer)
+			clearInterval(timer.current)
 		}
 	}, [calcSpeed, control.pause, reload])
 

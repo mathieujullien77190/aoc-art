@@ -1,10 +1,10 @@
-import { useState, useCallback, useEffect, MutableRefObject } from "react"
+import { useState, useCallback, useRef, MutableRefObject } from "react"
 
 import { AxesValue } from "./types"
 
 import { next } from "./helpers"
 
-type AxesTransform = {
+export type AxesTransform = {
 	values: AxesValue
 	diff: AxesValue
 	withTransition: boolean
@@ -25,17 +25,10 @@ export const useOrientation = (
 		withTransition: boolean
 	}>({ value: "", withTransition: false })
 
-	const [saveMatrix, setSaveMatrix] = useState<string>("")
-
-	useEffect(() => {
-		if (axes.diff.H !== 0 || axes.diff.V !== 0) {
-			const rotate = `rotateY(${axes.diff.H}deg) rotateX(${axes.diff.V}deg)`
-			setMatrix({
-				value: `${rotate} ${saveMatrix}`,
-				withTransition: axes.withTransition,
-			})
-		}
-	}, [axes])
+	// la matrice figee sert de base a la rotation suivante ; une ref plutot
+	// qu'un etat car fixed() et add() s'enchainent parfois dans le meme
+	// gestionnaire, avant tout nouveau rendu
+	const saveMatrix = useRef<string>("")
 
 	const fixed = useCallback(() => {
 		const current = window.getComputedStyle(ref.current).transform
@@ -44,7 +37,7 @@ export const useOrientation = (
 			value: `${currentMatrix}`,
 			withTransition: false,
 		})
-		setSaveMatrix(currentMatrix)
+		saveMatrix.current = currentMatrix
 	}, [])
 
 	const add = useCallback(
@@ -57,6 +50,14 @@ export const useOrientation = (
 				diff: { V: nextV.diff, H: nextH.diff },
 				withTransition,
 			})
+
+			if (nextV.diff !== 0 || nextH.diff !== 0) {
+				const rotate = `rotateY(${nextH.diff}deg) rotateX(${nextV.diff}deg)`
+				setMatrix({
+					value: `${rotate} ${saveMatrix.current}`,
+					withTransition,
+				})
+			}
 		},
 		[axes]
 	)
@@ -69,7 +70,7 @@ export const useOrientation = (
 				withTransition,
 			})
 			const rotate = `rotateY(${update.H}deg) rotateX(${update.V}deg)`
-			setSaveMatrix(``)
+			saveMatrix.current = ""
 			setMatrix({
 				value: `${rotate}`,
 				withTransition,

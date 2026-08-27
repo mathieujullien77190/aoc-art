@@ -18,7 +18,7 @@ export type Item = {
 		value: string | undefined,
 		onChange: (value: string) => void
 	) => JSX.Element
-	choices: any
+	choices?: string[]
 	message: string
 }
 

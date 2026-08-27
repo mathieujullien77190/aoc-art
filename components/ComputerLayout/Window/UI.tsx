@@ -1,19 +1,54 @@
 import styled from "styled-components"
-import { Size, Mode } from "./types"
+import { Mode, Pos } from "./types"
 import { colors } from "_components/constants"
-import { COLORS, FULL, ANIM_TIME } from "./constants"
+import {
+	COLORS,
+	FULL,
+	ANIM_TIME,
+	CASCADE,
+	MEDIUM_MARGIN,
+	MEDIUM_SIZE,
+	TOP_LAYER,
+} from "./constants"
 import { FULL as FULLWindows } from "../Windows/constants"
 
 export const Container = styled.div<{
-	$size: Size
 	$mode: Mode
+	$rank: number
+	$drag: Pos
 	$followMouse: boolean
+	$layer: number
 }>`
 	position: absolute;
-	width: ${({ $size }) =>
-		`calc(${$size.width}${$size.unit} - ${FULL.borderSize} * 2)`};
-	height: ${({ $size }) =>
-		`calc(${$size.height}${$size.unit} - ${FULLWindows.heightBar} - ${FULLWindows.borderSize} * 2)`};
+
+	/* Place et gabarit en pourcentage : aucune mesure du bureau n'est
+	   necessaire, et la fenetre suit son redimensionnement. La cascade et
+	   le deplacement a la souris s'ajoutent en pixels.
+	
+	   Le deplacement passe par top/left et non par un transform : un
+	   ancetre transforme devient le referentiel des position: fixed qu'il
+	   contient, ce qui decalait le canvas plein ecran de stux. */
+	${({ $mode, $rank, $drag }) => {
+		if ($mode === "full") return "top: 0; left: 0;"
+		if ($mode === "close") return "top: 50%; left: 50%;"
+
+		const shift = $rank * CASCADE
+		return `
+			top: calc(${MEDIUM_MARGIN}% + ${shift + $drag.y}px);
+			left: calc(${MEDIUM_MARGIN}% + ${shift + $drag.x}px);
+		`
+	}}
+
+	${({ $mode }) => {
+		if ($mode === "close") return "width: 0; height: 0;"
+
+		const side = $mode === "full" ? 100 : MEDIUM_SIZE
+		return `
+			width: calc(${side}% - ${FULL.borderSize} * 2);
+			height: calc(${side}% - ${FULLWindows.heightBar} - ${FULLWindows.borderSize} * 2);
+		`
+	}}
+
 
 	border-style: solid;
 	border-width: ${FULL.borderSize};
@@ -22,21 +57,23 @@ export const Container = styled.div<{
 	color: ${COLORS.text};
 	overflow: hidden;
 	font-weight: ${FULL.fontWeight};
-	z-index: 9;
+	z-index: ${({ $layer }) => $layer || TOP_LAYER};
 
+	/* pendant le glisser, la transition lacherait le curseur : seules la
+	   largeur et la hauteur restent animees */
 	transition: ${({ $followMouse }) =>
 		$followMouse
 			? `width ${ANIM_TIME / 1000}s ease-out, height ${
 					ANIM_TIME / 1000
-			  }s ease-out`
+				}s ease-out`
 			: `all ${ANIM_TIME / 1000}s ease-out`};
 
 	${({ $mode }) => {
 		if ($mode === "medium")
 			return `
-      box-shadow: 3px 2px 4px #00000041;
-      border-radius: 4px;
-    `
+				box-shadow: 3px 2px 4px #00000041;
+				border-radius: 4px;
+			`
 	}}
 `
 

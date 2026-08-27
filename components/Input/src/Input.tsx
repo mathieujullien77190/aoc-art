@@ -27,7 +27,16 @@ export const Input = ({
 	const [inputValue, setInputValue] = useState<string>(value)
 	const [predict, setPredict] = useState<string>("")
 	const [nbsLetters, setNbsLetters] = useState<number>(0)
+	const [prevValue, setPrevValue] = useState<string>(value)
 	const ref = useRef<HTMLInputElement>(null)
+
+	// la saisie est locale, mais l'historique impose sa valeur : on se realigne
+	// pendant le rendu quand le parent en pousse une nouvelle
+	if (prevValue !== value) {
+		setPrevValue(value)
+		setInputValue(value)
+		setNbsLetters(value.length)
+	}
 
 	const handleKeyUp = useCallback(
 		(e: KeyboardEvent<HTMLInputElement>) => {
@@ -82,11 +91,6 @@ export const Input = ({
 	useEffect(() => {
 		if (options.keyboardOnFocus) ref?.current?.focus()
 	}, [forceFocus])
-
-	useEffect(() => {
-		setInputValue(value)
-		setNbsLetters(value.length)
-	}, [value])
 
 	const predictDisplay = `( ${predict}? appuyez sur [${
 		isMobile ? "ENTER" : "TAB"

@@ -20,7 +20,11 @@ export const Loading = ({
   onFinish = () => { },
 }: LoadingProps) => {
   const [startLoading, setStartLoading] = useState<boolean>(true);
-  const [screenHeight, setScreenHeight] = useState<number>()
+  // body est en height:100%, sa hauteur ne depend pas de ce composant : on peut
+  // la mesurer des l'initialisation, l'ecran de boot n'existant que cote client
+  const [screenHeight] = useState<number>(
+    () => document.body.getBoundingClientRect().height
+  );
   const [counterHack, setCounterHack] = useState<number>(0);
 
   useEffect(() => {
@@ -34,7 +38,7 @@ export const Loading = ({
   }, []);
 
   useEffect(() => {
-    let timerHack: any;
+    let timerHack: ReturnType<typeof setInterval>;
     if (!startLoading) {
       timerHack = setInterval(() => {
         setCounterHack((prev) => prev + 1);
@@ -51,10 +55,6 @@ export const Loading = ({
       onFinish();
     }
   }, [counterHack]);
-
-  useEffect(() => {
-    setScreenHeight(document.body.getBoundingClientRect().height)
-  }, [])
 
 
   return (

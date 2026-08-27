@@ -1,4 +1,4 @@
-import { CSSProperties } from "react"
+import { CSSProperties, ReactNode } from "react"
 import reactStringReplace from "react-string-replace"
 import { colors } from "_components/constants"
 import uniqid from "uniqid"
@@ -15,8 +15,8 @@ R(_ o._)R__|I(  .  .-'I : B(  '\\_/ \\B   ;|  |/    \\|  |'  \\   .---.|  |\\ \\
 '---'       \`--------\`  '-----'    \`---'    \`---\`   \`'-..-'  ''-'   \`'-'            \`-...-'  'J(_,_)J '---'    \`'-..-'    \`--------\`\`--------\` 
 `
 
-export const highlightFlower = (text: any, baseStyles: CSSProperties) => {
-	let result = text
+export const highlightFlower = (text: string, baseStyles: CSSProperties) => {
+	let result: string | ReactNode[] = text
 
 	const list = [
 		{ reg: /R(.*)R/g, styles: { color: colors.restrictedColor } },

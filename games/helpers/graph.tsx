@@ -22,13 +22,11 @@ export const dijkstra = (
 ): Record<string, ElementGraph> => {
 	let index = 0
 	let listToGo: Element[]
-	let listView: Record<string, ElementGraph>
-	let listNotView: Record<string, ElementGraph>
 	let current: ElementGraph
 	let minName: string
 	let minValue: number
 
-	listView = {
+	const listView: Record<string, ElementGraph> = {
 		[start]: {
 			name: start,
 			calcValue: 0,
@@ -37,7 +35,7 @@ export const dijkstra = (
 			view: true,
 		},
 	}
-	listNotView = { ...listView }
+	const listNotView: Record<string, ElementGraph> = { ...listView }
 	current = listView[start]
 	listToGo = canGo(start)
 

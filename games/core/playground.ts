@@ -1,3 +1,4 @@
+import { ReactNode } from "react"
 import {
 	viewData1,
 	viewData2,
@@ -27,7 +28,7 @@ export type Story = {
 	title: string
 	description: string
 	id: string
-	results: { text: string; exec: () => { base: any; display: any } }[]
+	results: { text: string; exec: () => { base: unknown; display: ReactNode } }[]
 }
 
 export const init = (): Story[] => {

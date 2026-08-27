@@ -9,3 +9,6 @@ export const useGetAnimation = () =>
 
 export const useGetKeyboardOnFocus = () =>
 	useAppSelector((state: RootState) => state.global.keyboardOnFocus)
+
+export const useGetWindows = () =>
+	useAppSelector((state: RootState) => state.global.windows)

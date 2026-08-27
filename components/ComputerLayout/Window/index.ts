@@ -1,4 +1,4 @@
-import { Window } from "./Window";
+import { Window } from "./Window"
 
-export default Window;
-export * from "./constants";
+export default Window
+export * from "./constants"
