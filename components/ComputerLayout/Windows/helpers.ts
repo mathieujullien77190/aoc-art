@@ -1,4 +1,4 @@
-import { pick } from "_commands/lang"
+import { pick } from "retro-shell"
 
 import { ICONS } from "./constants"
 import { DesktopIcon, IconKey } from "./types"

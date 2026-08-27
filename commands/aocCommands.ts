@@ -1,5 +1,5 @@
 import { GameConfig } from "_games/constants"
-import { Translatable } from "_/types"
+import { Translatable } from "retro-shell"
 
 export const displayList = (gamesConfig: GameConfig[]): string => {
 	return (

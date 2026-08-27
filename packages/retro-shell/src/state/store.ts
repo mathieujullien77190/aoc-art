@@ -1,13 +1,25 @@
 import { create } from "zustand"
 import { useShallow } from "zustand/react/shallow"
 
-import { Command } from "_/types"
+import { Command } from "../types"
+import { getBanner } from "./registry"
 
-type History = {
+type Shell = {
+	/** langue de rendu des textes */
+	lang: string
+	/** ecriture lettre par lettre des reponses */
+	animation: boolean
+	/** la saisie reprend le focus des qu'elle le perd */
+	keyboardOnFocus: boolean
+
 	commands: Command[]
 	restrictedCommands: Command[]
 	/** position dans l'historique, null quand on est sur la ligne vierge */
 	cursor: number
+
+	setLang: (lang: string) => void
+	setAnimation: (animation: boolean) => void
+	setKeyboardOnFocus: (keyboardOnFocus: boolean) => void
 
 	addCommand: (command: Command) => void
 	setIsRendered: (id: string) => void
@@ -20,10 +32,18 @@ const rendered = (list: Command[], id: string) =>
 		command.id === id ? { ...command, isRendered: true } : command
 	)
 
-export const useHistoryStore = create<History>(set => ({
+export const useShellStore = create<Shell>(set => ({
+	lang: "fr",
+	animation: true,
+	keyboardOnFocus: true,
+
 	commands: [],
 	restrictedCommands: [],
 	cursor: null,
+
+	setLang: lang => set({ lang }),
+	setAnimation: animation => set({ animation }),
+	setKeyboardOnFocus: keyboardOnFocus => set({ keyboardOnFocus }),
 
 	addCommand: command =>
 		set(state =>
@@ -84,7 +104,7 @@ export const useHistoryStore = create<History>(set => ({
  * rendu a chaque changement du store, meme sans rapport.
  */
 export const useGetCommands = () =>
-	useHistoryStore(
+	useShellStore(
 		useShallow(state =>
 			[
 				...state.commands.filter(command => command.visible),
@@ -93,22 +113,36 @@ export const useGetCommands = () =>
 		)
 	)
 
-export const useGetCursor = () => useHistoryStore(state => state.cursor)
+export const useGetCursor = () => useShellStore(state => state.cursor)
 
 export const useGetCurrentCommand = () =>
-	useHistoryStore(state => state.commands[state.cursor] || null)
+	useShellStore(state => state.commands[state.cursor] || null)
 
-/** le boot est fini : les deux commandes d'accueil sont rendues */
+/**
+ * Le demarrage est fini : toute la banniere est rendue et le visiteur n'a
+ * encore rien tape. Le compte vient de la banniere elle-meme, elle est
+ * posee par le consommateur et peut avoir n'importe quelle longueur.
+ */
 export const useGetStart = () =>
-	useHistoryStore(state => {
-		const done = state.restrictedCommands.map(command => command.isRendered)
+	useShellStore(state => {
+		const expected = getBanner().length
+		const done = state.restrictedCommands.filter(
+			command => command.isRendered
+		).length
 
-		return done.length === 2 && done[0] && done[1] && state.commands.length === 0
+		return done >= expected && state.commands.length === 0
 	})
 
 /** derniere commande jouee par le visiteur, les restreintes exclues */
 export const useGetLastCommand = () =>
-	useHistoryStore(state => state.commands[state.commands.length - 1] || null)
+	useShellStore(state => state.commands[state.commands.length - 1] || null)
+
+export const useLang = () => useShellStore(state => state.lang)
+
+export const useAnimation = () => useShellStore(state => state.animation)
+
+export const useKeyboardOnFocus = () =>
+	useShellStore(state => state.keyboardOnFocus)
 
 /** hors composant : les commandes attaquent le store directement */
-export const historyActions = () => useHistoryStore.getState()
+export const shellActions = () => useShellStore.getState()

@@ -1,4 +1,4 @@
-import { Translatable } from "_/types"
+import { Translatable } from "retro-shell"
 
 import { app } from "_components/constants"
 

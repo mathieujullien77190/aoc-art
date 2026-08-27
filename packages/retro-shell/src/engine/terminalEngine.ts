@@ -1,4 +1,4 @@
-import { BaseCommand, Command, Args, Translatable } from "_/types"
+import { BaseCommand, Command, Args, Translatable } from "../types"
 
 const isAuthorizeArgs = (args: string[], testArgs: Args) => {
 	const test1 =

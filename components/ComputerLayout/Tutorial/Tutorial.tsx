@@ -1,9 +1,9 @@
 import { useState } from "react"
 
-import { globalActions, useGetLanguage, useGetTutorial } from "_store/global/"
-import { useGetLastCommand } from "_store/history/"
+import { globalActions, useGetTutorial } from "_store/global/"
+import { useGetLastCommand, useLang } from "retro-shell"
 
-import { pick } from "_commands/lang"
+import { pick } from "retro-shell"
 
 import { NEXT, PADDING, QUIT, STEPS } from "./constants"
 import { format, placeBox } from "./helpers"
@@ -20,7 +20,7 @@ import * as S from "./UI"
  * declenche tout seul, pas meme a la premiere venue.
  */
 export const Tutorial = () => {
-	const lang = useGetLanguage()
+	const lang = useLang()
 	const running = useGetTutorial()
 	const lastCommand = useGetLastCommand()
 

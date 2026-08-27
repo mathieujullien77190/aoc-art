@@ -45,25 +45,25 @@ Quatre icônes, une barre des tâches, des fenêtres déplaçables :
 
 ### Commandes
 
-| Commande                                     | Effet                                                |
-| -------------------------------------------- | ---------------------------------------------------- |
-| `help`                                       | liste toutes les commandes                           |
-| `help [commande]`                            | l'aide d'une commande précise                        |
-| `aoc list`                                   | liste les scripts disponibles (16 jours)             |
-| `aoc [index]`                                | `aoc 1` lance « Calorie Counting »                   |
-| `aoc [année]-[jour]`                         | `aoc 2022-12` lance « Hill Climbing Algorithm »      |
-| `aoc [texte]`                                | `aoc cuc` lance « Sea Cucumber »                     |
-| `cv`                                         | le CV complet                                        |
-| `cv [timeline \| xp \| skills \| formation]` | une seule section                                    |
-| `prism`                                      | ouvre 1/PRISM                                        |
-| `tuto`                                       | rejoue la visite guidée                              |
-| `about`                                      | qui, avec quoi                                       |
-| `hello [texte]`                              | affiche `Hello [texte]`                              |
-| `flowers`                                    | plante des fleurs 🌼                                 |
-| `stux`                                       | fonctionnalité expérimentale et inutile              |
-| `animation [on \| off]`                      | écriture lettre par lettre des réponses              |
-| `lang [fr \| en \| leet \| xleet \| #]`      | langue des textes (les commandes restent en anglais) |
-| `clear`                                      | efface l'écran, garde l'historique                   |
+| Commande                                     | Effet                                                 |
+| -------------------------------------------- | ----------------------------------------------------- |
+| `help`                                       | liste toutes les commandes                            |
+| `help [commande]`                            | l'aide d'une commande précise                         |
+| `aoc list`                                   | liste les scripts disponibles (16 jours)              |
+| `aoc [index]`                                | `aoc 1` lance « Calorie Counting »                    |
+| `aoc [année]-[jour]`                         | `aoc 2022-12` lance « Hill Climbing Algorithm »       |
+| `aoc [texte]`                                | `aoc cuc` lance « Sea Cucumber »                      |
+| `cv`                                         | le CV complet                                         |
+| `cv [timeline \| xp \| skills \| formation]` | une seule section                                     |
+| `prism`                                      | ouvre 1/PRISM                                         |
+| `tuto`                                       | rejoue la visite guidée                               |
+| `about`                                      | qui, avec quoi                                        |
+| `hello [texte]`                              | affiche `Hello [texte]`                               |
+| `flowers`                                    | plante des fleurs 🌼                                  |
+| `stux`                                       | fonctionnalité expérimentale et inutile               |
+| `animation [on \| off]`                      | écriture lettre par lettre des réponses               |
+| `lang [fr \| en \| #]`                       | langue des textes ; `#` change chaque lettre en fleur |
+| `clear`                                      | efface l'écran, garde l'historique                    |
 
 Les commandes internes — `welcome`, `title`, `unknow`, `argumenterror`,
 `closeaoc` — sont marquées `restricted` : le shell les joue lui-même, les taper

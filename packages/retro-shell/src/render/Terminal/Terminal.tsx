@@ -2,11 +2,11 @@ import React, { useState } from "react"
 
 import { TerminalProps } from "./types"
 
-import Input, { hasSelection } from "_components/Input"
-import Command from "_components/Command"
+import Input, { hasSelection } from "../Input"
+import Command from "../Command"
 
-import { commands as baseCommands } from "_commands/commands"
-import { findCommand } from "_commands/terminalEngine"
+import { getCommands } from "../../state/registry"
+import { findCommand } from "../../engine/terminalEngine"
 
 import * as S from "./UI"
 
@@ -36,7 +36,7 @@ export const Terminal = ({
 				.map((command, i, all) => {
 					const prevIsRendered = i === 0 ? true : all[i - 1].isRendered
 					const baseCommand = findCommand({
-						commands: baseCommands,
+						commands: getCommands(),
 						name: command.name,
 						restricted: command.restricted,
 					})

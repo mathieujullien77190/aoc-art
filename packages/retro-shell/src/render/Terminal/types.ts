@@ -1,4 +1,4 @@
-import { Command } from "_/types"
+import { Command } from "../../types"
 
 export type TerminalProps = {
 	commands: Command[]

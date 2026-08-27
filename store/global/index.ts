@@ -1,10 +1,7 @@
 import { create } from "zustand"
 
-/** les valeurs du bureau, sans les fonctions qui les changent */
+/** ce que le bureau garde en memoire, sans les fonctions qui le changent */
 type Values = {
-	lang: string
-	animation: boolean
-	keyboardOnFocus: boolean
 	/** relance de la visite guidee, demandee par la commande tuto */
 	tutorial: boolean
 	/**
@@ -25,10 +22,11 @@ type Global = Values & {
 	closeWindow: (name: string) => void
 }
 
+/**
+ * L'etat du bureau. Celui du shell — langue, animation, focus, historique —
+ * vit dans le paquet retro-shell, qui n'a pas a connaitre les fenetres.
+ */
 export const useGlobalStore = create<Global>(set => ({
-	lang: "fr",
-	animation: true,
-	keyboardOnFocus: true,
 	tutorial: false,
 	flowers: 0,
 	virus: 0,
@@ -48,17 +46,6 @@ export const useGlobalStore = create<Global>(set => ({
 	closeWindow: name =>
 		set(state => ({ windows: state.windows.filter(item => item !== name) })),
 }))
-
-/**
- * Les selecteurs. Ils ne renvoient qu'une valeur deja dans le store, donc
- * la reference est stable et le composant ne se rend que si elle change.
- */
-export const useGetLanguage = () => useGlobalStore(state => state.lang)
-
-export const useGetAnimation = () => useGlobalStore(state => state.animation)
-
-export const useGetKeyboardOnFocus = () =>
-	useGlobalStore(state => state.keyboardOnFocus)
 
 export const useGetTutorial = () => useGlobalStore(state => state.tutorial)
 

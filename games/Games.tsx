@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-import { sendRestrictedCommand } from "_commands/helpers"
+import { runRestricted } from "retro-shell"
 
 import { gamesConfig } from "./constants"
 
@@ -18,7 +18,7 @@ export const Games = ({ day, year }: { day: string, year: string }) => {
 					game={search[0]}
 					onClose={() => {
 						setDisplay(false)
-						sendRestrictedCommand("closeaoc")
+						runRestricted("closeaoc")
 					}}
 				/>
 			)}

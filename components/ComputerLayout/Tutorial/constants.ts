@@ -1,4 +1,4 @@
-import { Translatable } from "_/types"
+import { Translatable } from "retro-shell"
 import { Step } from "./types"
 
 /** marge entre le contour du projecteur et l'element vise, en pixels */

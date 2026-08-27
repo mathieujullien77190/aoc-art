@@ -2,7 +2,7 @@ import { CSSProperties } from "react"
 
 /**
  * Texte affichable : une chaine simple, ou une variante par langue.
- * `leet`, `xleet` et `#` derivent de `fr`, ils n'ont pas d'entree propre.
+ * Le mode fleuri derive de `fr`, il n'a pas d'entree propre.
  */
 export type Translatable = string | { fr: string; en: string }
 
@@ -19,7 +19,7 @@ export type Action = ({
 }: {
 	name?: Command["name"]
 	args?: Command["args"]
-	help?: Command["help"]
+	help?: BaseCommand["help"]
 	commands?: BaseCommand[]
 }) => Translatable
 

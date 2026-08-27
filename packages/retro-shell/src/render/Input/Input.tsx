@@ -8,10 +8,10 @@ import React, {
 import { InputProps } from "./types"
 import { isMobile } from "react-device-detect"
 
-import { app } from "_components/constants"
+import { theme } from "../../theme"
 
-import { commands as baseCommands } from "_commands/commands"
-import { autocompleteCommand } from "_commands/terminalEngine"
+import { getCommands } from "../../state/registry"
+import { autocompleteCommand } from "../../engine/terminalEngine"
 
 import * as S from "./UI"
 import { cleanCommand, hasSelection } from "./helpers"
@@ -45,7 +45,7 @@ export const Input = ({
 		(e: KeyboardEvent<HTMLInputElement>) => {
 			const commandPattern = cleanCommand(e.currentTarget.value)
 			const autocomplete = autocompleteCommand({
-				commands: baseCommands,
+				commands: getCommands(),
 				startCommand: commandPattern,
 			})
 
@@ -130,7 +130,7 @@ export const Input = ({
 
 	return (
 		<S.Container data-tutorial="input">
-			<S.Lambda>{app.logo}</S.Lambda>
+			<S.Lambda>{theme().prompt}</S.Lambda>
 			<S.CustomInput
 				$nbsLetters={nbsLetters}
 				ref={ref}

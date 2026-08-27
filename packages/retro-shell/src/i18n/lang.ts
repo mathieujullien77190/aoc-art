@@ -1,9 +1,12 @@
-import { Translatable } from "_/types"
+import { Translatable } from "../types"
 
-/** langue de repli : leet, xleet et # en derivent tous */
+/** langue de repli : le mode fleuri en derive */
 export const BASE_LANG = "fr"
 
-export const LANGS = ["fr", "en", "leet", "xleet", "#"]
+/** le mode fleuri : les textes du francais, rendus en fleurs */
+export const FLOWER_LANG = "#"
+
+export const LANGS = ["fr", "en", FLOWER_LANG]
 
 /**
  * Langue de depart, deduite du navigateur : tout ce qui n'est pas

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react"
 import { CommandProps } from "./types"
 
-import { app } from "_components/constants"
+import { theme } from "../../theme"
 
 import * as S from "./UI"
 import { trad, highlight } from "./helpers"
@@ -50,7 +50,7 @@ const Command = ({
 				>
 					{!baseCommand?.display?.hideCmd && (
 						<S.CmdLine $restricted={command.restricted}>
-							<strong>{app.logo}</strong>{" "}
+							<strong>{theme().prompt}</strong>{" "}
 							<span>
 								{name} {args}
 							</span>
@@ -60,13 +60,9 @@ const Command = ({
 					<S.CmdResult style={baseCommand?.display?.stylePre || {}}>
 						{baseCommand?.display?.highlight
 							? baseCommand?.display?.highlight(displayResult.txt)
-							: highlight(
-									displayResult.txt,
-									(name, args) => {
-										onClickCommand(name, args)
-									},
-									lang
-							  )}
+							: highlight(displayResult.txt, (name, args) => {
+									onClickCommand(name, args)
+								})}
 					</S.CmdResult>
 
 					{baseCommand?.JSX && baseCommand.JSX({ args: command.args })}

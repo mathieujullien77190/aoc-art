@@ -14,7 +14,9 @@
 		"isolatedModules": true,
 		"jsx": "react-jsx",
 		"paths": {
-			"_*": ["./*"]
+			"_*": ["./*"],
+			"retro-shell": ["./packages/retro-shell/src/index.ts"],
+			"retro-shell/*": ["./packages/retro-shell/src/*"]
 		},
 		"incremental": true
 	},

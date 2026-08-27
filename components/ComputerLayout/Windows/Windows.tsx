@@ -1,11 +1,7 @@
 import { useState, useRef, Ref, forwardRef } from "react"
 
-import {
-	globalActions,
-	useGetLanguage,
-	useGetTutorial,
-	useGetWindows,
-} from "_store/global/"
+import { globalActions, useGetTutorial, useGetWindows } from "_store/global/"
+import { useLang } from "retro-shell"
 
 import { IconKey, WindowName, WindowsProps } from "./types"
 import { ICONS, WINDOW_NAMES } from "./constants"
@@ -35,7 +31,7 @@ const BaseWindows = (
 	// ouvrir une fenetre, comme la commande prism
 	const stack = useGetWindows() as WindowName[]
 
-	const lang = useGetLanguage()
+	const lang = useLang()
 	const tutorial = useGetTutorial()
 
 	const [cvDialog, setCvDialog] = useState<boolean>(false)

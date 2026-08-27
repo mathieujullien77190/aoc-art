@@ -1,9 +1,9 @@
 import styled from "styled-components"
-import { colors } from "_components/constants"
+import { colors } from "../../theme"
 
 export const TerminalContainer = styled.div`
-	background: ${colors.background};
-	color: ${colors.textColor};
+	background: ${colors().background};
+	color: ${colors().textColor};
 	font-family: monospace;
 	width: 100%;
 	height: 100%;

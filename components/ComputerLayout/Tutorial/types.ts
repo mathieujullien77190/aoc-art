@@ -1,4 +1,4 @@
-import { Translatable } from "_/types"
+import { Translatable } from "retro-shell"
 
 export type Rect = { top: number; left: number; width: number; height: number }
 

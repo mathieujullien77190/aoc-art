@@ -1,4 +1,4 @@
-import { Translatable } from "_/types"
+import { Translatable } from "retro-shell"
 
 /** export PDF du document source, servi en piece jointe par Google Docs */
 export const CV_PDF_URL =

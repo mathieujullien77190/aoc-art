@@ -1,74 +1,33 @@
 import React, { ReactNode } from "react"
 import reactStringReplace from "react-string-replace"
-import { Translatable } from "_/types"
-import { colors, app } from "_components/constants"
+import { Translatable } from "../../types"
+import { FLOWER_LANG } from "../../i18n/lang"
+import { colors, theme } from "../../theme"
 import uniqid from "uniqid"
 
 export const trad = (input: Translatable, lang: string) => {
-	if (lang === "leet") return frToLeet(input["fr"] || input)
-	if (lang === "xleet") return frToLeet(input["fr"] || input, true)
-	if (lang === "#")
-		return (input["fr"] || input)
-			.normalize("NFD")
-			.replace(/[\u0300-\u036f]/g, "")
-			.replace(/[\wç]/gi, app.logo)
+	if (lang === FLOWER_LANG) return toFlowers(input["fr"] || input)
+
 	return input[lang] || input
 }
 
-const frToLeet = (txt: string, advanced: boolean = false): string => {
-	const alphabetBasic = {
-		a: "4",
-		b: "8",
-		e: "3",
-		f: "ph",
-		g: "6", // or 9
-		i: "1", // or |
-		o: "0",
-		s: "5",
-		t: "7", // or +
-	}
+/**
+ * Le mode fleuri : chaque caractere devient une fleur, une par famille —
+ * voyelles, consonnes, chiffres. Les accents sont retires avant, sinon un
+ * "é" compterait pour deux caracteres apres normalisation.
+ *
+ * L'ordre compte : les chiffres d'abord, les voyelles ensuite, et ce qui
+ * reste de l'alphabet reçoit la fleur des consonnes.
+ */
+const toFlowers = (text: string): string => {
+	const { flowers } = theme()
 
-	const alphabetAdvanced = {
-		c: "(", // or k or |< or /<
-		d: "<|",
-		h: "|-|",
-		k: "|<", // or /<
-		l: "|", // or 1
-		m: "|\\/|",
-		n: "|\\|",
-		p: "|2",
-		u: "|_|",
-		v: "/", // or \/
-		w: "//", // or \/\/
-		x: "><",
-		y: "'/",
-	}
-
-	// Convert input into l33t
-	const convertInput = (text, useAdvanced = "n") => {
-		for (let i = 0; i < text.length; i++) {
-			let alphabet
-			const letter = text[i].toLowerCase()
-
-			if (useAdvanced.toLowerCase() === "y") {
-				// Use advanced l33t speak alphabet
-				alphabet = alphabetBasic[letter]
-					? alphabetBasic[letter]
-					: alphabetAdvanced[letter]
-			} else {
-				// Use basic l33t speak alphabet
-				alphabet = alphabetBasic[letter]
-			}
-
-			if (alphabet) {
-				text = text.replace(text[i], alphabet)
-			}
-		}
-
-		return text
-	}
-
-	return convertInput(txt, advanced ? "y" : "n")
+	return text
+		.normalize("NFD")
+		.replace(/[\u0300-\u036f]/g, "")
+		.replace(/[0-9]/g, flowers.digit)
+		.replace(/[aeiouy]/gi, flowers.vowel)
+		.replace(/[a-z]/gi, flowers.consonant)
 }
 
 /**
@@ -87,8 +46,7 @@ const hidden = (index: number) => String.fromCharCode(0xe000 + index)
 
 export const highlight = (
 	text: string,
-	onClick: (name: string, arg: string[]) => void,
-	lang: string
+	onClick: (name: string, arg: string[]) => void
 ) => {
 	let result: string | ReactNode[] = text
 
@@ -99,21 +57,21 @@ export const highlight = (
 	}[] = [
 		{
 			separator: "§",
-			styles: { color: colors.importantColor },
+			styles: { color: colors().importantColor },
 		},
 		{
 			separator: "+",
-			styles: { color: colors.infoColor },
+			styles: { color: colors().infoColor },
 		},
 		{
 			separator: "#",
-			styles: { color: colors.importantColor, cursor: "pointer" },
+			styles: { color: colors().importantColor, cursor: "pointer" },
 			command: "actionmap",
 		},
 		{
 			separator: "$",
 			styles: {
-				background: colors.appColor,
+				background: colors().appColor,
 				color: "black",
 				border: "solid 1px solid",
 				padding: "0 5px",
@@ -121,9 +79,7 @@ export const highlight = (
 			},
 		},
 		// { separator: "-", styles: { textDecoration: "line-through" } },
-	].filter(
-		item => (item.separator !== "-" && lang === "xleet") || lang !== "xleet"
-	)
+	]
 
 	list.forEach((item, index) => {
 		result = (result as string)
