@@ -451,6 +451,27 @@ export const commands: BaseCommand[] = [
 	},
 	{
 		restricted: false,
+		name: "tuto",
+		action: () => ({
+			fr: "visite guidée",
+			en: "guided tour",
+		}),
+		// la visite lit le drapeau dans le store, comme le bureau
+		redux: () => setProperties({ key: "tutorial", value: true }),
+		help: {
+			patterns: [
+				{
+					pattern: "tuto",
+					description: {
+						fr: "Rejoue la visite guidée du bureau et du shell",
+						en: "Replays the guided tour of the desktop and the shell",
+					},
+				},
+			],
+		},
+	},
+	{
+		restricted: false,
 		name: "lang",
 		testArgs: { authorize: LANGS, empty: false },
 		action: ({ args }) => ({

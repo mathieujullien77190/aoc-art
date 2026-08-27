@@ -385,9 +385,8 @@ const body = (key: string, lang: Lang) =>
 
 const section = (key: string, lang: Lang) =>
 	box([
-		row(),
 		row(`+${TITLES[key][lang]}+`),
-		row(`+${"-".repeat(INNER)}+`),
+		row(`${"_".repeat(INNER)}`),
 		row(),
 		...body(key, lang),
 		row(),

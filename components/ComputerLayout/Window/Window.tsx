@@ -13,6 +13,7 @@ const BaseWindow = (
 		container,
 		children,
 		title = "Sans titre",
+		tutorial,
 		layer = TOP_LAYER,
 		rank = 0,
 		onFocus = () => {},
@@ -113,6 +114,7 @@ const BaseWindow = (
 					onMouseDown={onFocus}
 				>
 					<S.topBar
+						data-tutorial={tutorial}
 						onDoubleClick={isCompact ? undefined : handleResize}
 						onMouseDown={() => {
 							if (mode !== "full") setFollowMouse(true)

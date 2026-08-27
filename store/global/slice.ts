@@ -4,6 +4,8 @@ type Global = {
 	lang: string
 	animation: boolean
 	keyboardOnFocus: boolean
+	/** relance de la visite guidee, demandee par la commande tutorial */
+	tutorial: boolean
 	/** fenetres ouvertes du bureau ; la derniere est au premier plan */
 	windows: string[]
 }
@@ -12,6 +14,7 @@ const initialState: Global = {
 	lang: "fr",
 	animation: false,
 	keyboardOnFocus: true,
+	tutorial: false,
 	windows: ["shell"],
 }
 

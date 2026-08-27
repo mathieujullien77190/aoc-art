@@ -1,3 +1,5 @@
+import { DesktopIcon, WindowName } from "./types"
+
 export const FULL = {
 	heightBar: "30px",
 	padding: "12px",
@@ -9,3 +11,26 @@ export const COLORS = {
 	border: "#000000",
 	bar: "#f2e7c8",
 }
+
+/**
+ * Les icones du bureau, dans l'ordre d'affichage. Les deux premieres
+ * ouvrent une fenetre, la troisieme une boite de dialogue, la derniere
+ * la visite guidee.
+ */
+export const ICONS: DesktopIcon[] = [
+	{ key: "shell", label: "Flower Shell", image: "🌼" },
+	{ key: "prism", label: "1/PRISM", image: "📡" },
+	{ key: "cv", label: "CV", image: "📄", tutorial: "icon-cv" },
+	{
+		key: "help",
+		label: { fr: "Aide", en: "Help" },
+		image: "💡",
+		tutorial: "icon-help",
+	},
+]
+
+/**
+ * Les fenetres, dans l'ordre : il sert au decalage en cascade a
+ * l'ouverture et a l'ordre de la barre des taches.
+ */
+export const WINDOW_NAMES: WindowName[] = ["shell", "prism"]

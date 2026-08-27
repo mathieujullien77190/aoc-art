@@ -24,6 +24,13 @@ export const useGetCurrentCommand = () =>
 		(state: RootState) => state.history.commands[state.history.cursor] || null
 	)
 
+/** derniere commande jouee par le visiteur, les restreintes exclues */
+export const useGetLastCommand = () =>
+	useAppSelector(
+		(state: RootState) =>
+			state.history.commands[state.history.commands.length - 1] || null
+	)
+
 export const useGetStart = () =>
 	useAppSelector((state: RootState) => {
 		const restrictedCmds = state.history.restrictedCommands.map(

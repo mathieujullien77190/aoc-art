@@ -9,6 +9,8 @@ export type WindowProps = {
 	show: boolean
 	container: RefObject<HTMLDivElement>
 	title?: string
+	/** marque de la barre de titre, visee par la visite guidee */
+	tutorial?: string
 	/** etage d'empilement : la fenetre au premier plan a le plus grand */
 	layer?: number
 	/** rang dans la cascade, pour ne pas s'ouvrir sur la precedente */

@@ -23,6 +23,7 @@ import {
 
 import { isMobile } from "react-device-detect"
 import Computer from "_components/ComputerLayout/Computer"
+import Tutorial from "_components/ComputerLayout/Tutorial"
 import styled from "styled-components"
 
 export const Button = styled.div`
@@ -132,6 +133,8 @@ const Home = () => {
 					onRendered={handleRendered}
 				/>
 			</Computer>
+
+			<Tutorial />
 		</Layout>
 	)
 }

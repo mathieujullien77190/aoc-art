@@ -2,7 +2,7 @@ import React, { useState } from "react"
 
 import { TerminalProps } from "./types"
 
-import Input from "_components/Input"
+import Input, { hasSelection } from "_components/Input"
 import Command from "_components/Command"
 
 import { commands as baseCommands } from "_commands/commands"
@@ -24,7 +24,13 @@ export const Terminal = ({
 	const [forceFocus, setForceFocus] = useState<number>(0)
 
 	return (
-		<S.TerminalContainer onClick={() => setForceFocus(prev => prev + 1)}>
+		<S.TerminalContainer
+			onClick={() => {
+				// un clic qui vient de selectionner du texte ne rend pas la main
+				// a la saisie : le focus effacerait la selection
+				if (!hasSelection()) setForceFocus(prev => prev + 1)
+			}}
+		>
 			{commands
 				.filter(command => command.visible)
 				.map((command, i, all) => {

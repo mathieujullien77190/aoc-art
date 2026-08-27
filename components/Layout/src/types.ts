@@ -1,6 +1,6 @@
-import type { JSX } from "react"
+import type { ReactNode } from "react"
 
 export type LayoutProps = {
-	children: JSX.Element
+	children: ReactNode
 	onClick?: () => void
 }

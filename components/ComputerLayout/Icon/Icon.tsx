@@ -2,7 +2,13 @@ import { useState } from "react"
 import { IconProps } from "./types"
 import * as S from "./UI"
 
-export const Icon = ({ name, image, open, onClick = () => {} }: IconProps) => {
+export const Icon = ({
+	name,
+	image,
+	open,
+	tutorial,
+	onClick = () => {},
+}: IconProps) => {
 	const [isOpen, setIsOpen] = useState<boolean>(open)
 	const [prevOpen, setPrevOpen] = useState<boolean>(open)
 
@@ -15,6 +21,7 @@ export const Icon = ({ name, image, open, onClick = () => {} }: IconProps) => {
 
 	return (
 		<S.Container
+			data-tutorial={tutorial}
 			onClick={() => {
 				setIsOpen(prev => !prev)
 				onClick(name)

@@ -14,7 +14,7 @@ import { commands as baseCommands } from "_commands/commands"
 import { autocompleteCommand } from "_commands/terminalEngine"
 
 import * as S from "./UI"
-import { cleanCommand } from "./helpers"
+import { cleanCommand, hasSelection } from "./helpers"
 
 export const Input = ({
 	value = "",
@@ -29,6 +29,9 @@ export const Input = ({
 	const [nbsLetters, setNbsLetters] = useState<number>(0)
 	const [prevValue, setPrevValue] = useState<string>(value)
 	const ref = useRef<HTMLInputElement>(null)
+
+	// un bouton de souris enfonce, c'est peut-etre une selection en cours
+	const pressed = useRef<boolean>(false)
 
 	// la saisie est locale, mais l'historique impose sa valeur : on se realigne
 	// pendant le rendu quand le parent en pousse une nouvelle
@@ -88,6 +91,35 @@ export const Input = ({
 		ref?.current?.focus()
 	}, [options.keyboardOnFocus])
 
+	/**
+	 * Le focus revient au relachement du bouton, et seulement si rien n'est
+	 * selectionne : le reprendre des le blur, donc des l'appui, annulait
+	 * toute selection de texte a la souris.
+	 */
+	useEffect(() => {
+		const handleDown = () => {
+			pressed.current = true
+		}
+
+		const handleUp = () => {
+			pressed.current = false
+
+			if (!options.keyboardOnFocus) return
+			if (document.activeElement === ref.current) return
+			if (hasSelection()) return
+
+			ref.current?.focus()
+		}
+
+		document.addEventListener("mousedown", handleDown)
+		document.addEventListener("mouseup", handleUp)
+
+		return () => {
+			document.removeEventListener("mousedown", handleDown)
+			document.removeEventListener("mouseup", handleUp)
+		}
+	}, [options.keyboardOnFocus])
+
 	useEffect(() => {
 		if (options.keyboardOnFocus) ref?.current?.focus()
 	}, [forceFocus])
@@ -97,7 +129,7 @@ export const Input = ({
 	}] )`
 
 	return (
-		<S.Container>
+		<S.Container data-tutorial="input">
 			<S.Lambda>{app.logo}</S.Lambda>
 			<S.CustomInput
 				$nbsLetters={nbsLetters}
@@ -108,7 +140,10 @@ export const Input = ({
 				autoCapitalize="off"
 				autoCorrect="off"
 				onBlur={() => {
-					if (options.keyboardOnFocus) ref?.current?.focus()
+					// pendant un clic maintenu, le focus attend le relachement
+					if (options.keyboardOnFocus && !pressed.current) {
+						ref?.current?.focus()
+					}
 				}}
 				onKeyDown={handleKeyDown}
 				onKeyUp={handleKeyUp}
