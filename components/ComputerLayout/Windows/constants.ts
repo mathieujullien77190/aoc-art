@@ -20,7 +20,7 @@ export const COLORS = {
 export const ICONS: DesktopIcon[] = [
 	{ key: "shell", label: "Flower Shell", image: "🌼" },
 	{ key: "prism", label: "1/PRISM", image: "📡" },
-	{ key: "cv", label: "CV", image: "📄", tutorial: "icon-cv" },
+	{ key: "cv", label: "CV", image: "💼", tutorial: "icon-cv" },
 	{
 		key: "help",
 		label: { fr: "Aide", en: "Help" },

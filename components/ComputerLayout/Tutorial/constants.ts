@@ -1,9 +1,6 @@
 import { Translatable } from "_/types"
 import { Step } from "./types"
 
-/** la visite ne se rejoue pas toute seule une fois terminee */
-export const STORAGE_KEY = "tutorial"
-
 /** marge entre le contour du projecteur et l'element vise, en pixels */
 export const PADDING = 6
 

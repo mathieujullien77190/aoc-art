@@ -1,14 +1,7 @@
 import React, { ReactNode } from "react"
 
 import { Box, Rect } from "./types"
-import { BOX_HEIGHT, BOX_MARGIN, BOX_WIDTH, PADDING, STORAGE_KEY } from "./constants"
-
-import { getStorage, setStorage } from "../helpers/localStorage"
-
-/** vue une fois, la visite ne se rouvre plus toute seule */
-export const hasSeen = (): boolean => Boolean(getStorage(STORAGE_KEY))
-
-export const markSeen = () => setStorage(STORAGE_KEY, true)
+import { BOX_HEIGHT, BOX_MARGIN, BOX_WIDTH, PADDING } from "./constants"
 
 import * as S from "./UI"
 

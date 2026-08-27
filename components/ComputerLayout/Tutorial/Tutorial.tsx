@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 import { useAppDispatch } from "_store/hooks"
 import { setProperties, useGetLanguage, useGetTutorial } from "_store/global/"
@@ -7,7 +7,7 @@ import { useGetLastCommand } from "_store/history/"
 import { pick } from "_commands/lang"
 
 import { NEXT, PADDING, QUIT, STEPS } from "./constants"
-import { format, hasSeen, markSeen, placeBox } from "./helpers"
+import { format, placeBox } from "./helpers"
 import { useTargetRect } from "./hooks"
 
 import * as S from "./UI"
@@ -17,7 +17,8 @@ import * as S from "./UI"
  * data-tutorial de l'etape, et une bulle qui explique.
  *
  * L'etat vit dans le store, pas ici : l'icone du bureau et la commande
- * tutorial la lancent, et l'icone s'allume tant qu'elle tourne.
+ * tuto la lancent, et l'icone s'allume tant qu'elle tourne. Rien ne se
+ * declenche tout seul, pas meme a la premiere venue.
  */
 export const Tutorial = () => {
 	const dispatch = useAppDispatch()
@@ -31,12 +32,6 @@ export const Tutorial = () => {
 	const [prevCommand, setPrevCommand] = useState<string>(
 		lastCommand?.id || null
 	)
-
-	// le storage n'existe pas au prerendu : la premiere venue se decide au
-	// montage, et lance la visite comme le ferait l'icone
-	useEffect(() => {
-		if (!hasSeen()) dispatch(setProperties({ key: "tutorial", value: true }))
-	}, [dispatch])
 
 	// relancee, la visite repart de la premiere etape
 	if (prevRunning !== running) {
@@ -62,10 +57,7 @@ export const Tutorial = () => {
 		running
 	)
 
-	const stop = () => {
-		markSeen()
-		dispatch(setProperties({ key: "tutorial", value: false }))
-	}
+	const stop = () => dispatch(setProperties({ key: "tutorial", value: false }))
 
 	const next = () => {
 		if (index + 1 >= STEPS.length) stop()

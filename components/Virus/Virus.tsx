@@ -1,19 +1,21 @@
-import { useRef } from "react"
+import { useGetVirus } from "_store/global/"
 
 import { useVirus } from "./hooks"
-import * as S from "./UI"
+import { VirusProps } from "./types"
 
 /**
- * Recouvre l'ecran de noir par taches qui s'etendent.
+ * La fenetre du shell se troue : une case de vingt par vingt disparait de
+ * temps en temps, a partir d'un point pris en haut, et on voit le bureau
+ * a travers. Quand il n'en reste rien, la machine rend l'ame.
  *
- * Un clic nettoie une large zone, que la contamination peut ensuite reprendre.
- * Une fois l'ecran entierement noir, REFRESH apparait au centre : les memes
- * blocs, passes du noir au blanc en fondu, et le clic ne repond plus.
+ * Rien a rendre : tout se joue sur le masque de la fenetre. La commande
+ * stux pose une graine dans le store, la rejouer en change la valeur et
+ * repart d'une fenetre intacte.
  */
-export const Virus = () => {
-	const canvasRef = useRef<HTMLCanvasElement>(null)
+export const Virus = ({ onDead = () => {} }: VirusProps) => {
+	const seed = useGetVirus()
 
-	useVirus(canvasRef)
+	useVirus(seed, onDead)
 
-	return <S.Canvas ref={canvasRef} />
+	return null
 }

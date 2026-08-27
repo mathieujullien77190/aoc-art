@@ -1,116 +1,76 @@
-import { rand } from "_components/ComputerLayout/helpers/math"
-import { GLYPH_COLS, GLYPH_GAP, GLYPH_ROWS } from "./constants"
-import type { Block } from "./types"
+import { PIXEL_SIZE } from "./constants"
+import { Rect } from "./types"
 
-/**
- * Cellule libre tiree au hasard, ou -1 apres trop d'essais.
- *
- * Par rejet plutot que par parcours : tant que la grille est peu remplie on
- * trouve en un ou deux coups, et quand elle est saturee l'echec est le bon
- * resultat — il ne reste alors que de la croissance par les bords.
- */
-export const randomFreeCell = (
-	filled: Uint8Array,
-	attempts: number
-): number => {
-	for (let i = 0; i < attempts; i++) {
-		const cell = rand(0, filled.length - 1)
-		if (!filled[cell]) return cell
-	}
-	return -1
+/** position du cadre vise, ou null s'il n'est pas a l'ecran */
+export const readRect = (selector: string): Rect | null => {
+	const node = document.querySelector(selector)
+	if (!node) return null
+
+	const box = node.getBoundingClientRect()
+	if (box.width === 0 || box.height === 0) return null
+
+	return { top: box.top, left: box.left, width: box.width, height: box.height }
 }
 
-export const clamp = (value: number, max: number) =>
-	value < 0 ? 0 : value > max ? max : value
-
-/** demarrage et arrivee adoucis, pour un fondu sans a-coup */
-export const smoothstep = (progress: number) =>
-	progress * progress * (3 - 2 * progress)
-
 /**
- * Table du rayon de la zone nettoyee selon l'angle, echantillonnee une fois.
- *
- * Trois harmoniques de periodes entieres : la table se referme donc sur
- * elle-meme, sans cassure entre le dernier et le premier angle.
+ * Le masque : blanc partout au depart, donc la fenetre est entiere. Vider
+ * une case la rend transparente, et c'est le bureau qui apparait dessous.
  */
-export const blastShape = (samples: number, amount: number): Float32Array => {
-	const shape = new Float32Array(samples)
+export const createMask = (width: number, height: number) => {
+	const canvas = document.createElement("canvas")
+	canvas.width = width
+	canvas.height = height
 
-	for (let i = 0; i < samples; i++) {
-		const angle = (i / samples) * Math.PI * 2
-		shape[i] =
-			1 +
-			amount *
-				(Math.sin(angle * 3 + 1.7) * 0.5 +
-					Math.sin(angle * 5 + 4.2) * 0.3 +
-					Math.sin(angle * 7 + 2.9) * 0.2)
+	const ctx = canvas.getContext("2d")
+	if (ctx) {
+		ctx.fillStyle = "#ffffff"
+		ctx.fillRect(0, 0, width, height)
 	}
 
-	return shape
+	return { canvas, ctx }
 }
 
-/** lecture de la table a un angle donne, negatif compris */
-export const sampleShape = (shape: Float32Array, angle: number): number => {
-	const index = (((angle / (Math.PI * 2)) * shape.length) | 0) + shape.length
-	return shape[index % shape.length]
-}
-
-/**
- * Fonte 5x7, une chaine par ligne de glyphe, `1` pour un bloc allume.
- *
- * Seules les lettres de MESSAGE_WORD sont decrites : la fonte n'a pas
- * vocation a servir ailleurs.
- */
-const GLYPHS: Record<string, string[]> = {
-	R: ["11110", "10001", "10001", "11110", "10100", "10010", "10001"],
-	E: ["11111", "10000", "10000", "11110", "10000", "10000", "11111"],
-	F: ["11111", "10000", "10000", "11110", "10000", "10000", "10000"],
-	S: ["01111", "10000", "10000", "01110", "00001", "00001", "11110"],
-	H: ["10001", "10001", "10001", "11111", "10001", "10001", "10001"],
-}
-
-/**
- * Blocs a peindre pour ecrire le mot au centre de l'ecran.
- *
- * Un pixel de glyphe vaut un carre de `scale` cellules de cote, et les
- * coordonnees sont calees sur la grille : le mot est fait des memes blocs
- * que la contamination, pas de texte pose par-dessus.
- */
-export const messageBlocks = (
-	word: string,
-	width: number,
-	height: number,
-	pixelSize: number,
-	widthRatio: number
-): Block[] => {
-	const letters = [...word].filter(letter => GLYPHS[letter])
-	if (letters.length === 0) return []
-
-	const cellCols =
-		letters.length * GLYPH_COLS + (letters.length - 1) * GLYPH_GAP
-	const scale = Math.max(
-		1,
-		Math.floor((width * widthRatio) / (cellCols * pixelSize))
+/** troue le masque : la case perd son alpha, la fenetre s'ouvre dessus */
+export const punchHole = (
+	ctx: CanvasRenderingContext2D,
+	cell: number,
+	cols: number
+) => {
+	ctx.clearRect(
+		(cell % cols) * PIXEL_SIZE,
+		Math.floor(cell / cols) * PIXEL_SIZE,
+		PIXEL_SIZE,
+		PIXEL_SIZE
 	)
+}
 
-	const size = scale * pixelSize
-	// cale sur la grille, sinon les blocs du mot decalent de ceux du fond
-	const left = Math.round((width - cellCols * size) / 2 / pixelSize) * pixelSize
-	const top =
-		Math.round((height - GLYPH_ROWS * size) / 2 / pixelSize) * pixelSize
+type MaskStyle = CSSStyleDeclaration & {
+	webkitMaskImage?: string
+	webkitMaskSize?: string
+}
 
-	const blocks: Block[] = []
+/**
+ * Pose le masque sur la fenetre. Le canvas repasse par une image, seule
+ * forme que CSS accepte ; l'alpha du masque decide de ce qui reste.
+ */
+export const applyMask = (target: HTMLElement, canvas: HTMLCanvasElement) => {
+	const url = `url("${canvas.toDataURL()}")`
+	const style = target.style as MaskStyle
 
-	letters.forEach((letter, index) => {
-		const originX = left + index * (GLYPH_COLS + GLYPH_GAP) * size
+	style.maskImage = url
+	style.webkitMaskImage = url
+	style.maskSize = "100% 100%"
+	style.webkitMaskSize = "100% 100%"
+	style.maskRepeat = "no-repeat"
+}
 
-		GLYPHS[letter].forEach((line, row) => {
-			for (let col = 0; col < GLYPH_COLS; col++) {
-				if (line[col] !== "1") continue
-				blocks.push({ x: originX + col * size, y: top + row * size, size })
-			}
-		})
-	})
+/** rend la fenetre intacte : le masque s'en va, les trous avec */
+export const clearMask = (target: HTMLElement) => {
+	const style = target.style as MaskStyle
 
-	return blocks
+	style.maskImage = ""
+	style.webkitMaskImage = ""
+	style.maskSize = ""
+	style.webkitMaskSize = ""
+	style.maskRepeat = ""
 }

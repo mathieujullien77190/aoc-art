@@ -11,6 +11,8 @@ export type WindowProps = {
 	title?: string
 	/** marque de la barre de titre, visee par la visite guidee */
 	tutorial?: string
+	/** marque du cadre entier, pour poser un calque par-dessus */
+	mark?: string
 	/** etage d'empilement : la fenetre au premier plan a le plus grand */
 	layer?: number
 	/** rang dans la cascade, pour ne pas s'ouvrir sur la precedente */

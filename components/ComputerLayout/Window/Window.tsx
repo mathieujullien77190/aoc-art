@@ -14,6 +14,7 @@ const BaseWindow = (
 		children,
 		title = "Sans titre",
 		tutorial,
+		mark,
 		layer = TOP_LAYER,
 		rank = 0,
 		onFocus = () => {},
@@ -105,6 +106,7 @@ const BaseWindow = (
 		<>
 			{show && (
 				<S.Container
+					data-window={mark}
 					ref={boxRef}
 					$mode={mode}
 					$rank={rank}

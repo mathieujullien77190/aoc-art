@@ -7,8 +7,6 @@ import { displayList, loadScript, getScript } from "./aocCommands"
 import { CV_SECTIONS, buildCV } from "./cv"
 import { LANGS, pick } from "./lang"
 
-import Virus from "_components/Virus"
-
 import { Games } from "_games/Games"
 import { gamesConfig } from "_games/constants"
 
@@ -272,9 +270,13 @@ export const commands: BaseCommand[] = [
 		action: () => {
 			return ""
 		},
-		redux: () => {
-			return clear()
-		},
+		// remettre les graines a zero demonte les plantes et rend la fenetre
+		// intacte. Fermer la fenetre du shell joue clear, donc passe aussi par la.
+		redux: () => [
+			clear(),
+			setProperties({ key: "flowers", value: 0 }),
+			setProperties({ key: "virus", value: 0 }),
+		],
 		help: {
 			patterns: [
 				{
@@ -383,6 +385,8 @@ export const commands: BaseCommand[] = [
 		action: () => {
 			return plantFlowers()
 		},
+		// le calque lit la graine dans le store, comme le bureau ses fenetres
+		redux: () => setProperties({ key: "flowers", value: Date.now() }),
 		display: {
 			stylePre: {
 				fontSize: "calc(100cqw/60)",
@@ -412,10 +416,13 @@ export const commands: BaseCommand[] = [
 		restricted: false,
 		name: "stux",
 		action: () => ({
-			fr: "infection en cours, impossible d'interrompre le processus",
-			en: "infection in progress, the process cannot be stopped",
+			fr: "en cours...",
+			en: "in progress...",
 		}),
-		JSX: () => <Virus />,
+		// le calque est monte une fois pour toutes par la page : le rendre
+		// ici en poserait un par ligne de commande, et deux calques se
+		// disputeraient le masque de la fenetre
+		redux: () => setProperties({ key: "virus", value: Date.now() }),
 		help: {
 			patterns: [
 				{

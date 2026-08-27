@@ -5,7 +5,8 @@ import tseslint from "typescript-eslint"
 import prettier from "eslint-config-prettier"
 
 const config = [
-	{ ignores: [".next/**", "out/**", "node_modules/**"] },
+	// public/vendor : code tiers vendorise, on ne le corrige pas
+	{ ignores: [".next/**", "out/**", "node_modules/**", "public/vendor/**"] },
 	...next,
 	...tseslint.configs.recommended,
 	prettier,

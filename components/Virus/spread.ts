@@ -1,137 +1,56 @@
-import { rand } from "_components/ComputerLayout/helpers/math"
-import {
-	BLAST_RADIUS,
-	BLAST_SHAPE,
-	NEW_ZONE_CHANCE,
-	PIXEL_SIZE,
-	SEED_ATTEMPTS,
-	SHAPE_SAMPLES,
-	SPREAD_COLOR,
-} from "./constants"
-import { blastShape, clamp, randomFreeCell, sampleShape } from "./helpers"
-import type { Spread } from "./types"
+import { DOWN_BIAS } from "./constants"
 
 /**
- * Contamination de la grille.
+ * La fonte : un seul point de depart, en haut de la fenetre, et chaque
+ * case perdue ensuite est collee a celles deja ouvertes. Le trou s'etend
+ * donc d'un bloc au lieu de miter la fenetre au hasard.
  *
- * On garde la liste des cellules libres adjacentes a du noir — la frontiere —
- * et on pioche dedans : les taches grossissent donc par leurs bords. Une
- * petite chance amorce un foyer ailleurs, qui grossit a son tour.
+ * La frontiere est la liste des cases voisines encore pleines. On y pioche
+ * au hasard, ce qui donne un bord irregulier plutot qu'un cercle net. Les
+ * doublons sont laisses dedans et ignores au tirage : les retirer couterait
+ * une recherche a chaque voisin.
  */
-export const createSpread = (
-	ctx: CanvasRenderingContext2D,
-	cols: number,
-	rows: number
-): Spread => {
-	const total = cols * rows
+export const createSpread = (cols: number, rows: number) => {
+	const taken = new Set<number>()
 
-	const filled = new Uint8Array(total)
-	// evite qu'une meme cellule entre plusieurs fois dans la frontiere
-	const queued = new Uint8Array(total)
-	const frontier: number[] = []
-	let placed = 0
-
-	const shape = blastShape(SHAPE_SAMPLES, BLAST_SHAPE)
-	// la boite doit couvrir le rayon maximal, lobes compris
-	const reach = BLAST_RADIUS * (1 + BLAST_SHAPE)
+	// depart sur la premiere rangee, a une colonne tiree au hasard : la
+	// fonte entame donc la fenetre par le haut
+	const frontier: number[] = [Math.floor(Math.random() * cols)]
 
 	const push = (cell: number) => {
-		if (filled[cell] || queued[cell]) return
-		queued[cell] = 1
-		frontier.push(cell)
+		if (!taken.has(cell)) frontier.push(cell)
 	}
 
-	const place = (cell: number) => {
-		filled[cell] = 1
-		placed++
+	const spreadFrom = (cell: number) => {
+		const x = cell % cols
+		const y = Math.floor(cell / cols)
 
-		const col = cell % cols
-		const row = (cell - col) / cols
+		if (x > 0) push(cell - 1)
+		if (x < cols - 1) push(cell + 1)
+		if (y > 0) push(cell - cols)
 
-		ctx.fillStyle = SPREAD_COLOR
-		ctx.fillRect(col * PIXEL_SIZE, row * PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE)
-
-		// 4-voisinage : les cellules libres autour rejoignent la frontiere
-		if (col > 0) push(cell - 1)
-		if (col < cols - 1) push(cell + 1)
-		if (row > 0) push(cell - cols)
-		if (row < rows - 1) push(cell + cols)
+		// vers le bas plus souvent : ca coule au lieu de s'arrondir
+		if (y < rows - 1) for (let i = 0; i < DOWN_BIAS; i++) push(cell + cols)
 	}
 
-	const step = () => {
-		const seeding = frontier.length === 0 || rand(1, 1000) <= NEW_ZONE_CHANCE
+	/** la case suivante, ou null quand toute la fenetre a fondu */
+	const next = (): number | null => {
+		while (frontier.length > 0) {
+			const index = Math.floor(Math.random() * frontier.length)
+			const cell = frontier[index]
 
-		if (seeding) {
-			const cell = randomFreeCell(filled, SEED_ATTEMPTS)
-			if (cell !== -1) {
-				place(cell)
-				return
-			}
+			frontier[index] = frontier[frontier.length - 1]
+			frontier.pop()
+
+			if (taken.has(cell)) continue
+
+			taken.add(cell)
+			spreadFrom(cell)
+			return cell
 		}
 
-		if (frontier.length === 0) return
-
-		// tirage puis echange avec le dernier : retrait en temps constant
-		const index = rand(0, frontier.length - 1)
-		const cell = frontier[index]
-		frontier[index] = frontier[frontier.length - 1]
-		frontier.pop()
-
-		if (!filled[cell]) place(cell)
+		return null
 	}
 
-	/** rend a la frontiere les bords de la zone nettoyee */
-	const reopen = (cleared: number[]) => {
-		for (const cell of cleared) {
-			const col = cell % cols
-			const row = (cell - col) / cols
-			const touches =
-				(col > 0 && filled[cell - 1]) ||
-				(col < cols - 1 && filled[cell + 1]) ||
-				(row > 0 && filled[cell - cols]) ||
-				(row < rows - 1 && filled[cell + cols])
-
-			if (touches) push(cell)
-		}
-	}
-
-	/** nettoie une large zone lobee autour du point vise */
-	const blast = (x: number, y: number) => {
-		const first = clamp(Math.floor((x - reach) / PIXEL_SIZE), cols)
-		const lastCol = clamp(Math.ceil((x + reach) / PIXEL_SIZE), cols)
-		const top = clamp(Math.floor((y - reach) / PIXEL_SIZE), rows)
-		const bottom = clamp(Math.ceil((y + reach) / PIXEL_SIZE), rows)
-
-		const cleared: number[] = []
-
-		for (let row = top; row < bottom; row++) {
-			for (let col = first; col < lastCol; col++) {
-				const cell = row * cols + col
-				if (!filled[cell]) continue
-
-				const dx = col * PIXEL_SIZE + PIXEL_SIZE / 2 - x
-				const dy = row * PIXEL_SIZE + PIXEL_SIZE / 2 - y
-				const radius = BLAST_RADIUS * sampleShape(shape, Math.atan2(dy, dx))
-
-				if (Math.sqrt(dx * dx + dy * dy) >= radius) continue
-
-				filled[cell] = 0
-				queued[cell] = 0
-				placed--
-				cleared.push(cell)
-
-				ctx.clearRect(
-					col * PIXEL_SIZE,
-					row * PIXEL_SIZE,
-					PIXEL_SIZE,
-					PIXEL_SIZE
-				)
-			}
-		}
-
-		// sinon la contamination ne pourrait jamais reprendre la zone nettoyee
-		reopen(cleared)
-	}
-
-	return { step, blast, isFull: () => placed >= total }
+	return { next }
 }

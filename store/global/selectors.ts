@@ -13,5 +13,11 @@ export const useGetKeyboardOnFocus = () =>
 export const useGetTutorial = () =>
 	useAppSelector((state: RootState) => state.global.tutorial)
 
+export const useGetFlowers = () =>
+	useAppSelector((state: RootState) => state.global.flowers)
+
+export const useGetVirus = () =>
+	useAppSelector((state: RootState) => state.global.virus)
+
 export const useGetWindows = () =>
 	useAppSelector((state: RootState) => state.global.windows)

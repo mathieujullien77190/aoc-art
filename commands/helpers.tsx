@@ -21,7 +21,13 @@ export const sendRestrictedCommand = (
 
 	if (baseCmd?.redux && cmd.canExecute) {
 		const reduxRes = baseCmd.redux({ args: cmd.args })
-		if (reduxRes) dispatch(reduxRes)
+
+		// une commande peut toucher plusieurs slices : clear vide l'historique
+		// et arrache les plantes, d'ou la liste acceptee en plus de l'action
+		const actions = Array.isArray(reduxRes) ? reduxRes : [reduxRes]
+		actions.forEach(action => {
+			if (action) dispatch(action)
+		})
 	}
 
 	dispatch(
@@ -52,7 +58,13 @@ export const sendCommand = (
 
 	if (baseCmd?.redux && cmd.canExecute) {
 		const reduxRes = baseCmd.redux({ args: cmd.args })
-		if (reduxRes) dispatch(reduxRes)
+
+		// une commande peut toucher plusieurs slices : clear vide l'historique
+		// et arrache les plantes, d'ou la liste acceptee en plus de l'action
+		const actions = Array.isArray(reduxRes) ? reduxRes : [reduxRes]
+		actions.forEach(action => {
+			if (action) dispatch(action)
+		})
 	}
 
 	if (cmd.name === "clear" && cmd.canExecute) {

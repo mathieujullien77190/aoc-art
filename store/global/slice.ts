@@ -6,15 +6,25 @@ type Global = {
 	keyboardOnFocus: boolean
 	/** relance de la visite guidee, demandee par la commande tutorial */
 	tutorial: boolean
+	/**
+	 * Instant du dernier `flowers`, 0 tant qu'il n'a jamais tourne. Une
+	 * date plutot qu'un booleen : rejouer la commande change la valeur,
+	 * donc replante, ce qu'un true deja pose ne ferait pas.
+	 */
+	flowers: number
+	/** meme principe pour stux : l'instant du dernier lancement */
+	virus: number
 	/** fenetres ouvertes du bureau ; la derniere est au premier plan */
 	windows: string[]
 }
 
 const initialState: Global = {
 	lang: "fr",
-	animation: false,
+	animation: true,
 	keyboardOnFocus: true,
 	tutorial: false,
+	flowers: 0,
+	virus: 0,
 	windows: ["shell"],
 }
 

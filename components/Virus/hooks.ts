@@ -1,68 +1,91 @@
-import { RefObject, useEffect } from "react"
+import { useEffect, useRef } from "react"
 
-import { PER_TICK, PIXEL_SIZE, TICK_MS } from "./constants"
-import { createReveal } from "./reveal"
+import { PIXEL_SIZE, TARGET, TICK_MS } from "./constants"
+import {
+	applyMask,
+	clearMask,
+	createMask,
+	punchHole,
+	readRect,
+} from "./helpers"
 import { createSpread } from "./spread"
 
 /**
- * Pilote le canvas : contamination, clic qui nettoie, apparition du mot.
+ * La fenetre du shell fond a partir d'un point pris en haut : une case de
+ * vingt par vingt disparait de temps en temps, et les suivantes sont
+ * prises collees au trou deja ouvert. Une fois la derniere case avalee,
+ * onDead previent le poste, qui part en ecran bleu.
  *
- * Tout vit hors de React — le rendu n'a rien a redessiner, seul le canvas
- * change — d'ou un unique effet monte une fois pour toutes.
+ * Le trou est un vrai trou : un masque CSS pose sur la fenetre elle-meme,
+ * blanc au depart, vide case par case. Le bureau apparait dessous, et
+ * comme le masque voyage avec l'element, deplacer la fenetre n'impose
+ * aucun suivi.
+ *
+ * La taille est figee a la premiere mesure — redimensionner la fenetre
+ * etirerait le masque, c'est laisse de cote pour l'instant.
+ *
+ * La graine vaut 0 tant que stux n'a pas tourne : rien ne se passe alors.
  */
-export const useVirus = (canvasRef: RefObject<HTMLCanvasElement>) => {
+export const useVirus = (seed: number, onDead: () => void) => {
+	// la callback change a chaque rendu du bureau : la garder dans une ref
+	// evite de relancer l'infection pour autant. La ref se met a jour dans
+	// un effet, y toucher pendant le rendu n'est pas permis.
+	const dead = useRef(onDead)
+
 	useEffect(() => {
-		const canvas = canvasRef.current
-		if (!canvas) return
+		dead.current = onDead
+	}, [onDead])
 
-		// la resolution est figee au montage : redimensionner en cours de
-		// route effacerait ce qui est deja pose
-		const width = window.innerWidth
-		const height = window.innerHeight
-		canvas.width = width
-		canvas.height = height
+	useEffect(() => {
+		if (!seed) return
 
-		const ctx = canvas.getContext("2d")
-		if (!ctx) return
+		let target: HTMLElement | null = null
+		let mask: ReturnType<typeof createMask> | null = null
+		let spread: ReturnType<typeof createSpread> | null = null
+		let cols = 0
 
-		const spread = createSpread(
-			ctx,
-			Math.ceil(width / PIXEL_SIZE),
-			Math.ceil(height / PIXEL_SIZE)
-		)
-		const reveal = createReveal(ctx, width, height)
+		const setup = () => {
+			const rect = readRect(TARGET)
+			if (!rect) return false
 
-		// une fois le mot lance, plus rien ne se nettoie : le clic ne doit pas
-		// permettre d'effacer REFRESH
-		let locked = false
+			const width = Math.floor(rect.width)
+			const height = Math.floor(rect.height)
 
-		// ecoute sur window : le canvas est en pointer-events none pour ne pas
-		// avaler les clics du terminal en dessous
-		const onClick = (event: MouseEvent) => {
-			if (locked) return
-			spread.blast(event.clientX, event.clientY)
+			// au plafond, pas au plancher : sinon le reste de la division
+			// laisse une bande a droite et une en bas que rien ne ronge. La
+			// derniere case deborde du canvas, ce qui ne coute rien.
+			cols = Math.ceil(width / PIXEL_SIZE)
+			mask = createMask(width, height)
+			spread = createSpread(cols, Math.ceil(height / PIXEL_SIZE))
+			target = document.querySelector(TARGET)
+
+			return true
 		}
-		window.addEventListener("click", onClick)
 
-		let frame = 0
-		let last = 0
+		const tick = () => {
+			// la fenetre peut ne pas etre encore la : on reessaie au prochain tour
+			if (!mask && !setup()) return
+			if (!mask?.ctx || !target) return
 
-		const draw = (now: number) => {
-			if (now - last >= TICK_MS) {
-				last = now
-				for (let n = 0; n < PER_TICK && !spread.isFull(); n++) spread.step()
+			const cell = spread ? spread.next() : null
+
+			if (cell === null) {
+				window.clearInterval(timer)
+				dead.current()
+				return
 			}
 
-			if (reveal.update(now, spread.isFull())) locked = true
-
-			frame = window.requestAnimationFrame(draw)
+			punchHole(mask.ctx, cell, cols)
+			applyMask(target, mask.canvas)
 		}
 
-		frame = window.requestAnimationFrame(draw)
+		const timer = window.setInterval(tick, TICK_MS)
 
 		return () => {
-			window.cancelAnimationFrame(frame)
-			window.removeEventListener("click", onClick)
+			window.clearInterval(timer)
+			// la fenetre n'appartient pas au virus : on la rend intacte
+			if (target) clearMask(target)
 		}
-	}, [canvasRef])
+		// la graine change a chaque stux : la fenetre repart entiere
+	}, [seed])
 }

@@ -21,7 +21,7 @@ import Icon from "../Icon"
 import Date from "../Date"
 import Prism from "_projects/prism"
 import CvDialog, { downloadCv } from "../CvDialog"
-import { markSeen } from "../Tutorial"
+import Virus from "_components/Virus"
 
 const rankOf = (name: WindowName) => WINDOW_NAMES.indexOf(name)
 
@@ -64,13 +64,9 @@ const BaseWindows = (
 	const layer = (name: WindowName) =>
 		TOP_LAYER - (stack.length - 1 - stack.indexOf(name))
 
-	/**
-	 * L'icone d'aide bascule la visite guidee. L'eteindre vaut pour l'avoir
-	 * vue : elle ne se rouvrira plus d'elle-meme a la prochaine venue.
-	 */
+	/** L'icone d'aide bascule la visite guidee. */
 	const handleTutorial = () => {
 		if (tutorial) {
-			markSeen()
 			dispatch(setProperties({ key: "tutorial", value: false }))
 			return
 		}
@@ -126,6 +122,9 @@ const BaseWindows = (
 
 	return (
 		<S.Container ref={globalRef}>
+			{/* la fenetre rongee jusqu'a l'os emporte la machine avec elle */}
+			<Virus onDead={() => onBlueScreen(true)} />
+
 			{ICONS.map(icon => (
 				<Icon
 					key={icon.key}
@@ -150,6 +149,7 @@ const BaseWindows = (
 				container={globalRef}
 				title={labelOf("shell", lang)}
 				tutorial="titlebar-shell"
+				mark="shell"
 				layer={layer("shell")}
 				rank={rankOf("shell")}
 				onFocus={() => focus("shell")}
