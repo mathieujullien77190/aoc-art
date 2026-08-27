@@ -1,76 +1,38 @@
 import { commands as baseCommands } from "_commands/commands"
 import { createCommand, findCommand } from "_commands/terminalEngine"
 
-import { AppDispatch } from "_store/initStore"
-import { addCommand } from "_store/history/"
+import { historyActions } from "_store/history/"
 
-export const sendRestrictedCommand = (
-	commandPattern: string,
-	dispatch: AppDispatch
-) => {
+/**
+ * Joue une commande : son effet de bord d'abord, puis son ajout a
+ * l'historique. Le store zustand s'attaque hors composant, il n'y a donc
+ * plus de dispatch a promener.
+ */
+const send = (commandPattern: string, restricted: boolean) => {
 	const cmd = createCommand({
 		commands: baseCommands,
 		commandPattern,
-		restricted: true,
+		restricted,
 	})
 	const baseCmd = findCommand({
 		commands: baseCommands,
 		name: cmd.name,
-		restricted: true,
+		restricted,
 	})
 
-	if (baseCmd?.redux && cmd.canExecute) {
-		const reduxRes = baseCmd.redux({ args: cmd.args })
+	if (baseCmd?.effect && cmd.canExecute) baseCmd.effect({ args: cmd.args })
 
-		// une commande peut toucher plusieurs slices : clear vide l'historique
-		// et arrache les plantes, d'ou la liste acceptee en plus de l'action
-		const actions = Array.isArray(reduxRes) ? reduxRes : [reduxRes]
-		actions.forEach(action => {
-			if (action) dispatch(action)
-		})
+	// effacer l'ecran laisse le titre et l'accueil, comme au demarrage
+	if (!restricted && cmd.name === "clear" && cmd.canExecute) {
+		sendRestrictedCommand("title")
+		sendRestrictedCommand("welcome")
 	}
 
-	dispatch(
-		addCommand(
-			createCommand({
-				commands: baseCommands,
-				commandPattern,
-				restricted: true,
-			})
-		)
-	)
+	historyActions().addCommand(cmd)
 }
 
-export const sendCommand = (
-	commandPattern: string,
-	dispatch: AppDispatch
-) => {
-	const cmd = createCommand({
-		commands: baseCommands,
-		commandPattern,
-		restricted: false,
-	})
-	const baseCmd = findCommand({
-		commands: baseCommands,
-		name: cmd.name,
-		restricted: false,
-	})
+export const sendRestrictedCommand = (commandPattern: string) =>
+	send(commandPattern, true)
 
-	if (baseCmd?.redux && cmd.canExecute) {
-		const reduxRes = baseCmd.redux({ args: cmd.args })
-
-		// une commande peut toucher plusieurs slices : clear vide l'historique
-		// et arrache les plantes, d'ou la liste acceptee en plus de l'action
-		const actions = Array.isArray(reduxRes) ? reduxRes : [reduxRes]
-		actions.forEach(action => {
-			if (action) dispatch(action)
-		})
-	}
-
-	if (cmd.name === "clear" && cmd.canExecute) {
-		sendRestrictedCommand("title", dispatch)
-		sendRestrictedCommand("welcome", dispatch)
-	}
-
-	dispatch(addCommand(cmd))
-}
+export const sendCommand = (commandPattern: string) =>
+	send(commandPattern, false)

@@ -1,10 +1,7 @@
 import { useState, useRef, Ref, forwardRef } from "react"
 
-import { useAppDispatch } from "_store/hooks"
 import {
-	closeWindow,
-	focusWindow,
-	setProperties,
+	globalActions,
 	useGetLanguage,
 	useGetTutorial,
 	useGetWindows,
@@ -37,7 +34,6 @@ const BaseWindows = (
 	// la pile vit dans le store : une commande du shell peut ainsi
 	// ouvrir une fenetre, comme la commande prism
 	const stack = useGetWindows() as WindowName[]
-	const dispatch = useAppDispatch()
 
 	const lang = useGetLanguage()
 	const tutorial = useGetTutorial()
@@ -47,9 +43,9 @@ const BaseWindows = (
 	const isOpen = (name: WindowName) => stack.includes(name)
 
 	/** ouvre la fenetre, ou la remonte si elle etait dessous */
-	const focus = (name: WindowName) => dispatch(focusWindow(name))
+	const focus = (name: WindowName) => globalActions().focusWindow(name)
 
-	const close = (name: WindowName) => dispatch(closeWindow(name))
+	const close = (name: WindowName) => globalActions().closeWindow(name)
 
 	/**
 	 * L'icone ferme sa fenetre seulement si elle est deja au premier plan.
@@ -67,7 +63,7 @@ const BaseWindows = (
 	/** L'icone d'aide bascule la visite guidee. */
 	const handleTutorial = () => {
 		if (tutorial) {
-			dispatch(setProperties({ key: "tutorial", value: false }))
+			globalActions().setProperty("tutorial", false)
 			return
 		}
 
@@ -77,7 +73,7 @@ const BaseWindows = (
 		WINDOW_NAMES.filter(name => name !== "shell" && isOpen(name)).forEach(close)
 		focus("shell")
 
-		dispatch(setProperties({ key: "tutorial", value: true }))
+		globalActions().setProperty("tutorial", true)
 	}
 
 	/** l'icone s'allume quand ce qu'elle ouvre est a l'ecran */

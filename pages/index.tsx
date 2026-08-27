@@ -6,16 +6,14 @@ import { browserLang } from "_commands/lang"
 import Layout from "_components/Layout"
 import Terminal from "_components/Terminal"
 
-import { useAppDispatch } from "_store/hooks"
 import {
-	moveCursor,
-	setIsRendered,
+	historyActions,
 	useGetCommands,
 	useGetCurrentCommand,
 	useGetStart,
 } from "_store/history/"
 import {
-	setProperties,
+	globalActions,
 	useGetLanguage,
 	useGetAnimation,
 	useGetKeyboardOnFocus,
@@ -51,7 +49,6 @@ export const Button = styled.div`
 `
 
 const Home = () => {
-	const dispatch = useAppDispatch()
 	const commands = useGetCommands()
 	const options = {
 		animation: useGetAnimation(),
@@ -63,24 +60,18 @@ const Home = () => {
 
 	const containerRef = useRef<HTMLDivElement>(null)
 
-	const handleRendered = useCallback(
-		(id: string) => {
-			dispatch(setIsRendered(id))
-			containerRef.current.scrollTo(0, 1000000)
-		},
-		[dispatch]
-	)
+	const handleRendered = useCallback((id: string) => {
+		historyActions().setIsRendered(id)
+		containerRef.current.scrollTo(0, 1000000)
+	}, [])
 
 	const handleAnimate = useCallback(() => {
 		containerRef.current.scrollTo(0, 1000000)
-	}, [dispatch])
+	}, [])
 
-	const handleSetCursor = useCallback(
-		(direction: number) => {
-			dispatch(moveCursor(direction))
-		},
-		[dispatch]
-	)
+	const handleSetCursor = useCallback((direction: number) => {
+		historyActions().moveCursor(direction)
+	}, [])
 
 	const handleClick = useCallback(() => {
 		if (isMobile) {
@@ -89,25 +80,25 @@ const Home = () => {
 	}, [handleSetCursor])
 
 	const handleSendCommand = (commandPattern: string) => {
-		sendCommand(commandPattern, dispatch)
+		sendCommand(commandPattern)
 	}
 
 	useEffect(() => {
 		const lang = browserLang()
 
 		// avant le boot : la premiere ligne s'ecrit deja dans la bonne langue
-		dispatch(setProperties({ key: "lang", value: lang }))
+		globalActions().setProperty("lang", lang)
 
 		// _document fige l'attribut a fr, il vaut pour tout le monde
 		document.documentElement.lang = lang
 
-		sendRestrictedCommand("title", dispatch)
-		sendRestrictedCommand("welcome", dispatch)
-	}, [sendRestrictedCommand, sendCommand])
+		sendRestrictedCommand("title")
+		sendRestrictedCommand("welcome")
+	}, [])
 
 	useEffect(() => {
 		if (start && location.hash.includes("#")) {
-			sendCommand(location.hash.substring(1).split("_").join(" "), dispatch)
+			sendCommand(location.hash.substring(1).split("_").join(" "))
 		}
 	}, [start])
 
@@ -117,7 +108,7 @@ const Home = () => {
 				ref={containerRef}
 				onRunCommand={handleSendCommand}
 				onCloseWindow={() => {
-					sendCommand("clear", dispatch)
+					sendCommand("clear")
 				}}
 			>
 				<Terminal
@@ -126,9 +117,7 @@ const Home = () => {
 					currentCommand={currentCommand}
 					onSendCommand={handleSendCommand}
 					onAnimateCommand={handleAnimate}
-					onSendRestrictedCommand={commandPattern =>
-						sendRestrictedCommand(commandPattern, dispatch)
-					}
+					onSendRestrictedCommand={sendRestrictedCommand}
 					onSendPreviousCommand={() => handleSetCursor(-1)}
 					onSendNextCommand={() => handleSetCursor(1)}
 					onRendered={handleRendered}

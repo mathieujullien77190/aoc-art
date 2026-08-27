@@ -1,7 +1,6 @@
 import { useState } from "react"
 
-import { useAppDispatch } from "_store/hooks"
-import { setProperties, useGetLanguage, useGetTutorial } from "_store/global/"
+import { globalActions, useGetLanguage, useGetTutorial } from "_store/global/"
 import { useGetLastCommand } from "_store/history/"
 
 import { pick } from "_commands/lang"
@@ -21,8 +20,6 @@ import * as S from "./UI"
  * declenche tout seul, pas meme a la premiere venue.
  */
 export const Tutorial = () => {
-	const dispatch = useAppDispatch()
-
 	const lang = useGetLanguage()
 	const running = useGetTutorial()
 	const lastCommand = useGetLastCommand()
@@ -57,7 +54,7 @@ export const Tutorial = () => {
 		running
 	)
 
-	const stop = () => dispatch(setProperties({ key: "tutorial", value: false }))
+	const stop = () => globalActions().setProperty("tutorial", false)
 
 	const next = () => {
 		if (index + 1 >= STEPS.length) stop()

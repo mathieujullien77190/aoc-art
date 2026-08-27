@@ -10,8 +10,8 @@ import { LANGS, pick } from "./lang"
 import { Games } from "_games/Games"
 import { gamesConfig } from "_games/constants"
 
-import { focusWindow, setProperties } from "_store/global/"
-import { clear } from "_store/history/"
+import { globalActions } from "_store/global/"
+import { historyActions } from "_store/history/"
 
 const RESTRICTED: Translatable = {
 	fr: "Ceci est une commande à accès restreint, vous ne pouvez pas l'utiliser",
@@ -164,14 +164,9 @@ export const commands: BaseCommand[] = [
 				return loadScript(args, gamesConfig)
 			}
 		},
-		redux: ({ args }) => {
-			if (getScript(args, gamesConfig)) {
-				return setProperties({
-					key: "keyboardOnFocus",
-					value: false,
-				})
-			}
-			return undefined
+		effect: ({ args }) => {
+			if (getScript(args, gamesConfig))
+				globalActions().setProperty("keyboardOnFocus", false)
 		},
 
 		JSX: ({ args }) => {
@@ -226,12 +221,7 @@ export const commands: BaseCommand[] = [
 		action: () => {
 			return "script close"
 		},
-		redux: () => {
-			return setProperties({
-				key: "keyboardOnFocus",
-				value: true,
-			})
-		},
+		effect: () => globalActions().setProperty("keyboardOnFocus", true),
 		help: { description: RESTRICTED, patterns: [] },
 	},
 	{
@@ -272,11 +262,11 @@ export const commands: BaseCommand[] = [
 		},
 		// remettre les graines a zero demonte les plantes et rend la fenetre
 		// intacte. Fermer la fenetre du shell joue clear, donc passe aussi par la.
-		redux: () => [
-			clear(),
-			setProperties({ key: "flowers", value: 0 }),
-			setProperties({ key: "virus", value: 0 }),
-		],
+		effect: () => {
+			historyActions().clear()
+			globalActions().setProperty("flowers", 0)
+			globalActions().setProperty("virus", 0)
+		},
 		help: {
 			patterns: [
 				{
@@ -353,12 +343,8 @@ export const commands: BaseCommand[] = [
 			args[0] === "on"
 				? { fr: "activé", en: "enabled" }
 				: { fr: "désactiver", en: "disabled" },
-		redux: ({ args }) => {
-			return setProperties({
-				key: "animation",
-				value: args[0] === "on" ? true : false,
-			})
-		},
+		effect: ({ args }) =>
+			globalActions().setProperty("animation", args[0] === "on"),
 
 		help: {
 			patterns: [
@@ -386,7 +372,7 @@ export const commands: BaseCommand[] = [
 			return plantFlowers()
 		},
 		// le calque lit la graine dans le store, comme le bureau ses fenetres
-		redux: () => setProperties({ key: "flowers", value: Date.now() }),
+		effect: () => globalActions().setProperty("flowers", Date.now()),
 		display: {
 			stylePre: {
 				fontSize: "calc(100cqw/60)",
@@ -422,7 +408,7 @@ export const commands: BaseCommand[] = [
 		// le calque est monte une fois pour toutes par la page : le rendre
 		// ici en poserait un par ligne de commande, et deux calques se
 		// disputeraient le masque de la fenetre
-		redux: () => setProperties({ key: "virus", value: Date.now() }),
+		effect: () => globalActions().setProperty("virus", Date.now()),
 		help: {
 			patterns: [
 				{
@@ -443,7 +429,7 @@ export const commands: BaseCommand[] = [
 			en: "opening 1/PRISM",
 		}),
 		// le bureau lit la pile des fenetres dans le store
-		redux: () => focusWindow("prism"),
+		effect: () => globalActions().focusWindow("prism"),
 		help: {
 			patterns: [
 				{
@@ -464,7 +450,7 @@ export const commands: BaseCommand[] = [
 			en: "guided tour",
 		}),
 		// la visite lit le drapeau dans le store, comme le bureau
-		redux: () => setProperties({ key: "tutorial", value: true }),
+		effect: () => globalActions().setProperty("tutorial", true),
 		help: {
 			patterns: [
 				{
@@ -485,12 +471,7 @@ export const commands: BaseCommand[] = [
 			fr: `langage : ${args[0]}`,
 			en: `language: ${args[0]}`,
 		}),
-		redux: ({ args }) => {
-			return setProperties({
-				key: "lang",
-				value: args[0],
-			})
-		},
+		effect: ({ args }) => globalActions().setProperty("lang", args[0]),
 		help: {
 			patterns: [
 				{

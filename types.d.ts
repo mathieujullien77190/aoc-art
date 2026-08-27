@@ -29,7 +29,8 @@ export type BaseCommand = {
 	restricted: boolean
 	name: string
 	action: Action
-	redux?: ({ args }: { args?: Command["args"] }) => unknown
+	/** effet de bord de la commande : elle attaque le store elle-meme */
+	effect?: ({ args }: { args?: Command["args"] }) => void
 	JSX?: ({ args }: { args?: Command["args"] }) => import("react").JSX.Element
 	help?: Help
 	testArgs?: Args
