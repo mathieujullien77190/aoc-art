@@ -3,7 +3,6 @@ import { WindowProps, Pos, Mode } from "./types"
 import * as S from "./UI"
 import { ANIM_TIME, TOP_LAYER } from "./constants"
 import { clampDrag } from "./helpers"
-import { useIsCompact } from "./hooks"
 
 const NO_DRAG: Pos = { x: 0, y: 0 }
 
@@ -17,17 +16,18 @@ const BaseWindow = (
 		mark,
 		layer = TOP_LAYER,
 		rank = 0,
+		bottomInset = "0px",
+		compact = false,
 		onFocus = () => {},
 		onClose = () => {},
 	}: WindowProps,
 	ref: Ref<HTMLDivElement>
 ) => {
-	const isCompact = useIsCompact()
 	const [userMode, setUserMode] = useState<Mode>("medium")
 
-	// sous le seuil la fenetre reste pleine et non redimensionnable.
+	// en mode compact la fenetre reste pleine et non redimensionnable.
 	// "close" passe quand meme, sinon l'animation de fermeture disparaitrait
-	const mode: Mode = isCompact && userMode !== "close" ? "full" : userMode
+	const mode: Mode = compact && userMode !== "close" ? "full" : userMode
 
 	/**
 	 * Deplacement applique a la souris, en pixels, par-dessus une position
@@ -113,18 +113,19 @@ const BaseWindow = (
 					$drag={drag}
 					$followMouse={followMouse}
 					$layer={layer}
+					$bottomInset={bottomInset}
 					onMouseDown={onFocus}
 				>
 					<S.topBar
 						data-tutorial={tutorial}
-						onDoubleClick={isCompact ? undefined : handleResize}
+						onDoubleClick={compact ? undefined : handleResize}
 						onMouseDown={() => {
 							if (mode !== "full") setFollowMouse(true)
 						}}
 					>
 						<S.Title>{title}</S.Title>
 						<S.Actions>
-							{!isCompact && (
+							{!compact && (
 								<span onClick={handleResize}>
 									{mode === "full" ? "-" : "+"}
 								</span>

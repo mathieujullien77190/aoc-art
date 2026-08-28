@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { colors } from "../../theme"
+import { colors, fonts } from "../../theme"
 
 export const CustomInput = styled.input<{ $nbsLetters: number }>`
 	background-color: ${colors().background};
@@ -8,7 +8,7 @@ export const CustomInput = styled.input<{ $nbsLetters: number }>`
 	color: white;
 	padding: 0;
 	margin: 0;
-	font-family: monospace;
+	font-family: ${fonts().shell};
 	width: ${({ $nbsLetters }) => $nbsLetters + 1}ch;
 	margin-left: 8px;
 `

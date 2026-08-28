@@ -15,8 +15,8 @@
 		"jsx": "react-jsx",
 		"paths": {
 			"_*": ["./*"],
-			"retro-shell": ["./packages/retro-shell/src/index.ts"],
-			"retro-shell/*": ["./packages/retro-shell/src/*"]
+			"flower-shell": ["./packages/flower-shell/src/index.ts"],
+			"flower-shell/*": ["./packages/flower-shell/src/*"]
 		},
 		"incremental": true
 	},

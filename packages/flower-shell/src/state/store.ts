@@ -17,6 +17,8 @@ type Shell = {
 	/** position dans l'historique, null quand on est sur la ligne vierge */
 	cursor: number
 
+	/** vide l'historique et rend les options a leurs valeurs de depart */
+	reset: () => void
 	setLang: (lang: string) => void
 	setAnimation: (animation: boolean) => void
 	setKeyboardOnFocus: (keyboardOnFocus: boolean) => void
@@ -32,14 +34,20 @@ const rendered = (list: Command[], id: string) =>
 		command.id === id ? { ...command, isRendered: true } : command
 	)
 
-export const useShellStore = create<Shell>(set => ({
+const INITIAL = {
 	lang: "fr",
 	animation: true,
 	keyboardOnFocus: true,
 
-	commands: [],
-	restrictedCommands: [],
-	cursor: null,
+	commands: [] as Command[],
+	restrictedCommands: [] as Command[],
+	cursor: null as number,
+}
+
+export const useShellStore = create<Shell>(set => ({
+	...INITIAL,
+
+	reset: () => set(INITIAL),
 
 	setLang: lang => set({ lang }),
 	setAnimation: animation => set({ animation }),

@@ -10,15 +10,6 @@ export const LIGHT = {
 	fontWeight: "normal",
 }
 
-export const COLORS = {
-	backgroundTitle: "#ed612e",
-	borderColor: "#000000",
-	backgroundContent: "#f4ebda",
-	text: "#000000",
-	button: "lightGray",
-	buttonOver: "gray",
-}
-
 export const ANIM_TIME = 300
 
 // gabarit de la fenetre moyenne, en pourcentage du bureau : le poser en
@@ -33,6 +24,3 @@ export const CASCADE = 26
 // etage de la fenetre au premier plan ; les autres descendent d'un cran
 // et restent sous les modales, qui sont a 10
 export const TOP_LAYER = 9
-
-// en dessous, la fenetre est toujours pleine et non redimensionnable
-export const COMPACT_MAX_WIDTH = 1024

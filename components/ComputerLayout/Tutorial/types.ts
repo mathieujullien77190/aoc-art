@@ -1,4 +1,4 @@
-import { Translatable } from "retro-shell"
+import { Translatable } from "flower-shell"
 
 export type Rect = { top: number; left: number; width: number; height: number }
 

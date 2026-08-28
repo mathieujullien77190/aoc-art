@@ -1,9 +1,9 @@
 import { useState } from "react"
 
 import { globalActions, useGetTutorial } from "_store/global/"
-import { useGetLastCommand, useLang } from "retro-shell"
+import { useGetLastCommand, useLang } from "flower-shell"
 
-import { pick } from "retro-shell"
+import { pick } from "flower-shell"
 
 import { NEXT, PADDING, QUIT, STEPS } from "./constants"
 import { format, placeBox } from "./helpers"

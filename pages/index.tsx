@@ -7,7 +7,7 @@ import {
 	shellActions,
 	Shell,
 	useGetStart,
-} from "retro-shell"
+} from "flower-shell"
 
 import { commands as customCommands } from "_commands/commands"
 
@@ -49,8 +49,20 @@ export const Button = styled.div`
 /** le shell connait ses commandes, puis celles de ce site */
 const commands = [...baseCommands, ...customCommands]
 
-/** ce que le shell rejoue au demarrage et apres un clear */
-const banner = ["title", "welcome"]
+/** le mot d'accueil, affiche sous le logo */
+const welcome = {
+	fr: [
+		`Bienvenue sur $${app.name}$`,
+		"Commencez par taper la commande : `help`",
+		"\n",
+	].join("\n"),
+	en: [
+		`$Welcome to ${app.name}$`,
+		"\n",
+		"Start by typing the command: `help`",
+		"\n",
+	].join("\n"),
+}
 
 const theme = { colors, prompt: app.logo }
 
@@ -101,7 +113,8 @@ const Home = () => {
 			>
 				<Shell
 					commands={commands}
-					banner={banner}
+					showTitle
+					welcome={welcome}
 					theme={theme}
 					lang={browserLang()}
 					scrollRef={containerRef}

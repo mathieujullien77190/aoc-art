@@ -11,9 +11,11 @@ const subscribe = (onChange: () => void) => {
 }
 
 /**
- * Vrai sous le seuil compact. Passe par useSyncExternalStore plutot qu'un
- * useEffect + setState : la valeur vit hors de React, et on evite un rendu
- * supplementaire au montage.
+ * Vrai sous le seuil compact : le bureau demande alors aux fenetres de
+ * rester pleines. Le seuil est une decision de ce site, pas du paquet.
+ *
+ * Passe par useSyncExternalStore plutot qu'un useEffect + setState : la
+ * valeur vit hors de React, et on evite un rendu supplementaire au montage.
  */
 export const useIsCompact = (): boolean =>
 	useSyncExternalStore(

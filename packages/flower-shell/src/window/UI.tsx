@@ -1,8 +1,7 @@
 import styled from "styled-components"
 import { Mode, Pos } from "./types"
-import { colors } from "_components/constants"
+import { colors, fonts, windowColors } from "../theme"
 import {
-	COLORS,
 	FULL,
 	ANIM_TIME,
 	CASCADE,
@@ -10,7 +9,6 @@ import {
 	MEDIUM_SIZE,
 	TOP_LAYER,
 } from "./constants"
-import { FULL as FULLWindows } from "../Windows/constants"
 
 type ContainerProps = {
 	$mode: Mode
@@ -18,6 +16,11 @@ type ContainerProps = {
 	$drag: Pos
 	$followMouse: boolean
 	$layer: number
+	/**
+	 * Hauteur reservee en bas du conteneur, en CSS. Le bureau y met sa
+	 * barre des taches ; sans elle, la fenetre passerait dessous.
+	 */
+	$bottomInset: string
 }
 
 /**
@@ -50,22 +53,23 @@ export const Container = styled.div.attrs<ContainerProps>(props => ({
 }))`
 	position: absolute;
 
-	${({ $mode }) => {
+	${({ $mode, $bottomInset }) => {
 		if ($mode === "close") return "width: 0; height: 0;"
 
 		const side = $mode === "full" ? 100 : MEDIUM_SIZE
 		return `
 			width: calc(${side}% - ${FULL.borderSize} * 2);
-			height: calc(${side}% - ${FULLWindows.heightBar} - ${FULLWindows.borderSize} * 2);
+			height: calc(${side}% - ${$bottomInset} - ${FULL.borderSize} * 2);
 		`
 	}}
 
 
 	border-style: solid;
 	border-width: ${FULL.borderSize};
-	border-color: ${COLORS.borderColor};
-	background-color: ${COLORS.backgroundContent};
-	color: ${COLORS.text};
+	border-color: ${windowColors().border};
+	font-family: ${fonts().window};
+	background-color: ${windowColors().content};
+	color: ${windowColors().text};
 	overflow: hidden;
 	font-weight: ${FULL.fontWeight};
 	z-index: ${({ $layer }) => $layer || TOP_LAYER};
@@ -90,10 +94,10 @@ export const Container = styled.div.attrs<ContainerProps>(props => ({
 
 export const topBar = styled.div`
 	height: 15px;
-	background-color: ${COLORS.backgroundTitle};
+	background-color: ${windowColors().titleBar};
 	border-bottom-style: solid;
 	border-bottom-width: ${FULL.borderSize};
-	border-bottom-color: ${COLORS.borderColor};
+	border-bottom-color: ${windowColors().border};
 	display: flex;
 	align-items: center;
 	padding: ${FULL.padding};
@@ -104,7 +108,7 @@ export const Content = styled.div`
 	overflow-y: auto;
 	height: ${`calc(100% - ${FULL.padding} * 2 - 25px)`};
 	padding: ${FULL.padding};
-	background-color: ${colors.background};
+	background-color: ${colors().background};
 
 	&::-webkit-scrollbar {
 		-webkit-appearance: none;

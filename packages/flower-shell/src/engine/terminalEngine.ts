@@ -17,6 +17,25 @@ type CreateCommandProps = {
 	restricted: boolean
 }
 
+/**
+ * Repli quand la commande d'erreur n'est pas fournie. Le moteur cherche
+ * unknow et argumenterror par leur nom : sans ce repli, un shell monte
+ * avec une liste vide planterait a la premiere frappe.
+ */
+const fallback = (
+	kind: "unknow" | "argumenterror",
+	args: string[]
+): Translatable =>
+	kind === "unknow"
+		? {
+				fr: `${args[0]} n’est pas reconnu en tant que commande interne`,
+				en: `${args[0]} is not recognised as an internal command`,
+		  }
+		: {
+				fr: "argument(s) non reconnu",
+				en: "unrecognised argument(s)",
+		  }
+
 let i = 0
 
 export const createCommand = ({
@@ -57,7 +76,9 @@ export const createCommand = ({
 				pattern: commandPattern,
 				name,
 				args,
-				result: executeCommand({ commands, command: error, args: [name] }),
+				result: error
+					? executeCommand({ commands, command: error, args: [name] })
+					: fallback("argumenterror", [name]),
 				timestamp,
 				id: `${timestamp}-${name}-${i++}`,
 				isRendered: false,
@@ -71,7 +92,9 @@ export const createCommand = ({
 			pattern: commandPattern,
 			name,
 			args,
-			result: executeCommand({ commands, command: error, args: [name] }),
+			result: error
+				? executeCommand({ commands, command: error, args: [name] })
+				: fallback("unknow", [name]),
 			timestamp,
 			id: `${timestamp}-${name}-${i++}`,
 			isRendered: false,

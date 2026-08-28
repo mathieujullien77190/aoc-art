@@ -29,6 +29,9 @@ export const ICONS: DesktopIcon[] = [
 	},
 ]
 
+// en dessous, les fenetres restent pleines et non redimensionnables
+export const COMPACT_MAX_WIDTH = 1024
+
 /**
  * Les fenetres, dans l'ordre : il sert au decalage en cascade a
  * l'ouverture et a l'ordre de la barre des taches.

@@ -1,12 +1,16 @@
 import styled from "styled-components"
-import { colors } from "../../theme"
+import { colors, fonts } from "../../theme"
 
 export const TerminalContainer = styled.div`
 	background: ${colors().background};
 	color: ${colors().textColor};
-	font-family: monospace;
+	font-family: ${fonts().shell};
 	width: 100%;
-	height: 100%;
+
+	/* min-height et non height : le fond doit descendre avec la sortie.
+	   A hauteur fixe, tout ce qui depasse le parent se dessine hors du
+	   fond, sur le blanc de la page. */
+	min-height: 100%;
 
 	/* taille du shell, heritee par les commandes et la saisie */
 	font-size: 16px;

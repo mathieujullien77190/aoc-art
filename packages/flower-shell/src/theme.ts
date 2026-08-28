@@ -13,6 +13,27 @@ export type ShellColors = {
 	appColor: string
 }
 
+/**
+ * Les polices. Celle du shell habille la sortie et la saisie, celle de la
+ * fenetre sa barre de titre. Elles sont separees : un terminal veut du
+ * chasse fixe, un cadre pas forcement.
+ */
+export type ShellFonts = {
+	shell: string
+	window: string
+}
+
+/** le cadre de la fenetre : barre de titre, bordure, boutons */
+export type WindowColors = {
+	titleBar: string
+	border: string
+	/** le fond derriere le contenu, visible autour de lui */
+	content: string
+	text: string
+	button: string
+	buttonHover: string
+}
+
 /** une fleur par famille de caractere, pour la langue fleurie */
 export type ShellFlowers = {
 	vowel: string
@@ -25,6 +46,21 @@ export type ShellTheme = {
 	/** l'invite, posee devant la saisie et devant chaque commande */
 	prompt: string
 	flowers: ShellFlowers
+	fonts: ShellFonts
+	window: WindowColors
+}
+
+/**
+ * Ce qu'un consommateur a le droit de donner : tout est optionnel, y
+ * compris dans les sous-objets. Un Partial<ShellTheme> ne suffirait pas,
+ * il exigerait les groupes de couleurs au complet.
+ */
+export type ShellThemeInput = {
+	colors?: Partial<ShellColors>
+	prompt?: string
+	flowers?: Partial<ShellFlowers>
+	fonts?: Partial<ShellFonts>
+	window?: Partial<WindowColors>
 }
 
 export const defaultTheme: ShellTheme = {
@@ -43,6 +79,18 @@ export const defaultTheme: ShellTheme = {
 		consonant: "🌼",
 		digit: "🌻",
 	},
+	fonts: {
+		shell: "monospace",
+		window: "monospace",
+	},
+	window: {
+		titleBar: "#ed612e",
+		border: "#000000",
+		content: "#f4ebda",
+		text: "#000000",
+		button: "lightGray",
+		buttonHover: "gray",
+	},
 }
 
 /**
@@ -52,13 +100,15 @@ export const defaultTheme: ShellTheme = {
  */
 let current: ShellTheme = defaultTheme
 
-export const setTheme = (theme?: Partial<ShellTheme>) => {
+export const setTheme = (theme?: ShellThemeInput) => {
 	if (!theme) return
 
 	current = {
 		colors: { ...current.colors, ...theme.colors },
 		prompt: theme.prompt || current.prompt,
 		flowers: { ...current.flowers, ...theme.flowers },
+		fonts: { ...current.fonts, ...theme.fonts },
+		window: { ...current.window, ...theme.window },
 	}
 }
 
@@ -66,5 +116,9 @@ export const theme = () => current
 
 /** raccourci de lecture, le plus frequent dans les styles */
 export const colors = (): ShellColors => current.colors
+
+export const windowColors = (): WindowColors => current.window
+
+export const fonts = (): ShellFonts => current.fonts
 
 export type { CSSProperties }

@@ -1,8 +1,10 @@
 import { BaseCommand, Help, Translatable } from "../types"
 import { FLOWER_LANG, LANGS, pick } from "../i18n/lang"
 import { colors } from "../theme"
+import { getWelcome } from "../state/registry"
 import { shellActions } from "../state/store"
 import { highlightFlower, plantFlowers } from "./flowers"
+import { title } from "./title"
 
 const RESTRICTED: Translatable = {
 	fr: "Ceci est une commande à accès restreint, vous ne pouvez pas l'utiliser",
@@ -227,6 +229,29 @@ export const baseCommands: BaseCommand[] = [
 					},
 				},
 			],
+		},
+	},
+	{
+		restricted: true,
+		name: "welcome",
+		action: () => getWelcome(),
+		help: { description: RESTRICTED, patterns: [] },
+		display: {
+			hideCmd: true,
+			style: { color: colors().importantColor },
+		},
+	},
+	{
+		restricted: true,
+		name: "title",
+		action: () => title,
+		help: { description: RESTRICTED, patterns: [] },
+		display: {
+			hideCmd: true,
+			style: { alignItems: "center" },
+			stylePre: { fontSize: "calc(100vw/130)" },
+			highlight: text => highlightFlower(text, { fontSize: "calc(100vw/130)" }),
+			trad: false,
 		},
 	},
 	{

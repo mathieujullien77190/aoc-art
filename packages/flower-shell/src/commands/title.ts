@@ -1,5 +1,7 @@
-import { highlightFlower } from "retro-shell"
-
+/**
+ * Le logo du shell, en ascii. Les lettres isolees (R, I, B, G...) sont
+ * des marqueurs de couleur lus par highlightFlower, pas du texte.
+ */
 export const title = `
  ________   .---.       ,-----.    .--.      .--.    .-''-.  .-------.               .-'''-. .---.  .---.     .-''-.    .---.     .---.      
 |        |  | I,_I|     .'  B.-,B  '.  |  |_     |  |  .'S_ _S   \\ |  J_ _J   \\             / Z_Z     \\|   |  |D_ _D|   .'T_ _T   \\   | H,_H|     | K,_K|      
@@ -11,5 +13,3 @@ R(_ o._)R__|I(  .  .-'I : B(  '\\_/ \\B   ;|  |/    \\|  |'  \\   .---.|  |\\ \\
 |   |       |        \\'. B\\_/\`\`"B.'  |    /  \\    |  \\       / |  |  \\    /          \\       / J(_{;}_)J|   |   \\       /   |        \\|        \\ 
 '---'       \`--------\`  '-----'    \`---'    \`---\`   \`'-..-'  ''-'   \`'-'            \`-...-'  'J(_,_)J '---'    \`'-..-'    \`--------\`\`--------\` 
 `
-
-export { highlightFlower }

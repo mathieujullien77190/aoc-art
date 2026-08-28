@@ -1,4 +1,4 @@
-import { pick } from "retro-shell"
+import { pick } from "flower-shell"
 
 import { ICONS } from "./constants"
 import { DesktopIcon, IconKey } from "./types"

@@ -1,4 +1,4 @@
-import { Translatable } from "retro-shell"
+import { Translatable } from "flower-shell"
 
 import { app } from "_components/constants"
 

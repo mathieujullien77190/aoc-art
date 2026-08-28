@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-import { runRestricted } from "retro-shell"
+import { runRestricted } from "flower-shell"
 
 import { gamesConfig } from "./constants"
 

@@ -1,9 +1,18 @@
-import { RefObject, useCallback, useEffect, useState } from "react"
+import {
+	RefObject,
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react"
 
 import Terminal from "./render/Terminal"
+import Window from "./window"
+import { WindowProps } from "./window/types"
 
 import { run, runRestricted, setListener } from "./engine/send"
-import { setBanner, setCommands } from "./state/registry"
+import { setBanner, setCommands, setWelcome } from "./state/registry"
 import {
 	shellActions,
 	useAnimation,
@@ -12,8 +21,8 @@ import {
 	useKeyboardOnFocus,
 	useLang,
 } from "./state/store"
-import { setTheme, ShellTheme } from "./theme"
-import { BaseCommand } from "./types"
+import { setTheme, ShellThemeInput } from "./theme"
+import { BaseCommand, Translatable } from "./types"
 
 export type ShellProps = {
 	/** les commandes connues : celles du paquet, plus les votres */
@@ -23,13 +32,32 @@ export type ShellProps = {
 	 * la que se met la marque : le shell, lui, n'en connait aucune.
 	 */
 	banner?: string[]
-	theme?: Partial<ShellTheme>
+	/**
+	 * Ouvre l'ecran avec le logo ascii du shell. Il passe devant la
+	 * banniere, et rien ne l'impose : sans ca, le shell demarre nu.
+	 */
+	showTitle?: boolean
+	/**
+	 * Mot d'accueil affiche sous le logo, au demarrage comme apres un
+	 * clear. Une chaine, ou une variante par langue.
+	 */
+	welcome?: Translatable
+	theme?: ShellThemeInput
 	/** langue de depart ; sans elle, le francais */
 	lang?: string
-	/** element a faire defiler quand la sortie s'allonge */
+	/**
+	 * Element a faire defiler quand la sortie s'allonge. Avec la prop
+	 * window, il est inutile : le shell fait descendre le contenu du cadre.
+	 */
 	scrollRef?: RefObject<HTMLElement>
 	/** appele a chaque commande jouee, y compris celles du paquet */
 	onCommand?: (name: string, args: string[]) => void
+	/**
+	 * Pose le terminal dans un cadre retro : barre de titre a glisser,
+	 * agrandissement, fermeture. Sans cette prop, le shell remplit
+	 * simplement ce qui le contient.
+	 */
+	window?: Omit<WindowProps, "children">
 }
 
 /**
@@ -42,15 +70,30 @@ export type ShellProps = {
 export const Shell = ({
 	commands,
 	banner = [],
+	showTitle = false,
+	welcome,
 	theme,
 	lang,
 	scrollRef,
 	onCommand,
+	window: windowProps,
 }: ShellProps) => {
+	// le logo et l'accueil sont des commandes de base : les afficher, c'est
+	// les mettre en tete de la banniere
+	const opening = useMemo(() => {
+		const head = [
+			...(showTitle ? ["title"] : []),
+			...(welcome ? ["welcome"] : []),
+		]
+
+		return [...head.filter(name => !banner.includes(name)), ...banner]
+	}, [showTitle, welcome, banner])
+
 	// pose avant le premier rendu : le terminal lit le registre en se rendant
 	const [ready] = useState(() => {
 		setCommands(commands)
-		setBanner(banner)
+		setBanner(opening)
+		setWelcome(welcome || "")
 		setTheme(theme)
 		return true
 	})
@@ -69,8 +112,12 @@ export const Shell = ({
 	}, [commands])
 
 	useEffect(() => {
-		setBanner(banner)
-	}, [banner])
+		setBanner(opening)
+	}, [opening])
+
+	useEffect(() => {
+		setWelcome(welcome || "")
+	}, [welcome])
 
 	useEffect(() => {
 		setListener(onCommand)
@@ -96,12 +143,16 @@ export const Shell = ({
 			command => command.visible
 		)
 
-		if (!onScreen) banner.forEach(name => runRestricted(name))
+		if (!onScreen) opening.forEach(name => runRestricted(name))
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [ready])
 
+	// le contenu du cadre, quand c'est lui qui defile
+	const framedRef = useRef<HTMLDivElement>(null)
+
 	const scrollDown = useCallback(() => {
-		scrollRef?.current?.scrollTo(0, 1000000)
+		const target = scrollRef?.current || framedRef.current
+		target?.scrollTo(0, 1000000)
 	}, [scrollRef])
 
 	const handleRendered = useCallback(
@@ -116,7 +167,7 @@ export const Shell = ({
 		shellActions().moveCursor(direction)
 	}, [])
 
-	return (
+	const terminal = (
 		<Terminal
 			options={options}
 			commands={history}
@@ -128,5 +179,13 @@ export const Shell = ({
 			onSendNextCommand={() => moveCursor(1)}
 			onRendered={handleRendered}
 		/>
+	)
+
+	if (!windowProps) return terminal
+
+	return (
+		<Window {...windowProps} ref={framedRef}>
+			{terminal}
+		</Window>
 	)
 }

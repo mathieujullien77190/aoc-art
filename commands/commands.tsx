@@ -1,8 +1,7 @@
-import { BaseCommand, Translatable, shellActions } from "retro-shell"
+import { BaseCommand, Translatable, shellActions } from "flower-shell"
 
-import { colors, app } from "_components/constants"
+import { app } from "_components/constants"
 
-import { title, highlightFlower } from "./asciArt"
 import { displayList, loadScript, getScript } from "./aocCommands"
 import { CV_SECTIONS, buildCV } from "./cv"
 
@@ -18,43 +17,6 @@ const RESTRICTED: Translatable = {
 
 /** les commandes propres a ce site ; les autres viennent du paquet */
 export const commands: BaseCommand[] = [
-	{
-		restricted: true,
-		name: "welcome",
-		action: () => ({
-			fr: [
-				`Bienvenue sur $${app.name}$`,
-				"Commencez par taper la commande : `help`",
-				"\n",
-			].join("\n"),
-			en: [
-				`$Welcome to ${app.name}$`,
-				"\n",
-				"Start by typing the command: `help`",
-				"\n",
-			].join("\n"),
-		}),
-		help: { description: RESTRICTED, patterns: [] },
-		display: {
-			hideCmd: true,
-			style: { color: colors.importantColor },
-		},
-	},
-	{
-		restricted: true,
-		name: "title",
-		action: () => {
-			return title
-		},
-		help: { description: RESTRICTED, patterns: [] },
-		display: {
-			hideCmd: true,
-			style: { alignItems: "center" },
-			stylePre: { fontSize: "calc(100vw/130)" },
-			highlight: text => highlightFlower(text, { fontSize: "calc(100vw/130)" }),
-			trad: false,
-		},
-	},
 	{
 		restricted: false,
 		name: "aoc",

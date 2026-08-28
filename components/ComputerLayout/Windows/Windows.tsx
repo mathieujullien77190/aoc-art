@@ -1,15 +1,14 @@
 import { useState, useRef, Ref, forwardRef } from "react"
 
 import { globalActions, useGetTutorial, useGetWindows } from "_store/global/"
-import { useLang } from "retro-shell"
 
 import { IconKey, WindowName, WindowsProps } from "./types"
-import { ICONS, WINDOW_NAMES } from "./constants"
+import { FULL, ICONS, WINDOW_NAMES } from "./constants"
 import { iconOf, labelOf } from "./helpers"
+import { useIsCompact } from "./hooks"
 import * as S from "./UI"
 
-import Window from "../Window"
-import { TOP_LAYER } from "../Window/constants"
+import { TOP_LAYER, useLang, Window } from "flower-shell"
 import Icon from "../Icon"
 import Date from "../Date"
 import Prism from "_projects/prism"
@@ -32,6 +31,9 @@ const BaseWindows = (
 	const stack = useGetWindows() as WindowName[]
 
 	const lang = useLang()
+
+	// le seuil est a nous : le paquet ne connait aucune taille d'ecran
+	const compact = useIsCompact()
 	const tutorial = useGetTutorial()
 
 	const [cvDialog, setCvDialog] = useState<boolean>(false)
@@ -143,6 +145,8 @@ const BaseWindows = (
 				tutorial="titlebar-shell"
 				mark="shell"
 				layer={layer("shell")}
+				bottomInset={FULL.heightBar}
+				compact={compact}
 				rank={rankOf("shell")}
 				onFocus={() => focus("shell")}
 				onClose={() => {
@@ -159,6 +163,8 @@ const BaseWindows = (
 				container={globalRef}
 				title={labelOf("prism", lang)}
 				layer={layer("prism")}
+				bottomInset={FULL.heightBar}
+				compact={compact}
 				rank={rankOf("prism")}
 				onFocus={() => focus("prism")}
 				onClose={() => close("prism")}

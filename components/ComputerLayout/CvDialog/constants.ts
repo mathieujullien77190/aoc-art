@@ -1,4 +1,4 @@
-import { Translatable } from "retro-shell"
+import { Translatable } from "flower-shell"
 
 /** export PDF du document source, servi en piece jointe par Google Docs */
 export const CV_PDF_URL =

@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-import { pick, useLang } from "retro-shell"
+import { pick, useLang } from "flower-shell"
 
 import Alert from "../Alert"
 import { TEXTS } from "./constants"

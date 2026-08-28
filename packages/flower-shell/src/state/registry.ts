@@ -1,4 +1,4 @@
-import { BaseCommand } from "../types"
+import { BaseCommand, Translatable } from "../types"
 
 /**
  * Les commandes connues du shell. Elles vivent au niveau du module parce
@@ -25,3 +25,16 @@ export const setBanner = (commands: string[]) => {
 }
 
 export const getBanner = (): string[] => banner
+
+/**
+ * Le mot d'accueil. Il ne peut pas vivre dans la definition de la
+ * commande, qui est un objet fige : le consommateur le donne en prop, la
+ * commande le lit au moment de s'executer.
+ */
+let welcome: Translatable = ""
+
+export const setWelcome = (text: Translatable) => {
+	welcome = text
+}
+
+export const getWelcome = (): Translatable => welcome

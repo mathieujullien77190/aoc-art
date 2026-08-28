@@ -24,7 +24,7 @@ type Global = Values & {
 
 /**
  * L'etat du bureau. Celui du shell — langue, animation, focus, historique —
- * vit dans le paquet retro-shell, qui n'a pas a connaitre les fenetres.
+ * vit dans le paquet flower-shell, qui n'a pas a connaitre les fenetres.
  */
 export const useGlobalStore = create<Global>(set => ({
 	tutorial: false,
