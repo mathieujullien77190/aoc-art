@@ -1,4 +1,4 @@
-import { Translatable } from "flower-shell"
+import { Translatable } from "_i18n"
 import { Step } from "./types"
 
 /** marge entre le contour du projecteur et l'element vise, en pixels */

@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-import { runRestricted } from "flower-shell"
+import { shellRunRestricted } from "_store/shell/"
 
 import { gamesConfig } from "./constants"
 
@@ -18,7 +18,7 @@ export const Games = ({ day, year }: { day: string, year: string }) => {
 					game={search[0]}
 					onClose={() => {
 						setDisplay(false)
-						runRestricted("closeaoc")
+						shellRunRestricted("closeaoc")
 					}}
 				/>
 			)}

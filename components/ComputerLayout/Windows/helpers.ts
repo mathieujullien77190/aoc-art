@@ -1,4 +1,4 @@
-import { pick } from "flower-shell"
+import { pick } from "_i18n"
 
 import { ICONS } from "./constants"
 import { DesktopIcon, IconKey } from "./types"

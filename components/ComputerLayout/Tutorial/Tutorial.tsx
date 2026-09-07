@@ -1,9 +1,13 @@
 import { useState } from "react"
 
-import { globalActions, useGetTutorial } from "_store/global/"
-import { useGetLastCommand, useLang } from "flower-shell"
+import {
+	globalActions,
+	useGetLang,
+	useGetLastCommand,
+	useGetTutorial,
+} from "_store/global/"
 
-import { pick } from "flower-shell"
+import { pick } from "_i18n"
 
 import { NEXT, PADDING, QUIT, STEPS } from "./constants"
 import { format, placeBox } from "./helpers"
@@ -20,14 +24,14 @@ import * as S from "./UI"
  * declenche tout seul, pas meme a la premiere venue.
  */
 export const Tutorial = () => {
-	const lang = useLang()
+	const lang = useGetLang()
 	const running = useGetTutorial()
 	const lastCommand = useGetLastCommand()
 
 	const [index, setIndex] = useState<number>(0)
 	const [prevRunning, setPrevRunning] = useState<boolean>(running)
-	const [prevCommand, setPrevCommand] = useState<string>(
-		lastCommand?.id || null
+	const [prevCommand, setPrevCommand] = useState<number>(
+		lastCommand?.seq || null
 	)
 
 	// relancee, la visite repart de la premiere etape
@@ -41,8 +45,8 @@ export const Tutorial = () => {
 	// certaines etapes se terminent seules quand le visiteur joue la
 	// commande demandee ; l'etape suivante existe toujours, une etape en
 	// attente n'est jamais la derniere
-	if (prevCommand !== (lastCommand?.id || null)) {
-		setPrevCommand(lastCommand?.id || null)
+	if (prevCommand !== (lastCommand?.seq || null)) {
+		setPrevCommand(lastCommand?.seq || null)
 		if (step?.awaitCommand && lastCommand?.name === step.awaitCommand) {
 			setIndex(prev => Math.min(prev + 1, STEPS.length - 1))
 		}

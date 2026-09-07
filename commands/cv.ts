@@ -1,4 +1,4 @@
-import { Translatable } from "flower-shell"
+import { Translatable } from "_i18n"
 
 import { app } from "_components/constants"
 

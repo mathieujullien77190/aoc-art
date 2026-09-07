@@ -1,4 +1,4 @@
-import { Translatable } from "flower-shell"
+import { Translatable } from "_i18n"
 
 export type Rect = { top: number; left: number; width: number; height: number }
 

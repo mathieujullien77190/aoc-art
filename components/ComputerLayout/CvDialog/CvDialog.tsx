@@ -1,6 +1,8 @@
 import { useState } from "react"
 
-import { pick, useLang } from "flower-shell"
+import { pick } from "_i18n"
+
+import { useGetLang } from "_store/global/"
 
 import Alert from "../Alert"
 import { TEXTS } from "./constants"
@@ -14,7 +16,7 @@ import { CvDialogProps } from "./types"
  * donc de zero a chaque ouverture, sans remise a zero a la main.
  */
 export const CvDialog = ({ onAscii, onPdf, onClose }: CvDialogProps) => {
-	const lang = useLang()
+	const lang = useGetLang()
 	const [confirming, setConfirming] = useState<boolean>(false)
 
 	const say = (key: string) => pick(TEXTS[key], lang)

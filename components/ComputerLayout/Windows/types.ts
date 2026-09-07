@@ -1,6 +1,6 @@
 import type { JSX } from "react"
 
-import { Translatable } from "flower-shell"
+import { Translatable } from "_i18n"
 
 export type WindowsProps = {
 	/** force ignore le reglage BIOS : le PDF plante la machine quoi qu'il arrive */

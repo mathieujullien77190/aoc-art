@@ -1,6 +1,11 @@
 import { useState, useRef, Ref, forwardRef } from "react"
 
-import { globalActions, useGetTutorial, useGetWindows } from "_store/global/"
+import {
+	globalActions,
+	useGetLang,
+	useGetTutorial,
+	useGetWindows,
+} from "_store/global/"
 
 import { IconKey, WindowName, WindowsProps } from "./types"
 import { FULL, ICONS, WINDOW_NAMES } from "./constants"
@@ -8,7 +13,7 @@ import { iconOf, labelOf } from "./helpers"
 import { useIsCompact } from "./hooks"
 import * as S from "./UI"
 
-import { TOP_LAYER, useLang, Window } from "flower-shell"
+import Window, { TOP_LAYER } from "_components/Window"
 import Icon from "../Icon"
 import Date from "../Date"
 import Prism from "_projects/prism"
@@ -30,7 +35,7 @@ const BaseWindows = (
 	// ouvrir une fenetre, comme la commande prism
 	const stack = useGetWindows() as WindowName[]
 
-	const lang = useLang()
+	const lang = useGetLang()
 
 	// le seuil est a nous : le paquet ne connait aucune taille d'ecran
 	const compact = useIsCompact()

@@ -1,6 +1,6 @@
 import styled from "styled-components"
 import { Mode, Pos } from "./types"
-import { colors, fonts, windowColors } from "../theme"
+import { colors } from "../constants"
 import {
 	FULL,
 	ANIM_TIME,
@@ -8,6 +8,8 @@ import {
 	MEDIUM_MARGIN,
 	MEDIUM_SIZE,
 	TOP_LAYER,
+	WINDOW_COLORS,
+	WINDOW_FONT,
 } from "./constants"
 
 type ContainerProps = {
@@ -66,10 +68,10 @@ export const Container = styled.div.attrs<ContainerProps>(props => ({
 
 	border-style: solid;
 	border-width: ${FULL.borderSize};
-	border-color: ${windowColors().border};
-	font-family: ${fonts().window};
-	background-color: ${windowColors().content};
-	color: ${windowColors().text};
+	border-color: ${WINDOW_COLORS.border};
+	font-family: ${WINDOW_FONT};
+	background-color: ${WINDOW_COLORS.content};
+	color: ${WINDOW_COLORS.text};
 	overflow: hidden;
 	font-weight: ${FULL.fontWeight};
 	z-index: ${({ $layer }) => $layer || TOP_LAYER};
@@ -94,10 +96,10 @@ export const Container = styled.div.attrs<ContainerProps>(props => ({
 
 export const topBar = styled.div`
 	height: 15px;
-	background-color: ${windowColors().titleBar};
+	background-color: ${WINDOW_COLORS.titleBar};
 	border-bottom-style: solid;
 	border-bottom-width: ${FULL.borderSize};
-	border-bottom-color: ${windowColors().border};
+	border-bottom-color: ${WINDOW_COLORS.border};
 	display: flex;
 	align-items: center;
 	padding: ${FULL.padding};
@@ -108,7 +110,7 @@ export const Content = styled.div`
 	overflow-y: auto;
 	height: ${`calc(100% - ${FULL.padding} * 2 - 25px)`};
 	padding: ${FULL.padding};
-	background-color: ${colors().background};
+	background-color: ${colors.background};
 
 	&::-webkit-scrollbar {
 		-webkit-appearance: none;

@@ -1,5 +1,5 @@
 import { GameConfig } from "_games/constants"
-import { Translatable } from "flower-shell"
+import { Translatable } from "_i18n"
 
 export const displayList = (gamesConfig: GameConfig[]): string => {
 	return (

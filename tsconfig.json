@@ -14,9 +14,7 @@
 		"isolatedModules": true,
 		"jsx": "react-jsx",
 		"paths": {
-			"_*": ["./*"],
-			"flower-shell": ["./packages/flower-shell/src/index.ts"],
-			"flower-shell/*": ["./packages/flower-shell/src/*"]
+			"_*": ["./*"]
 		},
 		"incremental": true
 	},

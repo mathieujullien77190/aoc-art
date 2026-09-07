@@ -12,7 +12,6 @@ const config = [
 			"out/**",
 			"node_modules/**",
 			"public/vendor/**",
-			"packages/*/storybook-static/**",
 		],
 	},
 	...next,

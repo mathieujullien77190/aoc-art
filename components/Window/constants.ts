@@ -24,3 +24,19 @@ export const CASCADE = 26
 // etage de la fenetre au premier plan ; les autres descendent d'un cran
 // et restent sous les modales, qui sont a 10
 export const TOP_LAYER = 9
+
+/**
+ * Le cadre de la fenetre : barre de titre, bordure, fond du contenu. Il
+ * vivait dans le theme du paquet, qui ne porte plus de fenetre — le faux
+ * OS est le seul a en poser, les couleurs le suivent donc ici.
+ */
+export const WINDOW_COLORS = {
+	titleBar: "#ed612e",
+	border: "#000000",
+	/** le fond derriere le contenu, visible autour de lui */
+	content: "#f4ebda",
+	text: "#000000",
+}
+
+/** un cadre ne veut pas forcement du chasse fixe, mais celui-ci si */
+export const WINDOW_FONT = "monospace"

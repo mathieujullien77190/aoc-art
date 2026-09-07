@@ -1,4 +1,4 @@
-import { Translatable } from "flower-shell"
+import { Translatable } from "_i18n"
 
 /** export PDF du document source, servi en piece jointe par Google Docs */
 export const CV_PDF_URL =
