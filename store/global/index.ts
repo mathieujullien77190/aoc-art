@@ -2,16 +2,6 @@ import { create } from "zustand"
 
 import { BASE_LANG } from "_i18n"
 
-/** ce que le bureau retient de la derniere commande jouee */
-type LastCommand = {
-	name: string
-	/**
-	 * Rang d'arrivee, strictement croissant. C'est lui qui distingue deux
-	 * lancements de la meme commande : le nom seul ne bouge pas.
-	 */
-	seq: number
-}
-
 /** ce que le bureau garde en memoire, sans les fonctions qui le changent */
 type Values = {
 	/**
@@ -20,8 +10,6 @@ type Values = {
 	 * ecrans du bureau la suivent.
 	 */
 	lang: string
-	/** relance de la visite guidee, demandee par la commande tuto */
-	tutorial: boolean
 	/**
 	 * Instant du dernier `flowers`, 0 tant qu'il n'a jamais tourne. Une
 	 * date plutot qu'un booleen : rejouer la commande change la valeur,
@@ -32,16 +20,12 @@ type Values = {
 	virus: number
 	/** fenetres ouvertes du bureau ; la derniere est au premier plan */
 	windows: string[]
-	/** derniere commande jouee ; la visite guidee l'attend */
-	lastCommand: LastCommand | null
 }
 
 type Global = Values & {
 	setProperty: <K extends keyof Values>(key: K, value: Values[K]) => void
 	focusWindow: (name: string) => void
 	closeWindow: (name: string) => void
-	/** note la commande qui vient de jouer, en avancant son rang */
-	pushCommand: (name: string) => void
 }
 
 /**
@@ -50,11 +34,9 @@ type Global = Values & {
  */
 export const useGlobalStore = create<Global>(set => ({
 	lang: BASE_LANG,
-	tutorial: false,
 	flowers: 0,
 	virus: 0,
 	windows: ["shell"],
-	lastCommand: null,
 
 	setProperty: (key, value) => set({ [key]: value } as Partial<Values>),
 
@@ -69,25 +51,15 @@ export const useGlobalStore = create<Global>(set => ({
 
 	closeWindow: name =>
 		set(state => ({ windows: state.windows.filter(item => item !== name) })),
-
-	pushCommand: name =>
-		set(state => ({
-			lastCommand: { name, seq: (state.lastCommand?.seq || 0) + 1 },
-		})),
 }))
 
 export const useGetLang = () => useGlobalStore(state => state.lang)
-
-export const useGetTutorial = () => useGlobalStore(state => state.tutorial)
 
 export const useGetFlowers = () => useGlobalStore(state => state.flowers)
 
 export const useGetVirus = () => useGlobalStore(state => state.virus)
 
 export const useGetWindows = () => useGlobalStore(state => state.windows)
-
-export const useGetLastCommand = () =>
-	useGlobalStore(state => state.lastCommand)
 
 /**
  * Hors composant : une commande n'est pas un rendu React, elle attaque le

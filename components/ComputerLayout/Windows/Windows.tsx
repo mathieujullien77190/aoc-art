@@ -1,15 +1,10 @@
-import { useState, useRef, Ref, forwardRef } from "react"
+import { useRef, useState, Ref, forwardRef } from "react"
 
-import {
-	globalActions,
-	useGetLang,
-	useGetTutorial,
-	useGetWindows,
-} from "_store/global/"
+import { globalActions, useGetLang, useGetWindows } from "_store/global/"
 
-import { IconKey, WindowName, WindowsProps } from "./types"
+import { DesktopIcon, IconKey, WindowName, WindowsProps } from "./types"
 import { FULL, ICONS, WINDOW_NAMES } from "./constants"
-import { iconOf, labelOf } from "./helpers"
+import { iconOf, isWindowIcon, labelOf } from "./helpers"
 import { useIsCompact } from "./hooks"
 import * as S from "./UI"
 
@@ -17,7 +12,7 @@ import Window, { TOP_LAYER } from "_components/Window"
 import Icon from "../Icon"
 import Date from "../Date"
 import Prism from "_projects/prism"
-import CvDialog, { downloadCv } from "../CvDialog"
+import Storybook from "_components/Storybook"
 import Virus from "_components/Virus"
 
 const rankOf = (name: WindowName) => WINDOW_NAMES.indexOf(name)
@@ -39,9 +34,13 @@ const BaseWindows = (
 
 	// le seuil est a nous : le paquet ne connait aucune taille d'ecran
 	const compact = useIsCompact()
-	const tutorial = useGetTutorial()
 
-	const [cvDialog, setCvDialog] = useState<boolean>(false)
+	/**
+	 * Rang d'agrandissement du shell : une icone qui l'ouvre l'avance, la
+	 * fenetre s'ouvre alors en grand. Le visiteur reste libre de la
+	 * reduire ensuite, la demande suivante la reouvrira pleine.
+	 */
+	const [expand, setExpand] = useState<number>(0)
 
 	const isOpen = (name: WindowName) => stack.includes(name)
 
@@ -63,95 +62,71 @@ const BaseWindows = (
 	const layer = (name: WindowName) =>
 		TOP_LAYER - (stack.length - 1 - stack.indexOf(name))
 
-	/** L'icone d'aide bascule la visite guidee. */
-	const handleTutorial = () => {
-		if (tutorial) {
-			globalActions().setProperty("tutorial", false)
-			return
-		}
-
-		// la visite commence sur un bureau net : elle designe des elements du
-		// shell, une fenetre posee par-dessus les cacherait
-		setCvDialog(false)
-		WINDOW_NAMES.filter(name => name !== "shell" && isOpen(name)).forEach(close)
-		focus("shell")
-
-		globalActions().setProperty("tutorial", true)
-	}
-
 	/** l'icone s'allume quand ce qu'elle ouvre est a l'ecran */
 	const isIconOpen = (key: IconKey) => {
-		if (key === "cv") return cvDialog
-		if (key === "help") return tutorial
-		return isOpen(key)
+		// une icone qui joue une commande n'ouvre rien, elle rend la main
+		if (iconOf(key).command) return false
+		return isWindowIcon(key) && isOpen(key)
 	}
 
 	const handleIcon = (key: IconKey) => {
-		if (key === "cv") {
-			setCvDialog(prev => !prev)
+		const { command } = iconOf(key)
+
+		// la commande s'ecrit dans le shell, qui passe devant en grand :
+		// les sorties sont larges, une fenetre moyenne les replierait
+		if (command) {
+			setExpand(prev => prev + 1)
+			focus("shell")
+			onRunCommand(command)
 			return
 		}
 
-		if (key === "help") {
-			handleTutorial()
-			return
-		}
+		if (!isWindowIcon(key)) return
+
+		// lu avant le clic : seul le shell au premier plan se ferme, et il
+		// est encore monte a cet instant — l'ouvrir ne doit rien vider, il
+		// n'y a alors aucun terminal a qui parler
+		const closing = key === "shell" && stack[stack.length - 1] === "shell"
 
 		handleWindowIcon(key)
 
 		// le shell ferme par son icone repart vide
-		if (key === "shell") onCloseWindow()
-	}
-
-	/** le CV en ASCII : le shell passe devant et joue la commande */
-	const showAsciiCv = () => {
-		setCvDialog(false)
-		focus("shell")
-		onRunCommand("cv")
-	}
-
-	/** le PDF part dans un onglet, la machine ne s'en remet pas */
-	const downloadPdfCv = () => {
-		setCvDialog(false)
-		downloadCv()
-		onBlueScreen(true)
+		if (closing) onCloseWindow()
 	}
 
 	const globalRef = useRef<HTMLDivElement>(null)
+
+	/** une icone du bureau, ou du coin : seule la place change */
+	const desktopIcon = (icon: DesktopIcon) => (
+		<Icon
+			key={icon.key}
+			open={isIconOpen(icon.key)}
+			name={labelOf(icon.key, lang)}
+			image={icon.image}
+			latch={!icon.command}
+			onClick={() => handleIcon(icon.key)}
+		/>
+	)
 
 	return (
 		<S.Container ref={globalRef}>
 			{/* la fenetre rongee jusqu'a l'os emporte la machine avec elle */}
 			<Virus onDead={() => onBlueScreen(true)} />
 
-			{ICONS.map(icon => (
-				<Icon
-					key={icon.key}
-					open={isIconOpen(icon.key)}
-					name={labelOf(icon.key, lang)}
-					image={icon.image}
-					tutorial={icon.tutorial}
-					onClick={() => handleIcon(icon.key)}
-				/>
-			))}
+			{ICONS.filter(icon => !icon.corner).map(desktopIcon)}
 
-			{cvDialog && (
-				<CvDialog
-					onAscii={showAsciiCv}
-					onPdf={downloadPdfCv}
-					onClose={() => setCvDialog(false)}
-				/>
-			)}
+			<S.Corner>{ICONS.filter(icon => icon.corner).map(desktopIcon)}</S.Corner>
 
 			<Window
 				show={isOpen("shell")}
 				container={globalRef}
 				title={labelOf("shell", lang)}
-				tutorial="titlebar-shell"
 				mark="shell"
+				expand={expand}
 				layer={layer("shell")}
 				bottomInset={FULL.heightBar}
 				compact={compact}
+				flush
 				rank={rankOf("shell")}
 				onFocus={() => focus("shell")}
 				onClose={() => {
@@ -177,7 +152,24 @@ const BaseWindows = (
 				<Prism />
 			</Window>
 
-			<S.Bar data-tutorial="taskbar">
+			{/* la doc du paquet, chargee depuis GitHub Pages : elle porte sa
+			    propre mise en page, la fenetre lui laisse tout le cadre */}
+			<Window
+				show={isOpen("storybook")}
+				container={globalRef}
+				title={labelOf("storybook", lang)}
+				layer={layer("storybook")}
+				bottomInset={FULL.heightBar}
+				compact={compact}
+				flush
+				rank={rankOf("storybook")}
+				onFocus={() => focus("storybook")}
+				onClose={() => close("storybook")}
+			>
+				<Storybook />
+			</Window>
+
+			<S.Bar>
 				<S.Tasks>
 					{WINDOW_NAMES.filter(isOpen).map(name => (
 						<S.Task

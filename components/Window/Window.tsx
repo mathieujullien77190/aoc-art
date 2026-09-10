@@ -12,12 +12,13 @@ const BaseWindow = (
 		container,
 		children,
 		title = "Sans titre",
-		tutorial,
 		mark,
+		expand = 0,
 		layer = TOP_LAYER,
 		rank = 0,
 		bottomInset = "0px",
 		compact = false,
+		flush = false,
 		onFocus = () => {},
 		onClose = () => {},
 	}: WindowProps,
@@ -39,6 +40,16 @@ const BaseWindow = (
 	const [ready, setReady] = useState<boolean>(false)
 	const [followMouse, setFollowMouse] = useState<boolean>(false)
 
+	// le parent demande le grand format en avancant son rang ; on le suit
+	// pendant le rendu, un effet ferait clignoter la taille d'avant
+	const [prevExpand, setPrevExpand] = useState<number>(expand)
+
+	if (prevExpand !== expand) {
+		setPrevExpand(expand)
+		setDrag(NO_DRAG)
+		setUserMode("full")
+	}
+
 	const boxRef = useRef<HTMLDivElement>(null)
 
 	// le contenu n'apparait qu'une fois la fenetre arrivee a sa taille
@@ -57,13 +68,17 @@ const BaseWindow = (
 	}
 
 	const handleClose = () => {
+		// deja en train de se fermer : le mode d'avant serait perdu
+		if (userMode === "close") return
+
+		// la fenetre rouvre telle qu'on l'a quittee, taille et place
+		const before = userMode
+
 		setReady(false)
 		setUserMode("close")
 		window.setTimeout(() => {
 			onClose()
-
-			setDrag(NO_DRAG)
-			setUserMode("medium")
+			setUserMode(before)
 		}, ANIM_TIME + 100)
 	}
 
@@ -117,7 +132,6 @@ const BaseWindow = (
 					onMouseDown={onFocus}
 				>
 					<S.topBar
-						data-tutorial={tutorial}
 						onDoubleClick={compact ? undefined : handleResize}
 						onMouseDown={() => {
 							if (mode !== "full") setFollowMouse(true)
@@ -133,7 +147,7 @@ const BaseWindow = (
 							<span onClick={handleClose}>x</span>
 						</S.Actions>
 					</S.topBar>
-					<S.Content ref={ref}>
+					<S.Content $flush={flush} ref={ref}>
 						<S.Wrapper $ready={ready} $mode={mode}>
 							{children}
 						</S.Wrapper>

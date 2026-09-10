@@ -6,11 +6,10 @@ import {
 	CommandEvent,
 	dictEn,
 	dictFr,
-	Dict,
 	Dictionaries,
 	setDict,
 	Shell,
-	ShellThemes,
+	themes,
 	useShell,
 } from "flower-shell"
 
@@ -18,13 +17,18 @@ import { commands as customCommands } from "_commands/commands"
 
 import Layout from "_components/Layout"
 import Computer from "_components/ComputerLayout/Computer"
-import Tutorial from "_components/ComputerLayout/Tutorial"
 import Flowers from "_components/Flowers"
 
 import { globalActions } from "_store/global/"
-import { bindShell, shellRun, shellState, SHELL_ID } from "_store/shell/"
+import {
+	bindShell,
+	shellRun,
+	shellRunWhenReady,
+	shellState,
+	SHELL_ID,
+} from "_store/shell/"
 
-import { colors, app } from "_components/constants"
+import { app } from "_components/constants"
 
 import { isMobile } from "react-device-detect"
 import styled from "styled-components"
@@ -70,9 +74,6 @@ const dict: Dictionaries = {
 				"\n",
 			].join("\n"),
 		},
-		// le paquet decrit chaque theme par la cle theme.<nom> ; sans elle,
-		// help theme afficherait la cle brute
-		theme: { ...(dictFr.theme as Dict), aoc: "les couleurs du site" },
 	},
 	en: {
 		...dictEn,
@@ -84,7 +85,6 @@ const dict: Dictionaries = {
 				"\n",
 			].join("\n"),
 		},
-		theme: { ...(dictEn.theme as Dict), aoc: "the colors of the site" },
 	},
 }
 
@@ -94,32 +94,6 @@ const dict: Dictionaries = {
  * jamais.
  */
 setDict(dict)
-
-/**
- * Le seul theme du site. invisible est pose a la main : c'est toujours le
- * fond, et le laisser au theme du paquet le figerait sur le sien.
- */
-const themes: ShellThemes = {
-	aoc: {
-		colors: {
-			background: colors.background,
-			textColor: colors.textColor,
-			importantColor: colors.importantColor,
-			cmdColor: colors.cmdColor,
-			restrictedColor: colors.restrictedColor,
-			infoColor: colors.infoColor,
-			appColor: colors.appColor,
-			invisible: colors.background,
-		},
-		prompt: app.logo,
-		/**
-		 * Le cadre du terminal. Il faut le poser : sans lui on herite de
-		 * celui du theme du paquet, qui encadre le shell d'un liseré jaune
-		 * et le decale de 20px — la fenetre du bureau fait deja le cadre.
-		 */
-		container: { padding: "8px", border: "none" },
-	},
-}
 
 /**
  * La ligne portee par le lien profond : #aoc_1 lance +aoc 1+. Rien au
@@ -169,9 +143,6 @@ const Home = () => {
 			const lang = shellState()?.lang
 			if (lang) globalActions().setProperty("lang", lang)
 		}
-
-		// la visite guidee attend certaines commandes
-		globalActions().pushCommand(name)
 	}, [])
 
 	// avant tout le reste : une commande n'est pas un rendu React, elle
@@ -190,20 +161,23 @@ const Home = () => {
 
 	return (
 		<Layout onClick={handleClick}>
-			<Computer onRunCommand={shellRun} onCloseWindow={() => shellRun("clear")}>
+			<Computer
+				onRunCommand={shellRunWhenReady}
+				onCloseWindow={() => shellRun("clear")}
+			>
 				<Shell
 					id={SHELL_ID}
 					commands={commands}
+					// tout le catalogue du paquet : le visiteur en change par
+					// la commande theme, et help theme les liste
 					themes={themes}
-					theme="aoc"
+					theme="flower"
 					dict={dict}
 					lang={browserLang()}
 					initialCommands={opening}
 					onCommandDone={handleCommandDone}
 				/>
 			</Computer>
-
-			<Tutorial />
 
 			<Flowers />
 		</Layout>

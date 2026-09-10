@@ -5,6 +5,35 @@ import { app } from "_components/constants"
 /** sections affichables une par une : +cv xp+, +cv skills+... */
 export const CV_SECTIONS = ["timeline", "xp", "skills", "formation"]
 
+/** l'argument qui telecharge au lieu d'afficher */
+export const CV_PDF = "pdf"
+
+/** la ligne que joue le lien de l'en-tete */
+const CV_PDF_PATTERN = `cv ${CV_PDF}`
+
+/** le lien de telechargement, sous l'email */
+const DOWNLOAD: Record<"fr" | "en", string> = {
+	fr: "Télécharger CV PDF",
+	en: "Download CV as PDF",
+}
+
+/** export PDF du document source, servi en piece jointe par Google Docs */
+const CV_PDF_URL =
+	"https://docs.google.com/document/d/1yBih6xsRqkDgWmfXeWfcJlQsHoSaNvmSXxJ-6DxLcHo/export?format=pdf"
+
+/**
+ * Google Docs renvoie l'export en piece jointe : l'onglet ouvert declenche
+ * le telechargement puis se referme seul. Un attribut download ne servirait
+ * a rien, il est ignore hors du meme domaine.
+ */
+export const downloadCv = () => window.open(CV_PDF_URL, "_blank", "noopener")
+
+/** ce que le shell dit pendant que l'onglet part chercher le fichier */
+export const CV_PDF_SAYS: Translatable = {
+	fr: "\n§Téléchargement du CV en PDF…§\n",
+	en: "\n§Downloading the resume as a PDF…§\n",
+}
+
 /**
  * Le CV complet saute l'experience detaillee : la frise la resume deja,
  * les deux d'affilee feraient doublon. Elle reste accessible par +cv xp+.
@@ -19,8 +48,8 @@ type Lang = "fr" | "en"
 const LANGS: Lang[] = ["fr", "en"]
 
 const JOB: Record<Lang, string> = {
-	fr: "Développeur JavaScript",
-	en: "JavaScript developer",
+	fr: "Développeur JavaScript front end",
+	en: "Front end JavaScript developer",
 }
 
 const PLACE: Record<Lang, string> = {
@@ -38,92 +67,102 @@ const TITLES: Record<string, Record<Lang, string>> = {
 const LINES: Record<string, Record<Lang, string[]>> = {
 	xp: {
 		fr: [
-			"§2016 – 2026 · SeLoger — Paris§",
-			"  Dépôt d'annonce : formulaire multipage (Typeform, React",
-			"  Router), gestion des annonces et des candidatures, suivi des",
-			"  prospects en liste, en comparaison et en kanban (drag and",
-			"  drop, skeletons). Multilingue via Lokalize, déployé pour",
-			"  SeLoger France et Immowelt Allemagne.",
+			"§Sept. 2016 – avril 2026 · SeLoger — Paris§",
+			"  Dépôt d'annonce (2021 – 2026) : formulaire multipage",
+			"  (Typeform, React Router), gestion des annonces et des",
+			"  candidatures, suivi des prospects en liste, en comparaison et",
+			"  en kanban (drag and drop, skeletons). Multilingue via Lokalise,",
+			"  déployé pour SeLoger France et Immowelt Allemagne.",
 			"",
-			"  Moteur de recherche et pages de résultats : refonte du",
-			"  composant historique en React / TypeScript, Redux, React Hook",
-			"  Form, styled-components — Vue et Svelte sur quelques briques.",
-			"  Tracking, publicité, lazy loading, CI CircleCI, tests Jest.",
+			"  Vérification d'identité (2023) : parcours KYC complet en Next,",
+			"  upload et contrôle des pièces, reconnaissance faciale par un",
+			"  service tiers, reprise du parcours entre desktop et mobile.",
 			"",
-			"  Carto Search : Bing Maps vers MapBox, Redux / RxJs / Turf,",
-			"  recherche isochrone, données temps réel en WebSocket.",
+			"  Carto Search (2018 – 2021) : Bing Maps vers MapBox, Redux /",
+			"  RxJs / Turf, recherche isochrone, données temps réel en",
+			"  WebSocket.",
 			"",
-			"§2014 – 2016 · Numericable — Paris§",
-			"  VIZIR, SIG du réseau fibre : application C# / Oracle, auth",
+			"  Moteur de recherche et pages de résultats (2016 – 2018) :",
+			"  refonte du composant historique en React / TypeScript, Redux,",
+			"  React Hook Form, styled-components — Vue et Svelte sur quelques",
+			"  briques. Tracking, publicité, lazy loading, CI CircleCI, tests",
+			"  Jest.",
+			"",
+			"§Avril 2014 – juillet 2016 · Numericable — Paris§",
+			"  VIZIR, SIG du réseau fibre : application C\\# / Oracle, auth",
 			"  LDAP, modules de recherche et d'édition en ArcGIS js / Dojo.",
 			"  Librairie carto ArcGIS réutilisable par les applis internes",
 			"  (tests Jasmine, builds Grunt, documentation générée).",
 			"  Web services SOAP : requêtes géographiques, réponses aux DICT.",
 			"",
-			"§2011 – 2014 · Michelin Travel Partner — Paris§",
+			"§Févr. 2011 – avril 2014 · Michelin Travel Partner — Paris§",
 			"  Widgets de guidage embarqués sur automobile PSA (JS / HTML5,",
 			"  iPad, Android, SMEG), feuille de route embarquée, tests",
 			"  véhicule. Guide Vert, Guide Michelin, Trafic.",
 			"  B2C : refonte de la page hôtel Viamichelin.",
 			"  APIJs : modules du framework maison, complétion multi-sources.",
-			"",
-			"§2010 – 2011 · Arboetsens — Paris§ (stage M2)",
-			"  Boutique en ligne pilotée en Ajax, CMS multilingue, outil de",
-			"  saisie de newsletters (Mootools, ExtJs, jQuery).",
 		],
 		en: [
-			"§2016 – 2026 · SeLoger — Paris§",
-			"  Listing submission: multi-page form (Typeform, React Router),",
-			"  listing and application management, applicant tracking as a",
-			"  list, a side-by-side comparison and a kanban board (drag and",
-			"  drop, skeletons). Localised with Lokalize, shipped for",
-			"  SeLoger in France and Immowelt in Germany.",
+			"§Sept. 2016 – April 2026 · SeLoger — Paris§",
+			"  Listing submission (2021 – 2026): multi-page form (Typeform,",
+			"  React Router), listing and application management, applicant",
+			"  tracking as a list, a side-by-side comparison and a kanban",
+			"  board (drag and drop, skeletons). Localised with Lokalise,",
+			"  shipped for SeLoger in France and Immowelt in Germany.",
 			"",
-			"  Search engine and result pages: rewrote the legacy component",
-			"  in React / TypeScript, Redux, React Hook Form and",
-			"  styled-components — Vue and Svelte on a few parts.",
+			"  Identity verification (2023): full KYC journey built in Next,",
+			"  document upload and checks, third party face recognition,",
+			"  resuming the flow across desktop and mobile.",
+			"",
+			"  Carto Search (2018 – 2021): Bing Maps to MapBox, Redux / RxJs",
+			"  / Turf, isochrone search, live data over WebSocket.",
+			"",
+			"  Search engine and result pages (2016 – 2018): rewrote the",
+			"  legacy component in React / TypeScript, Redux, React Hook Form",
+			"  and styled-components — Vue and Svelte on a few parts.",
 			"  Tracking, ads, lazy loading, CircleCI, Jest tests.",
 			"",
-			"  Carto Search: Bing Maps to MapBox, Redux / RxJs / Turf,",
-			"  isochrone search, live data over WebSocket.",
-			"",
-			"§2014 – 2016 · Numericable — Paris§",
-			"  VIZIR, fibre network GIS: C# / Oracle app, LDAP auth, search",
+			"§April 2014 – July 2016 · Numericable — Paris§",
+			"  VIZIR, fibre network GIS: C\\# / Oracle app, LDAP auth, search",
 			"  and editing modules built on ArcGIS js / Dojo.",
 			"  Reusable ArcGIS mapping library for internal apps (Jasmine",
 			"  tests, Grunt builds, generated documentation).",
 			"  SOAP web services: geographic queries and DICT answers.",
 			"",
-			"§2011 – 2014 · Michelin Travel Partner — Paris§",
+			"§Feb. 2011 – April 2014 · Michelin Travel Partner — Paris§",
 			"  In-car navigation widgets for PSA vehicles (JS / HTML5, iPad,",
 			"  Android, SMEG), embedded roadbook, on-vehicle test campaigns.",
 			"  Guide Vert, Guide Michelin, Traffic.",
 			"  B2C: rebuilt the Viamichelin hotel page.",
 			"  APIJs: modules for the in-house framework, autocompletion.",
-			"",
-			"§2010 – 2011 · Arboetsens — Paris§ (master's internship)",
-			"  Ajax-driven online shop, multilingual CMS, newsletter",
-			"  authoring tool (Mootools, ExtJs, jQuery).",
 		],
 	},
 	skills: {
 		fr: [
 			"§Web§        HTML5, CSS3, JavaScript, TypeScript",
-			"§Maîtrise§   React (hooks, context, Redux, React Hook Form,",
-			"            styled-components, Tailwind), NodeJs",
-			"§Bases§      Vue, Svelte, Electron, jQuery, AngularJs, C#, Python",
-			"§Outils§     git, VSCode / Copilot, CircleCI, Jenkins, Jira, Figma",
-			"§Méthodes§   agile (kanban, scrum), pair programming",
-			"§Langue§     anglais écrit et technique",
+			"§Maîtrise§   React, NodeJs",
+			"§React§      NextJs, React Router, Redux, Zustand, React Hook",
+			"           Form, styled-components, Tailwind",
+			"§Notions§    MongoDb, Vue, Svelte, Electron, C\\#, Python, PHP",
+			"§Outils§     VSCode (Copilot, Claude), git, CircleCI, Jenkins,",
+			"           Webpack, Jira, Confluence",
+			"§Méthodes§   agile (kanban, scrum), pair programming, tests",
+			"           unitaires (Jest, Jasmine)",
+			"§Design§     Figma, Zeplin, GIMP",
+			"§Langue§     anglais B1, technique et écrit",
 		],
 		en: [
 			"§Web§        HTML5, CSS3, JavaScript, TypeScript",
-			"§Strong§     React (hooks, context, Redux, React Hook Form,",
-			"            styled-components, Tailwind), NodeJs",
-			"§Basics§     Vue, Svelte, Electron, jQuery, AngularJs, C#, Python",
-			"§Tools§      git, VSCode / Copilot, CircleCI, Jenkins, Jira, Figma",
-			"§Methods§    agile (kanban, scrum), pair programming",
-			"§Language§   French native, technical English",
+			"§Strong§     React, NodeJs",
+			"§React§      NextJs, React Router, Redux, Zustand, React Hook",
+			"           Form, styled-components, Tailwind",
+			"§Basics§     MongoDb, Vue, Svelte, Electron, C\\#, Python, PHP",
+			"§Tools§      VSCode (Copilot, Claude), git, CircleCI, Jenkins,",
+			"           Webpack, Jira, Confluence",
+			"§Methods§    agile (kanban, scrum), pair programming, unit tests",
+			"           (Jest, Jasmine)",
+			"§Design§     Figma, Zeplin, GIMP",
+			"§Language§   French native, English B1, technical and written",
 		],
 	},
 	formation: {
@@ -144,27 +183,45 @@ const LINES: Record<string, Record<Lang, string[]>> = {
 	},
 }
 
-/** separateurs de mise en couleur, dans l'ordre ou le rendu les consomme */
-const MARKERS = ["§", "+", "#", "$"]
+/**
+ * Separateurs de mise en couleur, tels que le shell les consomme — la
+ * liste doit rester celle de flower-shell, sinon les longueurs calculees
+ * ici ne sont plus celles affichees et les bordures se decalent.
+ */
+const MARKERS = ["§", "+", "`", "!", "$", "_", "#"]
 
-/** un marqueur precede de £ s'affiche tel quel, il ne fait donc pas paire */
-const ESCAPE = "£"
+/** un marqueur precede de \ s'affiche tel quel, il ne fait donc pas paire */
+const ESCAPE = "\\"
 
 /** le marqueur echappe, mis de cote le temps du calcul */
 const HIDDEN = String.fromCharCode(0)
 
 /**
+ * Le marqueur cliquable porte sa commande apres un ~ : elle ne s'affiche
+ * pas, seul le libelle reste. La compter deporterait la ligne.
+ */
+const CLICKABLE = "#"
+
+const label = (line: string) =>
+	line.replace(new RegExp(`${CLICKABLE}([^${CLICKABLE}]*)${CLICKABLE}`, "g"), (
+		_,
+		inner: string
+	) => inner.split("~")[0].trim())
+
+/**
  * Longueur reellement affichee : les separateurs disparaissent au rendu,
  * les compter decalerait la bordure droite.
  *
- * Ils ne comptent que par paires, comme a l'affichage : le `#` isole de
- * `C#` reste a l'ecran, le retirer decalait la ligne d'une colonne.
+ * Ils ne comptent que par paires, comme a l'affichage, et un marqueur
+ * echappe compte pour le seul caractere qui reste a l'ecran.
  */
 const visible = (line: string) => {
 	// hors jeu avant l'appariement, comme le fait le rendu
-	const escaped = MARKERS.reduce(
-		(text, marker) => text.split(`${ESCAPE}${marker}`).join(HIDDEN),
-		line
+	const escaped = label(
+		MARKERS.reduce(
+			(text, marker) => text.split(`${ESCAPE}${marker}`).join(HIDDEN),
+			line
+		)
 	)
 
 	return MARKERS.reduce(
@@ -176,6 +233,29 @@ const visible = (line: string) => {
 		escaped
 	).length
 }
+
+/**
+ * Neutralise les separateurs d'un texte qui n'en est pas un : dessin
+ * ASCII, filets, le `#` de C sharp. Sans ca deux marqueurs se retrouvent
+ * apparies a distance et avalent tout ce qui les separe.
+ */
+const escape = (text: string) =>
+	text.replace(
+		new RegExp(`[${MARKERS.join("")}]`, "g"),
+		char => `${ESCAPE}${char}`
+	)
+
+/**
+ * Colore un texte en sortant les marqueurs echappes de la couleur : le
+ * shell restaure les echappements avec react-string-replace, qui ne
+ * redescend pas dans les elements deja crees — un echappement pris dans
+ * une couleur resterait un caractere invisible.
+ */
+const paint = (text: string, marker: string) =>
+	`${marker}${text.replace(
+		new RegExp(`[${MARKERS.join("")}]`, "g"),
+		char => `${marker}${ESCAPE}${char}${marker}`
+	)}${marker}`
 
 /** place disponible entre les bordures, marges comprises */
 const INNER = WIDTH - 6
@@ -201,9 +281,9 @@ const center = (line: string, width = visible(line)) =>
  *  \\______/
  */
 const box = (lines: string[]) => [
-	`£+${"-".repeat(WIDTH - 2)}£+`,
+	`${escape("+")}${"-".repeat(WIDTH - 2)}${escape("+")}`,
 	...lines,
-	`£+${"-".repeat(WIDTH - 2)}£+`,
+	`${escape("+")}${"-".repeat(WIDTH - 2)}${escape("+")}`,
 ]
 
 /**
@@ -231,28 +311,35 @@ const BANNER_WIDTH = Math.max(...BANNER.map(line => line.length))
 const INTRO: Record<Lang, string[]> = {
 	fr: [
 		"Développeur front end depuis quinze ans, dont dix chez SeLoger,",
-		"sur le moteur de recherche et la cartographie.",
+		"sur des interfaces complexes : moteurs de recherche, cartographie",
+		"interactive, temps réel — avec un vrai souci de performance et de",
+		"qualité de code.",
 		"",
 		"Je cherche une nouvelle mission en React / TypeScript, en",
 		"Île-de-France.",
 	],
 	en: [
-		"Front end developer for fifteen years, ten of them at SeLoger,",
-		"on the search engine and the mapping stack.",
+		"Front end developer for fifteen years, ten of them at SeLoger, on",
+		"complex interfaces: search engines, interactive mapping, real",
+		"time — with a real care for performance and code quality.",
 		"",
-		"Now looking for a new React / TypeScript position, around Paris",
+		"Now looking for a new React / TypeScript position, around Paris.",
 	],
 }
 
 const header = (lang: Lang) =>
 	box([
 		row(),
-		...BANNER.map(line => row(line ? center(`§${line}§`, BANNER_WIDTH) : "")),
+		...BANNER.map(line =>
+			row(line ? center(escape(line), BANNER_WIDTH) : "")
+		),
 		row(),
 		row(center(JOB[lang])),
 		row(),
 		row(center(`§${PLACE[lang]}§`)),
 		row(center(`§${app.email}§`)),
+		row(),
+		row(center(`${CLICKABLE}${DOWNLOAD[lang]}~${CV_PDF_PATTERN}${CLICKABLE}`)),
 		row(),
 		...INTRO[lang].map(line => row(line)),
 		row(),
@@ -315,10 +402,10 @@ const TIMELINE: {
 	{ year: "2020", right: "MapBox, Turf, WebSocket" },
 	{ year: "2021", right: "CircleCI, React Hook Form" },
 	{ year: "2022", right: "Vue, Svelte" },
-	{ year: "2023", right: "Tailwind, Lokalize" },
+	{ year: "2023", right: "Tailwind, Lokalise, Next" },
 	{ year: "2024", right: "Claude" },
-	{ year: "2025", right: "Copilot, Figma" },
-	{ year: "2026", right: "NextJs, React 19" },
+	{ year: "2025", right: "Copilot, Zustand, Figma" },
+	{ year: "2026", right: "React 19, Next 16" },
 ]
 
 /** largeur d'un cote de la frise, la colonne des annees mise a part */
@@ -351,7 +438,7 @@ const paliers = (lang: Lang): Palier[] =>
  * palier tire un trait : le repeter en dessous ferait un peigne.
  */
 const skill = (name?: string, leader = "----") =>
-	name ? `${leader} +${name}+` : ""
+	name ? `${leader} ${paint(name, "+")}` : ""
 
 /** la colonne des annees, vide : elle court d'un palier a l'autre */
 const gap = () => row(`${toCenter("")}|    |`)
@@ -386,7 +473,7 @@ const body = (key: string, lang: Lang) =>
 const section = (key: string, lang: Lang) =>
 	box([
 		row(`+${TITLES[key][lang]}+`),
-		row(`${"_".repeat(INNER)}`),
+		row(escape("_".repeat(INNER))),
 		row(),
 		...body(key, lang),
 		row(),

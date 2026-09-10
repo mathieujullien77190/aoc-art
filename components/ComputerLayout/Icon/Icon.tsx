@@ -6,7 +6,7 @@ export const Icon = ({
 	name,
 	image,
 	open,
-	tutorial,
+	latch = true,
 	onClick = () => {},
 }: IconProps) => {
 	const [isOpen, setIsOpen] = useState<boolean>(open)
@@ -21,12 +21,11 @@ export const Icon = ({
 
 	return (
 		<S.Container
-			data-tutorial={tutorial}
 			onClick={() => {
-				setIsOpen(prev => !prev)
+				if (latch) setIsOpen(prev => !prev)
 				onClick(name)
 			}}
-			$isOpen={isOpen}
+			$isOpen={latch ? isOpen : open}
 		>
 			<S.Image>{image}</S.Image>
 			<S.Name>{name}</S.Name>

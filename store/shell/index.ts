@@ -25,6 +25,27 @@ export const shellRun = (pattern: string) => controls?.run(SHELL_ID, pattern)
 export const shellRunRestricted = (pattern: string) =>
 	controls?.runRestricted(SHELL_ID, pattern)
 
+/** frames d'attente avant d'abandonner la ligne */
+const WAIT_FRAMES = 10
+
+/**
+ * Joue une ligne, meme si le terminal vient tout juste d'etre demande.
+ * Une icone du bureau ouvre la fenetre et lance sa commande dans le meme
+ * clic : le shell, demonte tant que la fenetre est fermee, ne s'inscrit
+ * qu'au rendu suivant, et le paquet leve sur un id absent. On attend donc
+ * qu'il soit la, quelques frames au plus.
+ */
+export const shellRunWhenReady = (pattern: string, left = WAIT_FRAMES) => {
+	if (shellState()) {
+		shellRun(pattern)
+		return
+	}
+
+	if (left <= 0) return
+
+	requestAnimationFrame(() => shellRunWhenReady(pattern, left - 1))
+}
+
 /**
  * L'etat du terminal, lu a l'instant : langue, options, historique.
  *

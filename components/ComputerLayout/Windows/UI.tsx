@@ -7,6 +7,18 @@ export const Container = styled.div`
 	padding: ${FULL.padding};
 `
 
+/**
+ * Les icones de coin, en haut a droite : elles sortent de la colonne du
+ * bureau, qui empile les autres depuis le coin haut gauche.
+ */
+export const Corner = styled.div`
+	position: absolute;
+	top: ${FULL.padding};
+	right: ${FULL.padding};
+	display: flex;
+	gap: 6px;
+`
+
 export const Bar = styled.div`
 	position: absolute;
 	bottom: 0;

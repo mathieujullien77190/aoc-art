@@ -7,10 +7,14 @@ export type WindowProps = {
 	show: boolean
 	container: RefObject<HTMLDivElement>
 	title?: string
-	/** marque de la barre de titre, visee par la visite guidee */
-	tutorial?: string
 	/** marque du cadre entier, pour poser un calque par-dessus */
 	mark?: string
+	/**
+	 * Rang d'agrandissement : chaque increment ouvre la fenetre en grand.
+	 * Un booleen ne servirait qu'une fois — le visiteur peut la reduire
+	 * ensuite, et la demande suivante doit quand meme la rouvrir pleine.
+	 */
+	expand?: number
 	/** etage d'empilement : la fenetre au premier plan a le plus grand */
 	layer?: number
 	/** rang dans la cascade, pour ne pas s'ouvrir sur la precedente */
@@ -26,6 +30,14 @@ export type WindowProps = {
 	 * aucun seuil.
 	 */
 	compact?: boolean
+	/**
+	 * Le contenu porte son propre cadre : la fenetre lui laisse toute la
+	 * place entre ses bordures, sans marge ni fond a elle. C'est le cas du
+	 * shell, dont le theme pose sa marge et sa couleur de fond — depuis
+	 * que les themes ont lache leur bordure, une bande de la fenetre
+	 * autour de lui ne serait plus qu'un lisere d'une autre couleur.
+	 */
+	flush?: boolean
 	/** la fenetre reclame le premier plan */
 	onFocus?: () => void
 	children: ReactNode

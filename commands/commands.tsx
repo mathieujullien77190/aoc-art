@@ -5,7 +5,8 @@ import { Translatable, say } from "_i18n"
 import { app } from "_components/constants"
 
 import { displayList, loadScript, getScript } from "./aocCommands"
-import { CV_SECTIONS, buildCV } from "./cv"
+import { CV_PDF, CV_PDF_SAYS, CV_SECTIONS, buildCV, downloadCv } from "./cv"
+import { FS_TARGETS, flowerShellSays, openFlowerShell } from "./flowerShell"
 
 import { Games } from "_games/Games"
 import { gamesConfig } from "_games/constants"
@@ -36,8 +37,7 @@ export const commands: BaseCommands = {
 			}
 		},
 		effect: ({ args }) => {
-			if (getScript(args, gamesConfig))
-				shellState()?.setKeyboardOnFocus(false)
+			if (getScript(args, gamesConfig)) shellState()?.setKeyboardOnFocus(false)
 		},
 
 		JSX: ({ args }) => {
@@ -98,8 +98,13 @@ export const commands: BaseCommands = {
 
 	cv: {
 		restricted: false,
-		testArgs: { authorize: CV_SECTIONS, empty: true },
-		action: ({ args }) => say(buildCV(args[0])),
+		testArgs: { authorize: [...CV_SECTIONS, CV_PDF], empty: true },
+		action: ({ args }) =>
+			args[0] === CV_PDF ? say(CV_PDF_SAYS) : say(buildCV(args[0])),
+		// le telechargement est un effet de bord : il part apres l'affichage
+		effect: ({ args }) => {
+			if (args[0] === CV_PDF) downloadCv()
+		},
 		help: () => ({
 			description: say({
 				fr: "Affiche le CV de l'auteur, en entier ou par section",
@@ -118,6 +123,13 @@ export const commands: BaseCommands = {
 					description: say({
 						fr: "+cv xp+ => Affiche uniquement les expériences",
 						en: "+cv xp+ => shows the experience section only",
+					}),
+				},
+				{
+					pattern: `cv ${CV_PDF}`,
+					description: say({
+						fr: "Télécharge le CV en PDF",
+						en: "Downloads the resume as a PDF",
 					}),
 				},
 			],
@@ -199,22 +211,37 @@ export const commands: BaseCommands = {
 		}),
 	},
 
-	tuto: {
+	"flower-shell": {
 		restricted: false,
-		action: () =>
-			say({
-				fr: "visite guidée",
-				en: "guided tour",
-			}),
-		// la visite lit le drapeau dans le store, comme le bureau
-		effect: () => globalActions().setProperty("tutorial", true),
+		testArgs: { authorize: FS_TARGETS, empty: true },
+		action: ({ args }) => say(flowerShellSays(args[0])),
+		// l'onglet part apres l'affichage, comme le PDF du CV
+		effect: ({ args }) => openFlowerShell(args[0]),
 		help: () => ({
+			description: say({
+				fr: "Le paquet qui porte ce terminal, et où aller le lire",
+				en: "The package behind this terminal, and where to read it",
+			}),
 			patterns: [
 				{
-					pattern: "tuto",
+					pattern: "flower-shell",
 					description: say({
-						fr: "Rejoue la visite guidée du bureau et du shell",
-						en: "Replays the guided tour of the desktop and the shell",
+						fr: "Présente le paquet et ses deux adresses",
+						en: "Introduces the package and its two addresses",
+					}),
+				},
+				{
+					pattern: "flower-shell git",
+					description: say({
+						fr: "Ouvre le dépôt GitHub dans un nouvel onglet",
+						en: "Opens the GitHub repository in a new tab",
+					}),
+				},
+				{
+					pattern: "flower-shell storybook",
+					description: say({
+						fr: "Ouvre le storybook dans un nouvel onglet",
+						en: "Opens the storybook in a new tab",
 					}),
 				},
 			],

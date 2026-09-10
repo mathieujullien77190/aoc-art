@@ -10,6 +10,16 @@ export const colors = {
 	appColor: "#90be20",
 }
 
+/**
+ * Le paquet qui porte le terminal : son depot et sa doc publiee. Les deux
+ * servent au bureau (la fenetre de doc) comme au shell (la commande
+ * flower-shell), d'ou leur place ici plutot que dans l'un des deux.
+ */
+export const pkg = {
+	repo: "https://github.com/mathieujullien77190/flower-shell",
+	storybook: "https://mathieujullien77190.github.io/flower-shell/",
+}
+
 export const app = {
 	name: "Flower Shell",
 	logo: "🌼",

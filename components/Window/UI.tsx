@@ -106,11 +106,20 @@ export const topBar = styled.div`
 	cursor: move;
 `
 
-export const Content = styled.div`
+/**
+ * La zone sous la barre de titre. Les 25px retires sont la barre elle-meme :
+ * 15 de haut, ses deux paddings et sa bordure basse.
+ *
+ * En `$flush`, ni marge ni fond : le contenu s'occupe des deux et va d'une
+ * bordure a l'autre.
+ */
+export const Content = styled.div<{ $flush: boolean }>`
 	overflow-y: auto;
-	height: ${`calc(100% - ${FULL.padding} * 2 - 25px)`};
-	padding: ${FULL.padding};
-	background-color: ${colors.background};
+	height: ${({ $flush }) =>
+		$flush ? "calc(100% - 25px)" : `calc(100% - ${FULL.padding} * 2 - 25px)`};
+	padding: ${({ $flush }) => ($flush ? "0" : FULL.padding)};
+	background-color: ${({ $flush }) =>
+		$flush ? "transparent" : colors.background};
 
 	&::-webkit-scrollbar {
 		-webkit-appearance: none;

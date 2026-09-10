@@ -4,6 +4,10 @@ Un faux ordinateur rétro, jouable dans le navigateur : séquence de boot, BIOS,
 gestionnaire de fenêtres, puis un shell qui exécute des commandes. Les « jeux »
 sont des visualisations animées en ASCII de puzzles [Advent of Code](https://adventofcode.com).
 
+Le terminal lui-même est un paquet npm à part, [flower-shell](https://github.com/mathieujullien77190/flower-shell)
+([storybook](https://mathieujullien77190.github.io/flower-shell/)) : ce site
+l'installe, lui donne ses commandes et le pose dans une fenêtre du bureau.
+
 Par JULLIEN Mathieu (SuperMatou).
 
 ## Démarrer
@@ -23,70 +27,80 @@ Node 24 (épinglé par `engines.node`).
 
 ## Le bureau
 
-Quatre icônes, une barre des tâches, des fenêtres déplaçables :
+Des icônes, une barre des tâches, des fenêtres déplaçables :
 
-| Icône           | Ouvre                                   |
-| --------------- | --------------------------------------- |
-| 🌼 Flower Shell | le terminal                             |
-| 📡 1/PRISM      | des flux de caméras rendus en ASCII     |
-| 📄 CV           | le CV, en ASCII dans le shell ou en PDF |
-| 💡 Aide         | la visite guidée                        |
+| Icône                | Fait                                          |
+| -------------------- | --------------------------------------------- |
+| 🌼 Flower Shell      | ouvre le terminal                             |
+| 🎄 Advent of Code    | joue `aoc list` dans le shell                 |
+| 📡 1/PRISM           | ouvre des flux de caméras rendus en ASCII     |
+| 📖 Doc Flower Shell  | ouvre le storybook du paquet dans une fenêtre |
+| 📄 CV (dans le coin) | joue `cv` dans le shell                       |
 
-- Cliquer une icône déjà au premier plan referme sa fenêtre.
-- La fenêtre se déplace par sa barre de titre, se redimensionne au double-clic.
+- Une icône qui joue une commande ouvre le shell en grand : les sorties sont
+  larges, une fenêtre moyenne les replierait.
+- Une fenêtre rouvre telle qu'on l'a fermée, taille et position.
+- Cliquer l'icône d'une fenêtre déjà au premier plan la referme ; cachée
+  derrière une autre, elle remonte. Le shell fermé repart vide.
+- La fenêtre se déplace par sa barre de titre, s'agrandit au double-clic. Sous
+  1024 px, les fenêtres restent pleines.
 - **[SUPPR] pendant le boot** ouvre le BIOS : vitesse de démarrage, vieil écran,
   écran bleu fatal.
-- Le PDF du CV plante volontairement la machine.
 
 ## Le shell
 
 - **[TAB]** complète la commande commencée, **[HAUT]/[BAS]** rejouent l'historique.
+- Certains textes sont cliquables et jouent leur commande (le lien PDF du CV).
 - L'URL est un raccourci : `#aoc_1` lance `aoc 1` au chargement (`_` = espace).
 
-### Commandes
+### Commandes du site
 
-| Commande                                     | Effet                                                 |
-| -------------------------------------------- | ----------------------------------------------------- |
-| `help`                                       | liste toutes les commandes                            |
-| `help [commande]`                            | l'aide d'une commande précise                         |
-| `aoc list`                                   | liste les scripts disponibles (16 jours)              |
-| `aoc [index]`                                | `aoc 1` lance « Calorie Counting »                    |
-| `aoc [année]-[jour]`                         | `aoc 2022-12` lance « Hill Climbing Algorithm »       |
-| `aoc [texte]`                                | `aoc cuc` lance « Sea Cucumber »                      |
-| `cv`                                         | le CV complet                                         |
-| `cv [timeline \| xp \| skills \| formation]` | une seule section                                     |
-| `prism`                                      | ouvre 1/PRISM                                         |
-| `tuto`                                       | rejoue la visite guidée                               |
-| `about`                                      | qui, avec quoi                                        |
-| `hello [texte]`                              | affiche `Hello [texte]`                               |
-| `flowers`                                    | plante des fleurs 🌼                                  |
-| `stux`                                       | fonctionnalité expérimentale et inutile               |
-| `animation [on \| off]`                      | écriture lettre par lettre des réponses               |
-| `lang [fr \| en \| #]`                       | langue des textes ; `#` change chaque lettre en fleur |
-| `clear`                                      | efface l'écran, garde l'historique                    |
+| Commande                                     | Effet                                                |
+| -------------------------------------------- | ---------------------------------------------------- |
+| `aoc list`                                   | liste les scripts disponibles (16 jours)             |
+| `aoc [index]`                                | `aoc 1` lance « Calorie Counting »                   |
+| `aoc [année]-[jour]`                         | `aoc 2022-12` lance « Hill Climbing Algorithm »      |
+| `aoc [texte]`                                | `aoc cuc` lance « Sea Cucumber »                     |
+| `cv`                                         | le CV complet                                        |
+| `cv [timeline \| xp \| skills \| formation]` | une seule section                                    |
+| `cv pdf`                                     | télécharge le CV en PDF                              |
+| `prism`                                      | ouvre 1/PRISM                                        |
+| `flower-shell`                               | présente le paquet du terminal                       |
+| `flower-shell [git \| storybook]`            | ouvre le dépôt ou le storybook dans un nouvel onglet |
+| `about`                                      | qui, avec quoi                                       |
+| `stux`                                       | fonctionnalité expérimentale et inutile              |
+
+### Commandes du paquet
+
+| Commande                 | Effet                                                  |
+| ------------------------ | ------------------------------------------------------ |
+| `help`                   | liste toutes les commandes                             |
+| `help [commande]`        | l'aide d'une commande précise                          |
+| `hello [texte]`          | affiche `Hello [texte]`                                |
+| `flowers`                | plante des fleurs 🌼 — le bureau en sème sur les côtés |
+| `animation [on \| off]`  | écriture lettre par lettre des réponses                |
+| `lang [fr \| en]`        | langue des textes, suivie par le bureau                |
+| `theme [nom]`            | change les couleurs ; `help theme` liste les huit      |
+| `font [+ \| - \| reset]` | taille du texte                                        |
+| `test`                   | montre les couleurs et balises du rendu                |
+| `clear`                  | efface l'écran et remet le bureau à neuf               |
 
 Les commandes internes — `welcome`, `title`, `unknow`, `argumenterror`,
-`closeaoc` — sont marquées `restricted` : le shell les joue lui-même, les taper
-ne donne rien.
-
-## La visite guidée
-
-Elle démarre seule à la première venue, se relance par l'icône 💡 ou la commande
-`tuto`, et retient qu'elle a été vue dans le `localStorage`. Chaque étape pose un
-projecteur sur un élément marqué `data-tutorial` et une bulle à côté ; certaines
-attendent que vous jouiez la commande demandée pour passer à la suivante.
+`actionmap`, `closeaoc` — sont marquées `restricted` : le shell les joue
+lui-même, les taper ne donne rien.
 
 ## Architecture
 
 ```
-pages/index.tsx             page unique, monte le terminal et la visite
-components/ComputerLayout/  BIOS, Computer, Window, Windows, Icon, Tutorial
-components/Terminal/        le shell : commandes rendues + saisie
-components/Command/         rendu d'une ligne de commande
-commands/commands.tsx       définition des commandes (nom, action, help)
+pages/index.tsx             page unique, monte le bureau et le shell
+components/ComputerLayout/  BIOS, Computer, Windows, Icon — le faux OS
+components/Window/          la fenêtre : déplacement, taille, fermeture
+components/Storybook/       la doc du paquet, en iframe
+commands/commands.tsx       les commandes du site (action, effect, help)
 games/core/dayN.ts          logique du puzzle, génère les frames
 games/components/days/      rendu React d'un jour
-store/                      slices RTK : global, history
+store/global/               état du bureau (zustand) : langue, fenêtres…
+store/shell/                relais vers le terminal, pour les commandes
 projects/prism/             1/PRISM
 ```
 
@@ -95,5 +109,6 @@ de fichier : `aoc 10` lance `day8.ts` (2023-08).
 
 ## Stack
 
-Next 16 (Pages Router, Turbopack) · React 19 · Redux Toolkit 2 ·
-styled-components 6 · TypeScript 5.9 · export statique (`output: "export"`).
+Next 16 (Pages Router, Turbopack) · React 19 · zustand 5 · styled-components 6
+· TypeScript 5.9 · [flower-shell](https://www.npmjs.com/package/flower-shell) ·
+export statique (`output: "export"`).
