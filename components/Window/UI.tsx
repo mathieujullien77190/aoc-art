@@ -7,6 +7,8 @@ import {
 	CASCADE,
 	MEDIUM_MARGIN,
 	MEDIUM_SIZE,
+	PHONE_HEIGHT,
+	PHONE_WIDTH,
 	TOP_LAYER,
 	WINDOW_COLORS,
 	WINDOW_FONT,
@@ -23,6 +25,8 @@ type ContainerProps = {
 	 * barre des taches ; sans elle, la fenetre passerait dessous.
 	 */
 	$bottomInset: string
+	/** gabarit portrait fixe au lieu du carre moyen, cf. WindowProps.phone */
+	$phone: boolean
 }
 
 /**
@@ -55,8 +59,14 @@ export const Container = styled.div.attrs<ContainerProps>(props => ({
 }))`
 	position: absolute;
 
-	${({ $mode, $bottomInset }) => {
+	${({ $mode, $bottomInset, $phone }) => {
 		if ($mode === "close") return "width: 0; height: 0;"
+
+		if ($mode !== "full" && $phone)
+			return `
+				width: calc(${PHONE_WIDTH} - ${FULL.borderSize} * 2);
+				height: calc(${PHONE_HEIGHT} - ${FULL.borderSize} * 2);
+			`
 
 		const side = $mode === "full" ? 100 : MEDIUM_SIZE
 		return `

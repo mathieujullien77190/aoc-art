@@ -26,6 +26,11 @@ export const ICONS: DesktopIcon[] = [
 		image: "📖",
 	},
 	{
+		key: "game",
+		label: { fr: "Tic-Tac-Tic", en: "Tic-Tac-Tic" },
+		image: "🎮",
+	},
+	{
 		key: "cv",
 		label: "CV",
 		image: "📄",
@@ -41,4 +46,4 @@ export const COMPACT_MAX_WIDTH = 1024
  * Les fenetres, dans l'ordre : il sert au decalage en cascade a
  * l'ouverture et a l'ordre de la barre des taches.
  */
-export const WINDOW_NAMES: WindowName[] = ["shell", "prism", "storybook"]
+export const WINDOW_NAMES: WindowName[] = ["shell", "prism", "storybook", "game"]

@@ -31,6 +31,12 @@ export type WindowProps = {
 	 */
 	compact?: boolean
 	/**
+	 * Gabarit portrait fixe plutot que le carre moyen habituel, pour un
+	 * contenu pense pour un ecran de telephone. Non redimensionnable, comme
+	 * `compact` — les deux se melangent mal, `compact` gagne sur petit ecran.
+	 */
+	phone?: boolean
+	/**
 	 * Le contenu porte son propre cadre : la fenetre lui laisse toute la
 	 * place entre ses bordures, sans marge ni fond a elle. C'est le cas du
 	 * shell, dont le theme pose sa marge et sa couleur de fond — depuis

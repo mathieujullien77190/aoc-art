@@ -18,6 +18,7 @@ const BaseWindow = (
 		rank = 0,
 		bottomInset = "0px",
 		compact = false,
+		phone = false,
 		flush = false,
 		onFocus = () => {},
 		onClose = () => {},
@@ -129,17 +130,18 @@ const BaseWindow = (
 					$followMouse={followMouse}
 					$layer={layer}
 					$bottomInset={bottomInset}
+					$phone={phone}
 					onMouseDown={onFocus}
 				>
 					<S.topBar
-						onDoubleClick={compact ? undefined : handleResize}
+						onDoubleClick={compact || phone ? undefined : handleResize}
 						onMouseDown={() => {
 							if (mode !== "full") setFollowMouse(true)
 						}}
 					>
 						<S.Title>{title}</S.Title>
 						<S.Actions>
-							{!compact && (
+							{!compact && !phone && (
 								<span onClick={handleResize}>
 									{mode === "full" ? "-" : "+"}
 								</span>

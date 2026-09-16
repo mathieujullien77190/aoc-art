@@ -17,6 +17,10 @@ export const ANIM_TIME = 300
 export const MEDIUM_MARGIN = 15
 export const MEDIUM_SIZE = 70
 
+// gabarit fixe de la fenetre "phone" : portrait, proche d'un ecran de mobile
+export const PHONE_WIDTH = "380px"
+export const PHONE_HEIGHT = "760px"
+
 // decalage d'une fenetre a l'autre a l'ouverture, en pixels : sans lui
 // elles se posent au meme endroit et se masquent parfaitement
 export const CASCADE = 26

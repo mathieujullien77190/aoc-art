@@ -20,6 +20,11 @@ export const pkg = {
 	storybook: "https://mathieujullien77190.github.io/flower-shell/",
 }
 
+/** le mini-jeu embarque, publie sur GitHub Pages depuis son propre depot */
+export const game = {
+	url: "https://mathieujullien77190.github.io/game/",
+}
+
 export const app = {
 	name: "Flower Shell",
 	logo: "🌼",

@@ -14,7 +14,7 @@ export type WindowsProps = {
 export type Pos = { x: number; y: number }
 
 /** icone qui porte une fenetre du bureau */
-export type WindowName = "shell" | "prism" | "storybook"
+export type WindowName = "shell" | "prism" | "storybook" | "game"
 
 /** AOC et le CV n'ouvrent pas de fenetre : ils jouent une commande */
 export type IconKey = WindowName | "aoc" | "cv"

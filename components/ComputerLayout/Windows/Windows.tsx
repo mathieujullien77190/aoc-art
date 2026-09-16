@@ -13,6 +13,7 @@ import Icon from "../Icon"
 import Date from "../Date"
 import Prism from "_projects/prism"
 import Storybook from "_components/Storybook"
+import Game from "_components/Game"
 import Virus from "_components/Virus"
 
 const rankOf = (name: WindowName) => WINDOW_NAMES.indexOf(name)
@@ -167,6 +168,24 @@ const BaseWindows = (
 				onClose={() => close("storybook")}
 			>
 				<Storybook />
+			</Window>
+
+			{/* le mini-jeu, pense pour un ecran de telephone : la fenetre
+			    reste a ce gabarit plutot que le carre moyen habituel */}
+			<Window
+				show={isOpen("game")}
+				container={globalRef}
+				title={labelOf("game", lang)}
+				layer={layer("game")}
+				bottomInset={FULL.heightBar}
+				compact={compact}
+				phone
+				flush
+				rank={rankOf("game")}
+				onFocus={() => focus("game")}
+				onClose={() => close("game")}
+			>
+				<Game />
 			</Window>
 
 			<S.Bar>
