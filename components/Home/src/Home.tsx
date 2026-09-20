@@ -16,6 +16,7 @@ import {
 } from "flower-shell"
 
 import { commands as customCommands } from "_commands/commands"
+import { syncUrl } from "_commands/url"
 
 import Layout from "_components/Layout"
 import Computer from "_components/ComputerLayout/Computer"
@@ -84,7 +85,7 @@ const deepLink = (): string[] => {
 }
 
 type HomeProps = {
-	/** la commande jouee a l'arrivee : la route /aoc/2022/1 donne "aoc 2022-1" */
+	/** la commande jouee a l'arrivee : la route /aoc/5 donne "aoc 5" */
 	command?: string
 }
 
@@ -113,7 +114,12 @@ export const Home = ({ command }: HomeProps) => {
 	 * les plantes ni le virus : sa commande flowers ne dessine que son ascii,
 	 * c'est ici qu'on la prend au vol pour semer sur les cotes de l'ecran.
 	 */
-	const handleCommandDone = useCallback(({ name }: CommandEvent) => {
+	const handleCommandDone = useCallback((event: CommandEvent) => {
+		const { name } = event
+
+		// l'adresse suit la commande : `aoc 5` donne /aoc/5
+		syncUrl(event)
+
 		if (name === "flowers") globalActions().setProperty("flowers", Date.now())
 
 		// le bureau se remet a neuf en meme temps que l'ecran

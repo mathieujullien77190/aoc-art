@@ -16,107 +16,32 @@ import GameDay142 from "./loading/day142"
 import GameDay21 from "./loading/day21"
 import GamePlayground from "./loading/playground"
 
-export type GameConfig = {
-	day: string
-	year: string
-	title: string
-	special?: boolean
-	tag?: "New" | "Best"
+import { gameKey, gamesMeta, GameMeta } from "./meta"
+
+export type GameConfig = GameMeta & {
 	component: () => JSX.Element
 }
 
-export const gamesConfig: GameConfig[] = [
-	{
-		day: "25",
-		year: "2021",
-		title: "Sea Cucumber",
-		component: () => <Game2021 />,
-	},
-	{
-		day: "1",
-		year: "2022",
-		title: "Calorie Counting",
-		component: () => <GameDay1 />,
-	},
-	{
-		day: "4",
-		year: "2022",
-		title: "Camp Cleanup",
-		component: () => <GameDay4 />,
-	},
-	{
-		day: "5",
-		year: "2022",
-		title: "Supply Stacks",
-		component: () => <GameDay5 />,
-	},
-	{
-		day: "9",
-		year: "2022",
-		title: "Rope Bridge",
-		component: () => <GameDay9 />,
-	},
-	{
-		day: "12",
-		year: "2022",
-		title: "Hill Climbing Algorithm",
-		tag: "Best",
-		component: () => <GameDay12 />,
-	},
-	{
-		day: "15",
-		year: "2021",
-		title: "Chiton",
-		component: () => <GameDay15 />,
-	},
-	{
-		day: "14",
-		year: "2022",
-		title: "Regolith Reservoir",
-		component: () => <GameDay14 />,
-	},
-	{
-		day: "18",
-		year: "2022",
-		title: "Boiling Boulders",
-		component: () => <GameDay18 />,
-	},
-	{
-		day: "22",
-		year: "2022",
-		title: "Monkey Map",
-		component: () => <GameDay22 />,
-	},
-	{
-		day: "8",
-		year: "2023",
-		title: "Haunted Wasteland",
-		component: () => <GameDay8 />,
-	},
-	{
-		day: "10",
-		year: "2023",
-		title: "Pipe Maze",
-		component: () => <GameDay10 />,
-	},
-	{
-		day: "14",
-		year: "2023",
-		title: "Parabolic Reflector Dish",
-		component: () => <GameDay142 />,
-	},
-	{
-		day: "21",
-		year: "2023",
-		title: "Step Counter",
-		tag: "New",
-		component: () => <GameDay21 />,
-	},
-	{
-		day: "XX",
-		year: "XXXX",
-		title: "Playground",
-		special: true,
-		component: () => <GamePlayground />,
-	},
-]
+/** le rendu de chaque jeu, par cle annee-jour (voir meta.ts) */
+const components: Record<string, () => JSX.Element> = {
+	"2021-25": () => <Game2021 />,
+	"2022-1": () => <GameDay1 />,
+	"2022-4": () => <GameDay4 />,
+	"2022-5": () => <GameDay5 />,
+	"2022-9": () => <GameDay9 />,
+	"2022-12": () => <GameDay12 />,
+	"2021-15": () => <GameDay15 />,
+	"2022-14": () => <GameDay14 />,
+	"2022-18": () => <GameDay18 />,
+	"2022-22": () => <GameDay22 />,
+	"2023-8": () => <GameDay8 />,
+	"2023-10": () => <GameDay10 />,
+	"2023-14": () => <GameDay142 />,
+	"2023-21": () => <GameDay21 />,
+	"XXXX-XX": () => <GamePlayground />,
+}
+
+export const gamesConfig: GameConfig[] = gamesMeta.map(meta => ({
+	...meta,
+	component: components[gameKey(meta)],
+}))

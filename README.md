@@ -51,7 +51,10 @@ Des icônes, une barre des tâches, des fenêtres déplaçables :
 
 - **[TAB]** complète la commande commencée, **[HAUT]/[BAS]** rejouent l'historique.
 - Certains textes sont cliquables et jouent leur commande (le lien PDF du CV).
-- L'URL est un raccourci : `#aoc_1` lance `aoc 1` au chargement (`_` = espace).
+- L'URL suit la dernière commande jouée : `aoc 5` donne `/aoc/5`, `cv xp` donne
+  `/cv/xp`. Ouvrir cette adresse rejoue la commande au chargement. Les lignes
+  sans page (`clear`, arguments libres comme `theme flower`) remettent `/`.
+  L'ancien `#aoc_1` lance encore `aoc 1` (`_` = espace).
 
 ### Commandes du site
 
@@ -92,7 +95,9 @@ lui-même, les taper ne donne rien.
 ## Architecture
 
 ```
-pages/index.tsx             page unique, monte le bureau et le shell
+app/page.tsx                accueil : monte le bureau et le shell (components/Home)
+app/[...command]/           une page statique par ligne de commande (commands/routes.ts)
+app/layout.tsx              <html>, metadonnees, registre styled-components
 components/ComputerLayout/  BIOS, Computer, Windows, Icon — le faux OS
 components/Window/          la fenêtre : déplacement, taille, fermeture
 components/Storybook/       la doc du paquet, en iframe
