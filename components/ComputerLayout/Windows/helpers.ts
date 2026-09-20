@@ -6,10 +6,10 @@ import { DesktopIcon, IconKey, WindowName } from "./types"
 export const iconOf = (key: IconKey): DesktopIcon =>
 	ICONS.filter(icon => icon.key === key)[0]
 
-/** l'icone porte-t-elle une fenetre : les autres ne s'empilent pas */
+/** does the icon carry a window: the others do not stack */
 export const isWindowIcon = (key: IconKey): key is WindowName =>
 	WINDOW_NAMES.includes(key as WindowName)
 
-/** libelle de l'icone dans la langue courante */
+/** icon label in the current language */
 export const labelOf = (key: IconKey, lang: string): string =>
 	pick(iconOf(key).label, lang)

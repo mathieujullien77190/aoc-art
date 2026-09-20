@@ -1,14 +1,14 @@
 /**
- * Le cadre de la fenetre du shell. Le masque se pose dessus : les trous
- * suivent donc la fenetre sans qu'on ait a la suivre nous-memes.
+ * The shell window frame. The mask sits on it: holes follow the window
+ * without us tracking it.
  */
 export const TARGET = '[data-window="shell"]'
 
-/** cote d'un pixel perdu, en pixels */
+/** side of a lost cell, in pixels */
 export const PIXEL_SIZE = 40
 
-/** duree entre deux pertes, en ms */
+/** time between two losses, in ms */
 export const TICK_MS = 35
 
-/** poids du voisin du dessous dans la propagation : 1 pour aucun biais */
+/** weight of the neighbour below in the spread: 1 for no bias */
 export const DOWN_BIAS = 2

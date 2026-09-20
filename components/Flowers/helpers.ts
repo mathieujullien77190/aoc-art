@@ -10,10 +10,7 @@ import { FlwGlobal, FlwOptions, Side, Size } from "./types"
 
 let loading: Promise<FlwGlobal | null> | null = null
 
-/**
- * Charge la bibliotheque une seule fois. Elle se pose sur window, d'ou la
- * balise script plutot qu'un import : il n'existe pas de paquet npm.
- */
+/** Loads the library once: it sets itself on window (no npm package), hence a script tag. */
 export const loadFlw = (): Promise<FlwGlobal | null> => {
 	if (window.Flw) return Promise.resolve(window.Flw)
 
@@ -36,24 +33,21 @@ export const viewport = (): Size => ({
 	height: window.innerHeight,
 })
 
-/** taille du canvas d'une plante : deux fois son emprise, toute la hauteur */
+/** canvas size of a plant: twice its footprint, full height */
 export const plantSize = (screen: Size): Size => ({
 	width: SPREAD * 2,
 	height: screen.height,
 })
 
 /**
- * Decalage horizontal du canvas. La tige part du bas au centre : caler ce
- * centre sur le bord fait pousser la plante dans le coin, la moitie
- * inutile debordant hors de l'ecran.
+ * Horizontal canvas offset. The stem starts at the bottom centre: putting
+ * that centre on the edge grows the plant in the corner, the useless half
+ * overflowing the screen.
  */
 export const plantLeft = (screen: Size, side: Side): number =>
 	side === "left" ? -SPREAD : screen.width - SPREAD
 
-/**
- * Les couleurs ne se donnent pas en hexa, la lib attend ses objets. La
- * tige maitresse, elle, s'allonge avec la hauteur de l'ecran.
- */
+/** Colours are not hex: the lib expects its own objects. The master stem grows with screen height. */
 export const buildOptions = (flw: FlwGlobal, screen: Size): FlwOptions => ({
 	...OPTIONS,
 	maxDeepnessMaster: Math.max(

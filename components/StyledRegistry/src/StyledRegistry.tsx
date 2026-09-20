@@ -5,9 +5,9 @@ import { useServerInsertedHTML } from "next/navigation"
 import { ServerStyleSheet, StyleSheetManager } from "styled-components"
 
 /**
- * Le pendant App Router de l'ancien _document : au rendu serveur, collecte
- * les styles de styled-components et les injecte dans le <head> du HTML
- * exporte, sinon la page s'afficherait nue avant l'hydratation.
+ * The App Router counterpart of the old _document: on server render,
+ * collects the styled-components styles and injects them in the exported
+ * HTML's <head>, or the page would show bare before hydration.
  */
 export const StyledRegistry = ({ children }: { children: React.ReactNode }) => {
 	const [sheet] = useState(() => new ServerStyleSheet())
@@ -19,7 +19,7 @@ export const StyledRegistry = ({ children }: { children: React.ReactNode }) => {
 		return <>{styles}</>
 	})
 
-	// cote navigateur, styled-components gere ses styles lui-meme
+	// in the browser, styled-components handles its own styles
 	if (typeof window !== "undefined") return <>{children}</>
 
 	return <StyleSheetManager sheet={sheet.instance}>{children}</StyleSheetManager>

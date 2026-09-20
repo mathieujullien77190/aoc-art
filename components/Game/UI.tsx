@@ -5,6 +5,6 @@ export const Frame = styled.iframe`
 	height: 100%;
 	border: none;
 	display: block;
-	/* le jeu a son propre fond, noir le temps qu'il charge */
+	/* the game has its own background, black while it loads */
 	background-color: #000000;
 `

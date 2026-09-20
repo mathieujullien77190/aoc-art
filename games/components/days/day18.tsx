@@ -64,8 +64,8 @@ const Volcano = styled.pre`
 const Animation = () => {
 	const [color, setColor] = useState<number>(9)
 
-	// calcul pur et fait une seule fois : l'initialiseur paresseux evite le
-	// rendu intermediaire sans plan que provoquait un effet de montage
+	// pure and done once: the lazy initialiser avoids the empty intermediate
+	// render a mount effect caused
 	const [basePlan] = useState<ViewPlan>(() => {
 		const test = searchInsideCube(data)
 

@@ -3,19 +3,17 @@ import { pkg } from "_components/constants"
 import * as S from "./UI"
 
 /**
- * La doc du paquet, telle qu'elle est publiee. Un iframe plutot qu'un
- * lien : la fenetre du bureau est deja un cadre, le visiteur ne quitte
- * pas la machine pour lire le storybook.
+ * The package docs, as published. An iframe rather than a link: the desktop
+ * window is already a frame.
  *
- * Elle n'est montee que fenetre ouverte — `Window` ne rend rien quand
- * elle est fermee — donc rien ne se charge tant qu'on ne clique pas.
+ * Only mounted while the window is open, so nothing loads until clicked.
  */
 export const Storybook = () => (
 	<S.Frame
 		src={pkg.storybook}
 		title="Flower Shell Storybook"
 		loading="lazy"
-		// la doc est sur un autre domaine : rien a lui laisser de plus
+		// the docs are on another domain: nothing more to grant them
 		sandbox="allow-scripts allow-same-origin allow-popups"
 	/>
 )

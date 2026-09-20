@@ -8,8 +8,8 @@ export const Container = styled.div`
 `
 
 /**
- * Les icones de coin, en haut a droite : elles sortent de la colonne du
- * bureau, qui empile les autres depuis le coin haut gauche.
+ * Corner icons, top right: they leave the desktop column, which stacks the
+ * others from the top left corner.
  */
 export const Corner = styled.div`
 	position: absolute;
@@ -37,7 +37,7 @@ export const Bar = styled.div`
 	padding: 0 ${FULL.padding};
 `
 
-/** les fenetres ouvertes, poussees a gauche par l'heure */
+/** the open windows, pushed left by the clock */
 export const Tasks = styled.div`
 	display: flex;
 	gap: 6px;
@@ -58,7 +58,7 @@ export const Task = styled.div<{ $active: boolean }>`
 	border: solid 1px ${COLORS.border};
 	border-radius: 3px;
 
-	/* la fenetre au premier plan s'affiche enfoncee */
+	/* the front window is shown pressed */
 	background-color: ${({ $active }) => ($active ? "#00000022" : "transparent")};
 	box-shadow: ${({ $active }) => ($active ? "inset 1px 1px 2px #00000033" : "none")};
 

@@ -3,8 +3,8 @@ export type IconProps = {
 	image: string
 	open: boolean
 	/**
-	 * L'icone garde l'etat du clic en local, le temps que le parent suive.
-	 * Une icone qui n'ouvre rien s'en passe, sinon elle resterait allumee.
+	 * The icon keeps the click state locally while the parent catches up. An
+	 * icon that opens nothing skips it, or it would stay lit.
 	 */
 	latch?: boolean
 	onClick?: (name: string) => void

@@ -8,13 +8,13 @@ import { gamesMeta } from "_games/meta"
 
 type Params = { command: string[] }
 
-/** export statique : seules les lignes de ROUTES ont une page, le reste tombe en 404 */
+/** static export: only ROUTES lines have a page, the rest is a 404 */
 export const dynamicParams = false
 
 export const generateStaticParams = (): Params[] =>
 	ROUTES.map(command => ({ command }))
 
-/** /aoc/5 : le titre du jour ; ailleurs, la ligne elle-meme */
+/** /aoc/5: the day's title; elsewhere, the line itself */
 const titleOf = (command: string[]): string => {
 	const [name, arg] = command
 	const game = name === "aoc" ? gamesMeta[Number(arg)] : undefined
@@ -33,8 +33,8 @@ export const generateMetadata = async ({
 }
 
 /**
- * /aoc/5 monte le meme bureau que l'accueil, et joue +aoc 5+ des que le
- * shell est la : la commande fait le reste (fenetre, animation).
+ * /aoc/5 mounts the same desktop as the home page and plays `aoc 5` as soon
+ * as the shell is up: the command does the rest.
  */
 const Page = async ({ params }: { params: Promise<Params> }) => {
 	const { command } = await params

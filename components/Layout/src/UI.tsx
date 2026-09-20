@@ -9,9 +9,9 @@ export const GlobalStyles = createGlobalStyle<{
 	margin: 0;
 	font-family: monospace;
 
-	/* la taille de base se transmet par heritage. La poser sur * la
-	   rejouait sur chaque element, ce qui ecrasait les tailles locales :
-	   celle du terminal et celle de l'art ascii ne servaient a rien. */
+	/* the base size is passed down by inheritance. Setting it on * replayed
+	   it on every element, overriding local sizes: the terminal's and the
+	   ascii art's were useless. */
     font-size: ${({ isMobile }) => (isMobile ? "10px" : "17px")};
   }
 
@@ -19,7 +19,7 @@ export const GlobalStyles = createGlobalStyle<{
 	-webkit-tap-highlight-color: transparent;
   }
 
-  /* les controles de formulaire n'heritent pas de la police par defaut */
+  /* form controls do not inherit the font by default */
   input, button, textarea, select {
 	font: inherit;
   }

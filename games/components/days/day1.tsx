@@ -15,7 +15,7 @@ const Game = styled.pre`
 const pos = Math.floor(60 / 2) - 3
 
 const Animation = () => {
-	// survit aux rendus (vitesse, pause), remis à zéro au début de chaque cycle
+	// survives renders (speed, pause), reset at the start of each cycle
 	const theBest = useRef<number>(0)
 	const [speed, setSpeed] = useState<number>(20)
 	const [reload, setReload] = useState<number>(0)

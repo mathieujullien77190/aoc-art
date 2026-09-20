@@ -2,45 +2,41 @@ import { Translatable } from "_i18n"
 
 import { app } from "_components/constants"
 
-/** sections affichables une par une : +cv xp+, +cv skills+... */
+/** sections shown one at a time: `cv xp`, `cv skills`... */
 export const CV_SECTIONS = ["timeline", "xp", "skills", "formation"]
 
-/** l'argument qui telecharge au lieu d'afficher */
+/** the argument that downloads instead of displaying */
 export const CV_PDF = "pdf"
 
-/** la ligne que joue le lien de l'en-tete */
+/** the line played by the header link */
 const CV_PDF_PATTERN = `cv ${CV_PDF}`
 
-/** le lien de telechargement, sous l'email */
+/** download link, under the email */
 const DOWNLOAD: Record<"fr" | "en", string> = {
 	fr: "Télécharger CV PDF",
 	en: "Download CV as PDF",
 }
 
-/** export PDF du document source, servi en piece jointe par Google Docs */
+/** PDF export of the source document, served as an attachment by Google Docs */
 const CV_PDF_URL =
 	"https://docs.google.com/document/d/1yBih6xsRqkDgWmfXeWfcJlQsHoSaNvmSXxJ-6DxLcHo/export?format=pdf"
 
 /**
- * Google Docs renvoie l'export en piece jointe : l'onglet ouvert declenche
- * le telechargement puis se referme seul. Un attribut download ne servirait
- * a rien, il est ignore hors du meme domaine.
+ * Google Docs replies with an attachment: the opened tab downloads it and
+ * closes itself. A `download` attribute is ignored cross-origin.
  */
 export const downloadCv = () => window.open(CV_PDF_URL, "_blank", "noopener")
 
-/** ce que le shell dit pendant que l'onglet part chercher le fichier */
+/** what the shell says while the tab fetches the file */
 export const CV_PDF_SAYS: Translatable = {
 	fr: "\n§Téléchargement du CV en PDF…§\n",
 	en: "\n§Downloading the resume as a PDF…§\n",
 }
 
-/**
- * Le CV complet saute l'experience detaillee : la frise la resume deja,
- * les deux d'affilee feraient doublon. Elle reste accessible par +cv xp+.
- */
+/** The full CV skips detailed experience (the timeline covers it); see `cv xp`. */
 const FULL_SECTIONS = CV_SECTIONS.filter(key => key !== "xp")
 
-/** largeur interieure de la page, bordures comprises */
+/** inner page width, borders included */
 const WIDTH = 74
 
 type Lang = "fr" | "en"
@@ -184,22 +180,18 @@ const LINES: Record<string, Record<Lang, string[]>> = {
 }
 
 /**
- * Separateurs de mise en couleur, tels que le shell les consomme — la
- * liste doit rester celle de flower-shell, sinon les longueurs calculees
- * ici ne sont plus celles affichees et les bordures se decalent.
+ * Colour separators as the shell consumes them. Must match flower-shell's
+ * list, or computed lengths drift from displayed ones and borders shift.
  */
 const MARKERS = ["§", "+", "`", "!", "$", "_", "#"]
 
-/** un marqueur precede de \ s'affiche tel quel, il ne fait donc pas paire */
+/** a marker preceded by \ is displayed as-is, so it does not pair up */
 const ESCAPE = "\\"
 
-/** le marqueur echappe, mis de cote le temps du calcul */
+/** the escaped marker, set aside during the computation */
 const HIDDEN = String.fromCharCode(0)
 
-/**
- * Le marqueur cliquable porte sa commande apres un ~ : elle ne s'affiche
- * pas, seul le libelle reste. La compter deporterait la ligne.
- */
+/** A clickable marker carries its command after a ~; only the label shows. */
 const CLICKABLE = "#"
 
 const label = (line: string) =>
@@ -209,14 +201,12 @@ const label = (line: string) =>
 	) => inner.split("~")[0].trim())
 
 /**
- * Longueur reellement affichee : les separateurs disparaissent au rendu,
- * les compter decalerait la bordure droite.
- *
- * Ils ne comptent que par paires, comme a l'affichage, et un marqueur
- * echappe compte pour le seul caractere qui reste a l'ecran.
+ * Displayed length: separators vanish at render time, so counting them
+ * would shift the right border. They only count in pairs, and an escaped
+ * marker counts as the one character left on screen.
  */
 const visible = (line: string) => {
-	// hors jeu avant l'appariement, comme le fait le rendu
+	// out of play before pairing, as the renderer does
 	const escaped = label(
 		MARKERS.reduce(
 			(text, marker) => text.split(`${ESCAPE}${marker}`).join(HIDDEN),
@@ -235,9 +225,8 @@ const visible = (line: string) => {
 }
 
 /**
- * Neutralise les separateurs d'un texte qui n'en est pas un : dessin
- * ASCII, filets, le `#` de C sharp. Sans ca deux marqueurs se retrouvent
- * apparies a distance et avalent tout ce qui les separe.
+ * Neutralises separators in text that is not markup (ASCII art, rules, the
+ * `#` of C sharp), which would otherwise pair up at a distance.
  */
 const escape = (text: string) =>
 	text.replace(
@@ -246,10 +235,9 @@ const escape = (text: string) =>
 	)
 
 /**
- * Colore un texte en sortant les marqueurs echappes de la couleur : le
- * shell restaure les echappements avec react-string-replace, qui ne
- * redescend pas dans les elements deja crees — un echappement pris dans
- * une couleur resterait un caractere invisible.
+ * Colours a text, taking escaped markers out of the colour: the shell
+ * restores escapes with react-string-replace, which does not descend into
+ * existing elements.
  */
 const paint = (text: string, marker: string) =>
 	`${marker}${text.replace(
@@ -257,23 +245,22 @@ const paint = (text: string, marker: string) =>
 		char => `${marker}${ESCAPE}${char}${marker}`
 	)}${marker}`
 
-/** place disponible entre les bordures, marges comprises */
+/** room available between borders, margins included */
 const INNER = WIDTH - 6
 
-/** ligne de contenu, bordee a gauche et a droite */
+/** content line, bordered left and right */
 const row = (line = "") =>
 	`|  ${line}${" ".repeat(Math.max(0, INNER - visible(line)))}  |`
 
 /**
- * Decale une ligne pour la centrer dans la page. `width` permet de centrer
- * un bloc entier sur sa ligne la plus longue, sinon ses lignes partiraient
- * chacune d'un bord different et le dessin serait deforme.
+ * Shifts a line to centre it in the page. `width` centres a whole block on
+ * its longest line, so its lines do not each start from a different edge.
  */
 const center = (line: string, width = visible(line)) =>
 	" ".repeat(Math.max(0, Math.floor((INNER - width) / 2))) + line
 
 /**
- * Boite fermee, coins en diagonale :
+ * Closed box, diagonal corners:
  *
  *   ______
  *  /      \\
@@ -286,10 +273,7 @@ const box = (lines: string[]) => [
 	`${escape("+")}${"-".repeat(WIDTH - 2)}${escape("+")}`,
 ]
 
-/**
- * Le nom en grand, en deux blocs empiles : d'un seul tenant il ferait 83
- * colonnes, soit plus que la largeur de la page.
- */
+/** The big name, in two stacked blocks: in one piece it is 83 columns wide. */
 const BANNER = [
 	" __  __       _   _     _",
 	"|  \\/  | __ _| |_| |__ (_) ___ _   _",
@@ -304,10 +288,10 @@ const BANNER = [
 	" \\___/ \\___/|_____|_____|___|_____|_| \\_|",
 ]
 
-/** le bloc du nom se centre d'un seul tenant, sur sa ligne la plus large */
+/** the name block is centred as one piece, on its widest line */
 const BANNER_WIDTH = Math.max(...BANNER.map(line => line.length))
 
-/** mot d'accueil, sous l'etat civil */
+/** greeting, under the identity */
 const INTRO: Record<Lang, string[]> = {
 	fr: [
 		"Développeur front end depuis quinze ans, dont dix chez SeLoger,",
@@ -346,11 +330,9 @@ const header = (lang: Lang) =>
 	])
 
 /**
- * Frise : les annees tiennent la colonne centrale, les postes sont a
- * gauche, les competences prises cette annee-la a droite.
- *
- * Les annees sans repere dans le CV portent une competence plausible
- * plutot qu'un vide — a reordonner.
+ * Timeline: years in the centre column, jobs on the left, skills picked up
+ * that year on the right. Years with no landmark in the CV carry a
+ * plausible skill rather than a gap — to reorder.
  */
 const TIMELINE: {
 	year: string
@@ -408,19 +390,18 @@ const TIMELINE: {
 	{ year: "2026", right: "React 19, Next 16" },
 ]
 
-/** largeur d'un cote de la frise, la colonne des annees mise a part */
+/** width of one side of the timeline, year column aside */
 const HALF = (INNER - 6) / 2
 
-/** cale un texte contre la colonne des annees */
+/** pushes a text against the year column */
 const toCenter = (text: string) =>
 	`${" ".repeat(Math.max(0, HALF - visible(text)))}${text}`
 
 type Palier = { year: string; left: string; skills: string[] }
 
 /**
- * Seules les annees avec un poste tiennent une ligne. Les autres versent
- * leurs competences au palier du dessus — la premiere entree de TIMELINE
- * doit donc porter un poste, sinon ses competences n'ont nulle part ou aller.
+ * Only years with a job get a line; the others pour their skills into the
+ * step above, so the first TIMELINE entry must carry a job.
  */
 const paliers = (lang: Lang): Palier[] =>
 	TIMELINE.reduce<Palier[]>((acc, entry) => {
@@ -433,17 +414,14 @@ const paliers = (lang: Lang): Palier[] =>
 		return acc
 	}, [])
 
-/**
- * Competence accrochee a la colonne des annees. Seule la premiere d'un
- * palier tire un trait : le repeter en dessous ferait un peigne.
- */
+/** Skill hooked to the year column; only a step's first one draws a stroke. */
 const skill = (name?: string, leader = "----") =>
 	name ? `${leader} ${paint(name, "+")}` : ""
 
-/** la colonne des annees, vide : elle court d'un palier a l'autre */
+/** the empty year column, running from one step to the next */
 const gap = () => row(`${toCenter("")}|    |`)
 
-/** un palier : poste a gauche, annee au centre, competences a droite */
+/** a step: job on the left, year in the centre, skills on the right */
 const step = (palier: Palier) => [
 	row(
 		`${toCenter(`${palier.left} ----`)}|§${palier.year}§|${skill(palier.skills[0])}`
@@ -458,7 +436,7 @@ const LEGEND: Record<Lang, { left: string; right: string }> = {
 	en: { left: "position", right: "skills picked up" },
 }
 
-/** les paliers respirent : entre eux la colonne des annees reste tracee */
+/** steps breathe: the year column stays drawn between them */
 const timeline = (lang: Lang) => [
 	row(
 		`${toCenter(`+${LEGEND[lang].left}+     `)}|    |     +${LEGEND[lang].right}+`
@@ -466,7 +444,7 @@ const timeline = (lang: Lang) => [
 	...paliers(lang).flatMap(palier => [gap(), ...step(palier)]),
 ]
 
-/** la frise se construit, les autres sections se lisent telles quelles */
+/** the timeline is built, other sections are read as they are */
 const body = (key: string, lang: Lang) =>
 	key === "timeline" ? timeline(lang) : LINES[key][lang].map(line => row(line))
 
@@ -484,10 +462,7 @@ const RULER: Record<Lang, string> = {
 	en: "resize your window until this line fits on one row",
 }
 
-/**
- * Jauge de largeur : elle fait exactement la largeur de la page, donc
- * si elle se replie sur deux lignes, le reste du CV se repliera aussi.
- */
+/** Width gauge: as wide as the page, so if it wraps, the rest of the CV will too. */
 const ruler = (lang: Lang) => {
 	const dashes = WIDTH - RULER[lang].length - 4
 	const left = Math.floor(dashes / 2)
@@ -495,13 +470,13 @@ const ruler = (lang: Lang) => {
 	return `<${"-".repeat(left)} ${RULER[lang]} ${"-".repeat(dashes - left)}>`
 }
 
-/** les boites se suivent, separees par une ligne vide */
+/** boxes follow each other, separated by a blank line */
 const page = (keys: string[], lang: Lang) =>
 	[[ruler(lang)], header(lang), ...keys.map(key => section(key, lang))]
 		.map(lines => lines.join("\n"))
 		.join("\n\n")
 
-/** une section, ou le CV entier quand aucune n'est demandee */
+/** one section, or the whole CV when none is asked for */
 export const buildCV = (section?: string): Translatable => {
 	const keys = section ? [section] : FULL_SECTIONS
 

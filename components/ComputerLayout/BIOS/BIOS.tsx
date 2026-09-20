@@ -22,8 +22,8 @@ const EmptyItem = () => {
 
 export const BIOS = ({ onExit = () => {} }: BIOSProps) => {
 	const [current, setCurrent] = useState<number>(0)
-	// le BIOS n'est monte qu'apres l'hydratation : lire le storage des
-	// l'initialisation est sans risque et evite un rendu a vide
+	// the BIOS mounts only after hydration: reading storage during
+	// initialisation is safe and saves an empty render
 	const [settings, setSettings] = useState<Record<string, string>>(() =>
 		getStorage("settings")
 	)

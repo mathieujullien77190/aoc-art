@@ -13,8 +13,8 @@ export const COLORS = {
 }
 
 /**
- * Les icones du bureau, dans l'ordre d'affichage. Le shell, 1/PRISM et la
- * doc ouvrent une fenetre, AOC et le CV jouent une commande dans le shell.
+ * Desktop icons, in display order. The shell, 1/PRISM and the docs open a
+ * window; AOC and the CV play a command in the shell.
  */
 export const ICONS: DesktopIcon[] = [
 	{ key: "shell", label: "Flower Shell", image: "🌼" },
@@ -39,11 +39,11 @@ export const ICONS: DesktopIcon[] = [
 	},
 ]
 
-// en dessous, les fenetres restent pleines et non redimensionnables
+// below this, windows stay full and not resizable
 export const COMPACT_MAX_WIDTH = 1024
 
 /**
- * Les fenetres, dans l'ordre : il sert au decalage en cascade a
- * l'ouverture et a l'ordre de la barre des taches.
+ * The windows, in order: it drives the cascade offset on opening and the
+ * taskbar order.
  */
 export const WINDOW_NAMES: WindowName[] = ["shell", "prism", "storybook", "game"]

@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation"
 import * as S from "./UI"
 
 /**
- * La 404 sous forme d'ecran bleu, comme celui du virus : n'importe quelle
- * touche ou un clic ramene au bureau.
+ * The 404 as a blue screen, like the virus one: any key or a click goes
+ * back to the desktop.
  */
 export const NotFound = () => {
 	const router = useRouter()

@@ -20,11 +20,9 @@ const RESTRICTED: Translatable = {
 }
 
 /**
- * Les commandes propres a ce site ; les autres viennent du paquet.
- *
- * Le nom n'est plus dans la commande, c'est la cle qui le porte. Et les
- * textes sont resolus a l'affichage, pas a la definition : le paquet lit
- * l'aide au moment de la rendre, la langue a pu changer entre-temps.
+ * This site's commands; the others come from the package. The name is the
+ * key. Texts resolve at display time, not at definition: the language may
+ * have changed since.
  */
 export const commands: BaseCommands = {
 	aoc: {
@@ -101,7 +99,7 @@ export const commands: BaseCommands = {
 		testArgs: { authorize: [...CV_SECTIONS, CV_PDF], empty: true },
 		action: ({ args }) =>
 			args[0] === CV_PDF ? say(CV_PDF_SAYS) : say(buildCV(args[0])),
-		// le telechargement est un effet de bord : il part apres l'affichage
+		// the download is a side effect: it starts after display
 		effect: ({ args }) => {
 			if (args[0] === CV_PDF) downloadCv()
 		},
@@ -172,9 +170,8 @@ export const commands: BaseCommands = {
 				fr: "en cours...",
 				en: "in progress...",
 			}),
-		// le calque est monte une fois pour toutes par la page : le rendre
-		// ici en poserait un par ligne de commande, et deux calques se
-		// disputeraient le masque de la fenetre
+		// the virus layer is mounted once by the page: rendering it here would
+		// add one per command line
 		effect: () => globalActions().setProperty("virus", Date.now()),
 		help: () => ({
 			patterns: [
@@ -196,7 +193,7 @@ export const commands: BaseCommands = {
 				fr: "ouverture de 1/PRISM",
 				en: "opening 1/PRISM",
 			}),
-		// le bureau lit la pile des fenetres dans le store
+		// the desktop reads the window stack from the store
 		effect: () => globalActions().focusWindow("prism"),
 		help: () => ({
 			patterns: [
@@ -218,7 +215,7 @@ export const commands: BaseCommands = {
 				fr: "ouverture de Tic-Tac-Tic",
 				en: "opening Tic-Tac-Tic",
 			}),
-		// le bureau lit la pile des fenetres dans le store
+		// the desktop reads the window stack from the store
 		effect: () => globalActions().focusWindow("game"),
 		help: () => ({
 			patterns: [
@@ -237,7 +234,7 @@ export const commands: BaseCommands = {
 		restricted: false,
 		testArgs: { authorize: FS_TARGETS, empty: true },
 		action: ({ args }) => say(flowerShellSays(args[0])),
-		// l'onglet part apres l'affichage, comme le PDF du CV
+		// the tab opens after display, like the CV PDF
 		effect: ({ args }) => openFlowerShell(args[0]),
 		help: () => ({
 			description: say({

@@ -6,7 +6,7 @@ const blink = keyframes`
 	}
 `
 
-/** hors de la page d'accueil, GlobalStyles n'est pas monte : tout est pose ici */
+/** outside the home page GlobalStyles is not mounted: everything is set here */
 export const Screen = styled.div`
 	position: fixed;
 	inset: 0;

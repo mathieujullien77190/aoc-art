@@ -1,42 +1,39 @@
 import { FlwOptions } from "./types"
 
 /**
- * La bibliotheque de Platane, vendorisee dans public : elle se declare en
- * global sur window, il n'y a pas de paquet npm.
+ * Platane's library, vendored in public: it declares itself global on
+ * window, there is no npm package.
  * https://github.com/Platane/Procedural-Flower (MIT)
  */
 export const SCRIPT_SRC = "/vendor/flw/Flw.min.js"
 
-/**
- * Attente avant de replanter apres un redimensionnement : la plante se
- * reconstruit de zero, autant ne pas le faire a chaque pixel.
- */
+/** wait before replanting after a resize: the plant rebuilds from scratch */
 export const REBUILD_MS = 400
 
-/** en dessous de cet ecart, la fenetre n'a pas assez bouge pour replanter */
+/** below this gap, the window has not moved enough to replant */
 export const RESIZE_THRESHOLD = 40
 
 /**
- * Largeur visible d'une plante, en pixels. Son canvas fait le double :
- * la lib fait partir la tige du bas au centre, donc la moitie sort de
- * l'ecran pour que la plante pousse pile dans le coin.
+ * Visible width of a plant, in pixels. Its canvas is twice that: the lib
+ * starts the stem at the bottom centre, so half falls off screen and the
+ * plant grows right in the corner.
  */
 export const SPREAD = 420
 
 /**
- * Hauteur gagnee par cran de la tige maitresse, en pixels. Elle sert a
- * deduire maxDeepnessMaster de la hauteur de l'ecran : sans ca la plante
- * s'arrete a mi-chemin au lieu de monter jusqu'en haut. L'ordre de
- * grandeur vient de radius, la courbure fait le reste.
+ * Height gained per step of the master stem, in pixels. Used to derive
+ * maxDeepnessMaster from the screen height: without it the plant stops
+ * halfway. The order of magnitude comes from radius, curvature does the
+ * rest.
  */
 export const MASTER_STEP = 48
 
-/** crans minimum, pour qu'un ecran bas donne quand meme une plante */
+/** minimum steps, so a short screen still gets a plant */
 export const MASTER_MIN = 8
 
 /**
- * Le reglage greenHill de la demo, aux couleurs pres. Les quatre entrees
- * de couleur sont converties en Flw.Color une fois la lib chargee.
+ * The demo's greenHill setting, colours aside. The four colour entries are
+ * converted to Flw.Color once the lib is loaded.
  */
 export const COLORS = {
 	colorStart: "#153906",
@@ -50,11 +47,10 @@ export const OPTIONS: FlwOptions = {
 	widthEnd: 0.8,
 
 	/*
-	 * Valeurs du reglage greenHill de la demo. Monter maxDeepness donne
-	 * plus de feuilles et maxDeepnessMajor plus de fleurs — la lib pose
-	 * une feuille sur un noeud une fois sur cinq, une tete au bout de
-	 * chaque branche maitresse — mais l'arbre, construit d'un coup au
-	 * demarrage, grossit vite et le rendu devient touffu.
+	 * Values of the demo's greenHill setting. Raising maxDeepness gives more
+	 * leaves and maxDeepnessMajor more flowers (a leaf on every fifth node, a
+	 * head at the end of each master branch), but the tree is built at once at
+	 * startup, grows fast and gets bushy.
 	 */
 	maxDeepness: 3,
 	maxDeepnessVar: 2,
@@ -62,7 +58,7 @@ export const OPTIONS: FlwOptions = {
 	maxDeepnessTwistedVar: 0,
 	maxDeepnessMajor: 2,
 	maxDeepnessMajorVar: 2,
-	// maxDeepnessMaster est calcule a la volee, il depend de la hauteur
+	// maxDeepnessMaster is computed on the fly, it depends on the height
 	maxDeepnessMasterVar: 4,
 	headSize: 30,
 	headSizeVar: 30,

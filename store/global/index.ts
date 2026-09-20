@@ -2,23 +2,21 @@ import { create } from "zustand"
 
 import { BASE_LANG } from "_i18n"
 
-/** ce que le bureau garde en memoire, sans les fonctions qui le changent */
+/** what the desktop keeps in memory, minus the functions that change it */
 type Values = {
 	/**
-	 * Langue du bureau. Le shell tient la sienne, le paquet ne l'expose
-	 * plus : la page la recopie ici a chaque commande lang jouee, et les
-	 * ecrans du bureau la suivent.
+	 * Desktop language. The shell keeps its own; the page copies it here on
+	 * each `lang` command, and desktop screens follow it.
 	 */
 	lang: string
 	/**
-	 * Instant du dernier `flowers`, 0 tant qu'il n'a jamais tourne. Une
-	 * date plutot qu'un booleen : rejouer la commande change la valeur,
-	 * donc replante, ce qu'un true deja pose ne ferait pas.
+	 * Time of the last `flowers`, 0 if never run. A date rather than a boolean:
+	 * replaying the command changes the value, hence re-plants.
 	 */
 	flowers: number
-	/** meme principe pour stux : l'instant du dernier lancement */
+	/** same idea for stux: time of the last launch */
 	virus: number
-	/** fenetres ouvertes du bureau ; la derniere est au premier plan */
+	/** open desktop windows; the last one is in front */
 	windows: string[]
 }
 
@@ -29,8 +27,8 @@ type Global = Values & {
 }
 
 /**
- * L'etat du bureau. Celui du shell — animation, focus, historique — vit
- * dans le paquet flower-shell, qui n'a pas a connaitre les fenetres.
+ * The desktop state. The shell's (animation, focus, history) lives in the
+ * flower-shell package, which knows nothing of windows.
  */
 export const useGlobalStore = create<Global>(set => ({
 	lang: BASE_LANG,
@@ -40,10 +38,7 @@ export const useGlobalStore = create<Global>(set => ({
 
 	setProperty: (key, value) => set({ [key]: value } as Partial<Values>),
 
-	/**
-	 * Ouvre la fenetre, ou la remonte si elle etait dessous. Le bureau
-	 * vit dans le store pour qu'une commande du shell puisse l'ouvrir.
-	 */
+	/** Opens the window, or raises it if it was below. */
 	focusWindow: name =>
 		set(state => ({
 			windows: [...state.windows.filter(item => item !== name), name],
@@ -61,8 +56,5 @@ export const useGetVirus = () => useGlobalStore(state => state.virus)
 
 export const useGetWindows = () => useGlobalStore(state => state.windows)
 
-/**
- * Hors composant : une commande n'est pas un rendu React, elle attaque le
- * store directement.
- */
+/** Outside components: a command is not a React render, it uses the store directly. */
 export const globalActions = () => useGlobalStore.getState()

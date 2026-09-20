@@ -35,13 +35,13 @@ import { app } from "_components/constants"
 
 import { isMobile } from "react-device-detect"
 
-/** le shell connait ses commandes, puis celles de ce site */
+/** the shell knows its commands, then this site's */
 const commands = { ...baseCommands, ...customCommands }
 
 /**
- * Les textes : ceux du paquet, dont on ne recouvre que le mot d'accueil.
- * Chaque langue est posee en entier — le paquet rabat sur son anglais ce
- * qu'un dictionnaire ne couvre pas, un fr partiel perdrait son francais.
+ * Texts: the package's, with only the welcome message overridden. Each
+ * language is set in full — the package falls back to its English for what
+ * a dictionary lacks, so a partial fr would lose its French.
  */
 const dict: Dictionaries = {
 	fr: {
@@ -68,15 +68,15 @@ const dict: Dictionaries = {
 }
 
 /**
- * browserLang lit les langues montees : sans ce depot au niveau du module,
- * il ne connaitrait que l'anglais du paquet et le francais ne sortirait
- * jamais.
+ * browserLang reads the mounted languages: without this module-level
+ * registration it would only know the package's English and French would
+ * never come out.
  */
 setDict(dict)
 
 /**
- * La ligne portee par l'ancien lien profond : #aoc_1 lance +aoc 1+. Rien au
- * prerendu, location n'y existe pas.
+ * The line carried by the old deep link: #aoc_1 plays `aoc 1`. Nothing at
+ * prerender, location does not exist there.
  */
 const deepLink = (): string[] => {
 	if (typeof location === "undefined" || !location.hash.includes("#")) return []
@@ -85,7 +85,7 @@ const deepLink = (): string[] => {
 }
 
 type HomeProps = {
-	/** la commande jouee a l'arrivee : la route /aoc/5 donne "aoc 5" */
+	/** the command played on arrival: the /aoc/5 route gives "aoc 5" */
 	command?: string
 }
 
@@ -93,10 +93,10 @@ export const Home = ({ command }: HomeProps) => {
 	const shell = useShell()
 
 	/**
-	 * L'ouverture, lue une fois. Elle ne peut pas partir d'ici : le shell
-	 * n'est monte qu'a la fin de la sequence de boot, et jouer une ligne
-	 * avant ca ne trouve aucun terminal. Le shell la joue en arrivant.
-	 * La route prime, le #hash reste pour les liens deja partages.
+	 * The opening, read once. It cannot be played from here: the shell only
+	 * mounts at the end of the boot sequence, and a line played before that
+	 * finds no terminal. The shell plays it on arrival. The route wins, the
+	 * #hash stays for links already shared.
 	 */
 	const [opening] = useState<string[]>(() => [
 		"title",
@@ -105,38 +105,38 @@ export const Home = ({ command }: HomeProps) => {
 	])
 
 	const handleClick = useCallback(() => {
-		// sur mobile, un clic remonte la commande precedente
+		// on mobile, a click brings back the previous command
 		if (isMobile) shellState()?.moveCursor(-1)
 	}, [])
 
 	/**
-	 * Ce que le bureau fait des commandes du shell. Le paquet ne connait ni
-	 * les plantes ni le virus : sa commande flowers ne dessine que son ascii,
-	 * c'est ici qu'on la prend au vol pour semer sur les cotes de l'ecran.
+	 * What the desktop does with shell commands. The package knows neither the
+	 * plants nor the virus: its flowers command only draws its ASCII, so it is
+	 * caught here to sow the sides of the screen.
 	 */
 	const handleCommandDone = useCallback((event: CommandEvent) => {
 		const { name } = event
 
-		// l'adresse suit la commande : `aoc 5` donne /aoc/5
+		// the address follows the command: `aoc 5` gives /aoc/5
 		syncUrl(event)
 
 		if (name === "flowers") globalActions().setProperty("flowers", Date.now())
 
-		// le bureau se remet a neuf en meme temps que l'ecran
+		// the desktop resets along with the screen
 		if (name === "clear") {
 			globalActions().setProperty("flowers", 0)
 			globalActions().setProperty("virus", 0)
 		}
 
-		// la langue appartient au shell : le bureau la recopie pour la suivre
+		// the language belongs to the shell: the desktop copies it to follow
 		if (name === "lang") {
 			const lang = shellState()?.lang
 			if (lang) globalActions().setProperty("lang", lang)
 		}
 	}, [])
 
-	// avant tout le reste : une commande n'est pas un rendu React, elle
-	// joue dans le terminal par ce relais
+	// before anything else: a command is not a React render, it plays in the
+	// terminal through this relay
 	useEffect(() => {
 		bindShell(shell)
 	}, [shell])
@@ -144,7 +144,7 @@ export const Home = ({ command }: HomeProps) => {
 	useEffect(() => {
 		const lang = browserLang()
 
-		// layout.tsx fige l'attribut a fr, il vaut pour tout le monde
+		// layout.tsx sets fr for everyone: override with the visitor's language
 		document.documentElement.lang = lang
 		globalActions().setProperty("lang", lang)
 	}, [])
@@ -158,8 +158,8 @@ export const Home = ({ command }: HomeProps) => {
 				<Shell
 					id={SHELL_ID}
 					commands={commands}
-					// tout le catalogue du paquet : le visiteur en change par
-					// la commande theme, et help theme les liste
+					// the package's whole catalogue: the visitor changes it with the
+					// theme command, and help theme lists them
 					themes={themes}
 					theme="flower"
 					dict={dict}

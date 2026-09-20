@@ -1,12 +1,12 @@
 import { useSyncExternalStore } from "react"
 
-// rien a surveiller : le montage n'arrive qu'une fois
+// nothing to watch: mount only happens once
 const subscribe = () => () => {}
 
 /**
- * Faux au prerendu et pendant l'hydratation, vrai ensuite. Passe par
- * useSyncExternalStore plutot qu'un useEffect + setState : React sait deja
- * basculer du snapshot serveur au snapshot client une fois l'arbre hydrate.
+ * False during prerender and hydration, true after. Uses
+ * useSyncExternalStore rather than useEffect + setState: React already
+ * switches from the server snapshot to the client one once hydrated.
  */
 export const useIsMounted = (): boolean =>
 	useSyncExternalStore(

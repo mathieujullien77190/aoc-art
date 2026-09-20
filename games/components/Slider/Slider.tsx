@@ -26,8 +26,8 @@ export const Slider = ({
 	)
 	const [prevValue, setPrevValue] = useState<number>(value)
 
-	// le curseur avance en local, mais le parent peut reprendre la main : on se
-	// realigne pendant le rendu quand il pousse une nouvelle valeur
+	// the slider advances locally, but the parent can take over: realign
+	// during render when it pushes a new value
 	if (prevValue !== value) {
 		setPrevValue(value)
 		setLocalValue(Math.floor(value / step) * step)

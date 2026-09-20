@@ -2,11 +2,7 @@ import { Translatable } from "_i18n"
 
 import { app, pkg } from "_components/constants"
 
-/**
- * Les cibles de la commande, et l'adresse que chacune ouvre. Le nom de la
- * cle est l'argument tape : ajouter une destination tient en une ligne,
- * l'aide et la validation des arguments la suivent d'elles-memes.
- */
+/** Targets and the URL each opens. The key is the typed argument. */
 export const FS_LINKS: Record<string, string> = {
 	git: pkg.repo,
 	storybook: pkg.storybook,
@@ -14,17 +10,13 @@ export const FS_LINKS: Record<string, string> = {
 
 export const FS_TARGETS = Object.keys(FS_LINKS)
 
-/**
- * Un onglet plutot qu'une navigation : le bureau est une session, on ne
- * quitte pas la machine pour aller lire un depot. `noopener` coupe l'acces
- * de la page ouverte a celle-ci, comme pour le CV.
- */
+/** A new tab, not a navigation: the desktop is a session. */
 export const openFlowerShell = (target: string) => {
 	const url = FS_LINKS[target]
 	if (url) window.open(url, "_blank", "noopener")
 }
 
-/** ce que le shell dit pendant que l'onglet s'ouvre, ou sans argument */
+/** What the shell says while the tab opens, or with no argument */
 export const flowerShellSays = (target: string): Translatable => {
 	if (target === "git")
 		return {
@@ -38,7 +30,7 @@ export const flowerShellSays = (target: string): Translatable => {
 			en: "\n§Opening the storybook…§\n",
 		}
 
-	// sans argument, la commande presente le paquet et ses deux portes
+	// no argument: present the package and its two links
 	return {
 		fr: [
 			`\n| $${app.name}$`,

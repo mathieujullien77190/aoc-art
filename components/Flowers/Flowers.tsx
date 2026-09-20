@@ -15,9 +15,9 @@ const Plant = ({ side, seed }: { side: Side; seed: number }) => {
 }
 
 /**
- * Une plante par coin bas de l'ecran, chacune tiree au hasard de son cote.
- * Rien ne pousse tant que la commande flowers n'a pas tourne ; la rejouer
- * change la graine, donc replante les deux.
+ * One plant per bottom corner, each picked at random on its side. Nothing
+ * grows until `flowers` has run; replaying it changes the seed, so both
+ * replant.
  */
 export const Flowers = () => {
 	const seed = useGetFlowers()

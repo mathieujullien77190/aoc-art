@@ -4,13 +4,13 @@ import { useVirus } from "./hooks"
 import { VirusProps } from "./types"
 
 /**
- * La fenetre du shell se troue : une case de vingt par vingt disparait de
- * temps en temps, a partir d'un point pris en haut, et on voit le bureau
- * a travers. Quand il n'en reste rien, la machine rend l'ame.
+ * The shell window gets holes: a 20 by 20 cell vanishes now and then, from
+ * a point at the top, showing the desktop through. When nothing is left,
+ * the machine gives up.
  *
- * Rien a rendre : tout se joue sur le masque de la fenetre. La commande
- * stux pose une graine dans le store, la rejouer en change la valeur et
- * repart d'une fenetre intacte.
+ * Nothing to render: it all happens on the window mask. The stux command
+ * sets a seed in the store; replaying it changes the value and starts over
+ * from an intact window.
  */
 export const Virus = ({ onDead = () => {} }: VirusProps) => {
 	const seed = useGetVirus()

@@ -1,20 +1,20 @@
 import { DOWN_BIAS } from "./constants"
 
 /**
- * La fonte : un seul point de depart, en haut de la fenetre, et chaque
- * case perdue ensuite est collee a celles deja ouvertes. Le trou s'etend
- * donc d'un bloc au lieu de miter la fenetre au hasard.
+ * The melt: a single start point at the top of the window, and each cell
+ * lost afterwards touches the already open ones, so the hole spreads as one
+ * block instead of speckling the window.
  *
- * La frontiere est la liste des cases voisines encore pleines. On y pioche
- * au hasard, ce qui donne un bord irregulier plutot qu'un cercle net. Les
- * doublons sont laisses dedans et ignores au tirage : les retirer couterait
- * une recherche a chaque voisin.
+ * The frontier is the list of neighbouring cells still full. Picking at
+ * random gives an irregular edge rather than a clean circle. Duplicates
+ * stay in and are skipped when drawing: removing them would cost a search
+ * per neighbour.
  */
 export const createSpread = (cols: number, rows: number) => {
 	const taken = new Set<number>()
 
-	// depart sur la premiere rangee, a une colonne tiree au hasard : la
-	// fonte entame donc la fenetre par le haut
+	// start on the first row, at a random column: the melt enters the window
+	// from the top
 	const frontier: number[] = [Math.floor(Math.random() * cols)]
 
 	const push = (cell: number) => {
@@ -29,11 +29,11 @@ export const createSpread = (cols: number, rows: number) => {
 		if (x < cols - 1) push(cell + 1)
 		if (y > 0) push(cell - cols)
 
-		// vers le bas plus souvent : ca coule au lieu de s'arrondir
+		// down more often: it drips instead of rounding off
 		if (y < rows - 1) for (let i = 0; i < DOWN_BIAS; i++) push(cell + cols)
 	}
 
-	/** la case suivante, ou null quand toute la fenetre a fondu */
+	/** the next cell, or null when the whole window has melted */
 	const next = (): number | null => {
 		while (frontier.length > 0) {
 			const index = Math.floor(Math.random() * frontier.length)

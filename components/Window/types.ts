@@ -7,44 +7,37 @@ export type WindowProps = {
 	show: boolean
 	container: RefObject<HTMLDivElement>
 	title?: string
-	/** marque du cadre entier, pour poser un calque par-dessus */
+	/** mark of the whole frame, to put a layer over it */
 	mark?: string
 	/**
-	 * Rang d'agrandissement : chaque increment ouvre la fenetre en grand.
-	 * Un booleen ne servirait qu'une fois — le visiteur peut la reduire
-	 * ensuite, et la demande suivante doit quand meme la rouvrir pleine.
+	 * Enlarge rank: each increment opens the window large. A boolean would
+	 * only work once, since the visitor can shrink it afterwards.
 	 */
 	expand?: number
-	/** etage d'empilement : la fenetre au premier plan a le plus grand */
+	/** stacking level: the front window has the highest */
 	layer?: number
-	/** rang dans la cascade, pour ne pas s'ouvrir sur la precedente */
+	/** rank in the cascade, so it does not open on the previous one */
 	rank?: number
-	/**
-	 * Hauteur reservee en bas du conteneur, en CSS. Le bureau y met sa
-	 * barre des taches ; sans elle, la fenetre passerait dessous.
-	 */
+	/** height reserved at the bottom, in CSS: the desktop puts its taskbar there */
 	bottomInset?: string
 	/**
-	 * Pleine et non redimensionnable. A qui l'affiche de decider quand :
-	 * un petit ecran, un mode lecture, une preference. Le paquet ne fixe
-	 * aucun seuil.
+	 * Full and not resizable. Up to whoever shows it to decide when: small
+	 * screen, reading mode, a preference. The package sets no threshold.
 	 */
 	compact?: boolean
 	/**
-	 * Gabarit portrait fixe plutot que le carre moyen habituel, pour un
-	 * contenu pense pour un ecran de telephone. Non redimensionnable, comme
-	 * `compact` — les deux se melangent mal, `compact` gagne sur petit ecran.
+	 * Fixed portrait template instead of the usual medium square, for content
+	 * made for a phone screen. Not resizable, like `compact`; `compact` wins
+	 * on small screens.
 	 */
 	phone?: boolean
 	/**
-	 * Le contenu porte son propre cadre : la fenetre lui laisse toute la
-	 * place entre ses bordures, sans marge ni fond a elle. C'est le cas du
-	 * shell, dont le theme pose sa marge et sa couleur de fond — depuis
-	 * que les themes ont lache leur bordure, une bande de la fenetre
-	 * autour de lui ne serait plus qu'un lisere d'une autre couleur.
+	 * The content carries its own frame: the window leaves it all the room
+	 * between its borders, with no margin or background. That is the shell's
+	 * case, whose theme sets its own margin and background.
 	 */
 	flush?: boolean
-	/** la fenetre reclame le premier plan */
+	/** the window asks for the front */
 	onFocus?: () => void
 	children: ReactNode
 	onClose?: () => void

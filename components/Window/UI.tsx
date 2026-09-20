@@ -20,27 +20,22 @@ type ContainerProps = {
 	$drag: Pos
 	$followMouse: boolean
 	$layer: number
-	/**
-	 * Hauteur reservee en bas du conteneur, en CSS. Le bureau y met sa
-	 * barre des taches ; sans elle, la fenetre passerait dessous.
-	 */
+	/** height reserved at the bottom, in CSS: the desktop puts its taskbar there */
 	$bottomInset: string
-	/** gabarit portrait fixe au lieu du carre moyen, cf. WindowProps.phone */
+	/** fixed portrait template instead of the medium square, see WindowProps.phone */
 	$phone: boolean
 }
 
 /**
- * Place de la fenetre, en pourcentage : aucune mesure du bureau n'est
- * necessaire, et elle suit son redimensionnement. La cascade et le
- * deplacement a la souris s'ajoutent en pixels.
+ * Window position, in percent: no desktop measurement needed, and it
+ * follows resizing. The cascade and mouse offset are added in pixels.
  *
- * Elle sort en style inline, pas dans le CSS : styled-components fabrique
- * une classe par valeur interpolee, et un glisser en produirait une par
- * pixel parcouru — la console finissait par le signaler.
+ * It goes in inline style, not CSS: styled-components makes one class per
+ * interpolated value, and a drag would produce one per pixel travelled.
  *
- * Le deplacement passe par top/left et non par un transform : un ancetre
- * transforme devient le referentiel des position: fixed qu'il contient,
- * ce qui decalait le canvas plein ecran de stux.
+ * The offset uses top/left, not a transform: a transformed ancestor becomes
+ * the reference for the position: fixed it contains, which shifted stux's
+ * full-screen canvas.
  */
 const place = ({ $mode, $rank, $drag }: ContainerProps) => {
 	if ($mode === "full") return { top: 0, left: 0 }
@@ -86,8 +81,8 @@ export const Container = styled.div.attrs<ContainerProps>(props => ({
 	font-weight: ${FULL.fontWeight};
 	z-index: ${({ $layer }) => $layer || TOP_LAYER};
 
-	/* pendant le glisser, la transition lacherait le curseur : seules la
-	   largeur et la hauteur restent animees */
+	/* while dragging, a transition would let go of the cursor: only width and
+	   height stay animated */
 	transition: ${({ $followMouse }) =>
 		$followMouse
 			? `width ${ANIM_TIME / 1000}s ease-out, height ${
@@ -117,11 +112,11 @@ export const topBar = styled.div`
 `
 
 /**
- * La zone sous la barre de titre. Les 25px retires sont la barre elle-meme :
- * 15 de haut, ses deux paddings et sa bordure basse.
+ * The area under the title bar. The 25px removed are the bar itself: 15
+ * high, its two paddings and its bottom border.
  *
- * En `$flush`, ni marge ni fond : le contenu s'occupe des deux et va d'une
- * bordure a l'autre.
+ * With `$flush`, no margin or background: the content handles both and
+ * goes from border to border.
  */
 export const Content = styled.div<{ $flush: boolean }>`
 	overflow-y: auto;

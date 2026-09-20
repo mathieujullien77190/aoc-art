@@ -12,35 +12,35 @@ export const LIGHT = {
 
 export const ANIM_TIME = 300
 
-// gabarit de la fenetre moyenne, en pourcentage du bureau : le poser en
-// CSS evite de mesurer le bureau, et la fenetre suit le redimensionnement
+// medium window template, in percent of the desktop: in CSS it avoids
+// measuring the desktop, and the window follows resizing
 export const MEDIUM_MARGIN = 15
 export const MEDIUM_SIZE = 70
 
-// gabarit fixe de la fenetre "phone" : portrait, proche d'un ecran de mobile
+// fixed template of the "phone" window: portrait, close to a mobile screen
 export const PHONE_WIDTH = "380px"
 export const PHONE_HEIGHT = "760px"
 
-// decalage d'une fenetre a l'autre a l'ouverture, en pixels : sans lui
-// elles se posent au meme endroit et se masquent parfaitement
+// offset from one window to the next on opening: without it they land on
+// the same spot and hide each other perfectly
 export const CASCADE = 26
 
-// etage de la fenetre au premier plan ; les autres descendent d'un cran
-// et restent sous les modales, qui sont a 10
+// layer of the front window; the others drop one notch and stay under
+// modals, which are at 10
 export const TOP_LAYER = 9
 
 /**
- * Le cadre de la fenetre : barre de titre, bordure, fond du contenu. Il
- * vivait dans le theme du paquet, qui ne porte plus de fenetre — le faux
- * OS est le seul a en poser, les couleurs le suivent donc ici.
+ * The window frame: title bar, border, content background. It used to live
+ * in the package theme, which no longer carries a window: the fake OS is
+ * the only one to draw them, so the colours follow here.
  */
 export const WINDOW_COLORS = {
 	titleBar: "#ed612e",
 	border: "#000000",
-	/** le fond derriere le contenu, visible autour de lui */
+	/** the background behind the content, visible around it */
 	content: "#f4ebda",
 	text: "#000000",
 }
 
-/** un cadre ne veut pas forcement du chasse fixe, mais celui-ci si */
+/** a frame does not necessarily want a fixed-width font, but this one does */
 export const WINDOW_FONT = "monospace"

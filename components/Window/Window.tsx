@@ -27,22 +27,21 @@ const BaseWindow = (
 ) => {
 	const [userMode, setUserMode] = useState<Mode>("medium")
 
-	// en mode compact la fenetre reste pleine et non redimensionnable.
-	// "close" passe quand meme, sinon l'animation de fermeture disparaitrait
+	// compact keeps the window full and not resizable; "close" still goes
+	// through, or the closing animation would vanish
 	const mode: Mode = compact && userMode !== "close" ? "full" : userMode
 
 	/**
-	 * Deplacement applique a la souris, en pixels, par-dessus une position
-	 * de base en pourcentage. Mesurer le bureau pour poser la fenetre
-	 * demandait un effet et un setState au montage ; le pourcentage donne
-	 * le meme placement, suit le redimensionnement, et se passe des deux.
+	 * Mouse offset in pixels, on top of a base position in percent. Measuring
+	 * the desktop needed an effect and a setState on mount; a percentage
+	 * gives the same placement, follows resizing, and needs neither.
 	 */
 	const [drag, setDrag] = useState<Pos>(NO_DRAG)
 	const [ready, setReady] = useState<boolean>(false)
 	const [followMouse, setFollowMouse] = useState<boolean>(false)
 
-	// le parent demande le grand format en avancant son rang ; on le suit
-	// pendant le rendu, un effet ferait clignoter la taille d'avant
+	// the parent asks for the large size by bumping its rank; follow it during
+	// render, an effect would flash the previous size
 	const [prevExpand, setPrevExpand] = useState<number>(expand)
 
 	if (prevExpand !== expand) {
@@ -53,7 +52,7 @@ const BaseWindow = (
 
 	const boxRef = useRef<HTMLDivElement>(null)
 
-	// le contenu n'apparait qu'une fois la fenetre arrivee a sa taille
+	// content only shows once the window has reached its size
 	useEffect(() => {
 		if (!show || mode === "close") return
 
@@ -62,17 +61,17 @@ const BaseWindow = (
 	}, [show, mode])
 
 	const handleResize = () => {
-		// changer de taille remet la fenetre a sa place : le deplacement
-		// d'avant n'a plus de sens dans le nouveau gabarit
+		// changing size puts the window back in place: the previous offset makes
+		// no sense in the new template
 		setDrag(NO_DRAG)
 		setUserMode(prev => (prev === "full" ? "medium" : "full"))
 	}
 
 	const handleClose = () => {
-		// deja en train de se fermer : le mode d'avant serait perdu
+		// already closing: the previous mode would be lost
 		if (userMode === "close") return
 
-		// la fenetre rouvre telle qu'on l'a quittee, taille et place
+		// the window reopens as it was left, size and place
 		const before = userMode
 
 		setReady(false)
@@ -94,10 +93,10 @@ const BaseWindow = (
 		}
 
 		/**
-		 * Le relachement tombe rarement sur la barre de titre, souvent
-		 * hors de la page : sans ecoute au niveau du document, la fenetre
-		 * resterait collee au curseur. Le blur couvre la souris relachee
-		 * en dehors de l'onglet, qui n'emet aucun mouseup.
+		 * The release rarely lands on the title bar, often outside the page:
+		 * without a document-level listener the window would stick to the
+		 * cursor. Blur covers a mouse released outside the tab, which emits no
+		 * mouseup.
 		 */
 		const handlerMouseup = () => {
 			setFollowMouse(false)

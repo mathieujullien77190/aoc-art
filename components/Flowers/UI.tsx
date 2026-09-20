@@ -1,9 +1,8 @@
 import styled from "styled-components"
 
 /**
- * Le calque d'une plante, au-dessus de tout, pose sur le bas de l'ecran.
- * La taille et le decalage horizontal sont mis en style inline par le
- * hook : la bibliotheque lit la taille la, pas dans la feuille de style.
+ * A plant layer, over everything, at the bottom of the screen. Size and
+ * horizontal offset go in inline style: the library reads the size there.
  */
 export const Container = styled.div`
 	position: fixed;

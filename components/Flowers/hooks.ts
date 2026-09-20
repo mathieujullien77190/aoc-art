@@ -11,13 +11,9 @@ import {
 import { FlwGlobal, FlwPlant, Side, Size } from "./types"
 
 /**
- * Pilote un calque : une plante qui pousse depuis un coin bas de l'ecran
- * jusqu'en haut, puis s'arrete une fois mure. Dessin par la bibliotheque
- * de Platane, lancee par la commande flowers.
- *
- * Elle lit la taille du conteneur dans son style inline au moment de la
- * creation et pose ses canvas dedans : redimensionner la fenetre oblige
- * donc a replanter, d'ou l'attente avant de le faire.
+ * Drives a layer: a plant growing from a bottom corner to the top, then
+ * stopping once ripe. It reads the container size from its inline style
+ * when created, so resizing the window means replanting, hence the delay.
  */
 export const useFlowers = (
 	containerRef: RefObject<HTMLDivElement>,
@@ -46,7 +42,7 @@ export const useFlowers = (
 			const screen = viewport()
 			const size = plantSize(screen)
 
-			// la lib lit ces deux valeurs dans le style inline, au parseInt
+			// the lib reads these two values from the inline style, via parseInt
 			container.style.width = `${size.width}px`
 			container.style.height = `${size.height}px`
 			container.style.left = `${plantLeft(screen, side)}px`
@@ -67,7 +63,7 @@ export const useFlowers = (
 			const onResize = () => {
 				const screen = viewport()
 
-				// une barre d'adresse qui se replie ne justifie pas de replanter
+				// a collapsing address bar is no reason to replant
 				const moved =
 					!planted ||
 					Math.abs(screen.width - planted.width) > RESIZE_THRESHOLD ||
@@ -92,6 +88,6 @@ export const useFlowers = (
 			unlisten()
 			destroy()
 		}
-		// la graine change a chaque flowers : on replante
+		// the seed changes on each flowers: replant
 	}, [containerRef, side, seed])
 }

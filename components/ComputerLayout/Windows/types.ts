@@ -3,9 +3,9 @@ import type { JSX } from "react"
 import { Translatable } from "_i18n"
 
 export type WindowsProps = {
-	/** force ignore le reglage BIOS : le virus emporte la machine de toute facon */
+	/** force ignores the BIOS setting: the virus takes the machine down anyway */
 	onBlueScreen?: (force?: boolean) => void
-	/** joue une commande dans le terminal */
+	/** plays a command in the terminal */
 	onRunCommand?: (pattern: string) => void
 	onCloseWindow?: () => void
 	children: JSX.Element
@@ -13,22 +13,22 @@ export type WindowsProps = {
 
 export type Pos = { x: number; y: number }
 
-/** icone qui porte une fenetre du bureau */
+/** icon that carries a desktop window */
 export type WindowName = "shell" | "prism" | "storybook" | "game"
 
-/** AOC et le CV n'ouvrent pas de fenetre : ils jouent une commande */
+/** AOC and the CV open no window: they play a command */
 export type IconKey = WindowName | "aoc" | "cv"
 
 export type DesktopIcon = {
 	key: IconKey
-	/** libelle sous l'icone, et dans la barre des taches */
+	/** label under the icon, and in the taskbar */
 	label: Translatable
 	image: string
-	/** posee en haut a droite, hors de la colonne du bureau */
+	/** placed at the top right, outside the desktop column */
 	corner?: boolean
 	/**
-	 * La ligne qu'elle joue dans le shell. Une icone qui joue une commande
-	 * n'ouvre rien : elle ne reste pas allumee.
+	 * The line it plays in the shell. An icon that plays a command opens
+	 * nothing: it does not stay lit.
 	 */
 	command?: string
 }

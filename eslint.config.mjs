@@ -5,7 +5,7 @@ import tseslint from "typescript-eslint"
 import prettier from "eslint-config-prettier"
 
 const config = [
-	// code tiers ou genere : vendorise sous public, sorti par storybook
+	// third-party or generated code: vendored under public, output by storybook
 	{
 		ignores: [
 			".next/**",

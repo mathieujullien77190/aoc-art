@@ -14,7 +14,7 @@ const Container = styled.div`
 `
 
 const Animation = () => {
-	// init() est pur : on le joue a l'initialisation plutot que dans un effet
+	// init() is pure: play it at initialisation rather than in an effect
 	const [stories] = useState<Story[]>(() => init())
 
 	return (

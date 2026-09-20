@@ -25,9 +25,9 @@ export const useOrientation = (
 		withTransition: boolean
 	}>({ value: "", withTransition: false })
 
-	// la matrice figee sert de base a la rotation suivante ; une ref plutot
-	// qu'un etat car fixed() et add() s'enchainent parfois dans le meme
-	// gestionnaire, avant tout nouveau rendu
+	// the frozen matrix is the base of the next rotation; a ref rather than
+	// state because fixed() and add() sometimes chain in the same handler,
+	// before any new render
 	const saveMatrix = useRef<string>("")
 
 	const fixed = useCallback(() => {

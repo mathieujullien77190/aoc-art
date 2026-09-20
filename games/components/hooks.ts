@@ -42,9 +42,9 @@ export const useAnim = <T>({
 	const [index, setIndex] = useState<number>(0)
 	const [reload, setReload] = useState<number>(control.reload)
 
-	// l'identifiant de l'interval ne sert qu'a l'annuler, jamais au rendu ; en
-	// ref il reste a jour pour le nettoyage au demontage, ce qu'un etat capture
-	// dans la cloture de l'effet ne garantissait pas
+	// the interval id is only for cancelling, never for render; in a ref it
+	// stays current for cleanup on unmount, which state captured in the effect
+	// closure did not guarantee
 	const timer = useRef<number>(0)
 
 	const viewsInfo = useMemo(() => viewsFn(), [data.dataSize])
@@ -59,8 +59,8 @@ export const useAnim = <T>({
 		}
 	}, [control.pause])
 
-	// le retour a l'index 0 part avec l'increment de reload dans le meme lot :
-	// l'effet de lecture repart donc bien du debut, comme avant
+	// going back to index 0 goes with the reload increment in the same batch,
+	// so the play effect restarts from the beginning, as before
 	useEffect(() => {
 		clearInterval(timer.current)
 		const restart = window.setTimeout(() => {

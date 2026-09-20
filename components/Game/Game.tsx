@@ -5,19 +5,16 @@ import { game } from "_components/constants"
 import * as S from "./UI"
 
 /**
- * Le mini-jeu, publie sur GitHub Pages depuis son propre depot. Un iframe,
- * comme la doc du Storybook : la fenetre du bureau sert de cadre, le
- * visiteur ne quitte pas la machine pour y jouer.
+ * The mini-game, published on GitHub Pages from its own repo, in an iframe
+ * like the Storybook docs: the desktop window is the frame.
  *
- * Elle n'est montee que fenetre ouverte — `Window` ne rend rien quand elle
- * est fermee — donc rien ne se charge tant qu'on ne clique pas.
+ * Only mounted while the window is open, so nothing loads until clicked.
  *
- * GitHub Pages sert ce depot derriere un cache navigateur : sans parametre
- * de cache-bust, rouvrir la fenetre rejoue la version deja en cache plutot
- * que la derniere publiee. `Date.now()` est impur — le React Compiler
- * refuse qu'il tourne pendant le rendu, meme via `useMemo` ou un `setState`
- * dans un effet — donc l'effet ecrit `src` directement sur le noeud DOM,
- * synchronisation imperative classique plutot qu'un aller-retour par l'etat.
+ * GitHub Pages serves it behind a browser cache: without a cache-bust
+ * parameter, reopening replays the cached build. Date.now() is impure and
+ * the React Compiler rejects it during render (even via useMemo or a
+ * setState in an effect), so the effect writes `src` on the DOM node
+ * directly.
  */
 export const Game = () => {
 	const ref = useRef<HTMLIFrameElement>(null)
@@ -31,7 +28,7 @@ export const Game = () => {
 			ref={ref}
 			title="Tic-Tac-Tic"
 			loading="lazy"
-			// le jeu est sur un autre domaine : rien a lui laisser de plus
+			// the game is on another domain: nothing more to grant it
 			sandbox="allow-scripts allow-same-origin allow-popups"
 		/>
 	)

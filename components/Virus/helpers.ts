@@ -1,7 +1,7 @@
 import { PIXEL_SIZE } from "./constants"
 import { Rect } from "./types"
 
-/** position du cadre vise, ou null s'il n'est pas a l'ecran */
+/** position of the targeted frame, or null if off screen */
 export const readRect = (selector: string): Rect | null => {
 	const node = document.querySelector(selector)
 	if (!node) return null
@@ -13,8 +13,8 @@ export const readRect = (selector: string): Rect | null => {
 }
 
 /**
- * Le masque : blanc partout au depart, donc la fenetre est entiere. Vider
- * une case la rend transparente, et c'est le bureau qui apparait dessous.
+ * The mask: white everywhere at first, so the window is whole. Emptying a
+ * cell makes it transparent, and the desktop shows through.
  */
 export const createMask = (width: number, height: number) => {
 	const canvas = document.createElement("canvas")
@@ -30,7 +30,7 @@ export const createMask = (width: number, height: number) => {
 	return { canvas, ctx }
 }
 
-/** troue le masque : la case perd son alpha, la fenetre s'ouvre dessus */
+/** punches the mask: the cell loses its alpha, the window opens onto it */
 export const punchHole = (
 	ctx: CanvasRenderingContext2D,
 	cell: number,
@@ -50,8 +50,8 @@ type MaskStyle = CSSStyleDeclaration & {
 }
 
 /**
- * Pose le masque sur la fenetre. Le canvas repasse par une image, seule
- * forme que CSS accepte ; l'alpha du masque decide de ce qui reste.
+ * Applies the mask to the window. The canvas goes through an image, the
+ * only form CSS accepts; the mask alpha decides what stays.
  */
 export const applyMask = (target: HTMLElement, canvas: HTMLCanvasElement) => {
 	const url = `url("${canvas.toDataURL()}")`
@@ -64,7 +64,7 @@ export const applyMask = (target: HTMLElement, canvas: HTMLCanvasElement) => {
 	style.maskRepeat = "no-repeat"
 }
 
-/** rend la fenetre intacte : le masque s'en va, les trous avec */
+/** makes the window intact: the mask goes away, holes with it */
 export const clearMask = (target: HTMLElement) => {
 	const style = target.style as MaskStyle
 

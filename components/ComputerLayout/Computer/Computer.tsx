@@ -35,8 +35,8 @@ const BaseComputer = (
 
 	const build = useIsMounted()
 
-	// le storage n'existe pas au prerendu : lecture paresseuse au premier
-	// rendu client, puis relecture a la sortie du BIOS, qui vient d'ecrire
+	// storage does not exist at prerender: lazy read on first client render,
+	// then read again on leaving the BIOS, which has just written
 	const [settings, setSettings] = useState<Record<string, string>>(() =>
 		typeof window === "undefined" ? {} : getStorage("settings") || {}
 	)

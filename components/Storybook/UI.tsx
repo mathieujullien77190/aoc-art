@@ -5,6 +5,6 @@ export const Frame = styled.iframe`
 	height: 100%;
 	border: none;
 	display: block;
-	/* la page distante a son propre fond, blanc le temps qu'elle charge */
+	/* the remote page has its own background, white while it loads */
 	background-color: #ffffff;
 `

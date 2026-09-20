@@ -1,9 +1,9 @@
-/** couleur de la bibliotheque, construite par Flw.Color.createWithHex */
+/** colour from the library, built by Flw.Color.createWithHex */
 export type FlwColor = { toString: () => string }
 
 export type FlwOptions = Record<string, number | string | FlwColor>
 
-/** la plante en cours de pousse ; passer _running a false l'arrete */
+/** the plant being grown; setting _running to false stops it */
 export type FlwPlant = { _running: boolean }
 
 export type FlwGlobal = {
@@ -15,7 +15,7 @@ export type FlwGlobal = {
 
 export type Size = { width: number; height: number }
 
-/** coin d'ou part la plante */
+/** corner the plant starts from */
 export type Side = "left" | "right"
 
 declare global {

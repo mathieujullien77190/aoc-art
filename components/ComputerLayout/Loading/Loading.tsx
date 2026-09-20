@@ -20,8 +20,8 @@ export const Loading = ({
   onFinish = () => { },
 }: LoadingProps) => {
   const [startLoading, setStartLoading] = useState<boolean>(true);
-  // body est en height:100%, sa hauteur ne depend pas de ce composant : on peut
-  // la mesurer des l'initialisation, l'ecran de boot n'existant que cote client
+  // body is height:100%, so its height does not depend on this component: it
+  // can be measured at init, the boot screen only exists client side
   const [screenHeight] = useState<number>(
     () => document.body.getBoundingClientRect().height
   );

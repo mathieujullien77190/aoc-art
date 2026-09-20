@@ -2,7 +2,7 @@ import type { JSX } from "react"
 
 export type ComputerProps = {
 	children: JSX.Element
-	/** joue une commande dans le terminal */
+	/** plays a command in the terminal */
 	onRunCommand?: (pattern: string) => void
 	onCloseWindow?: () => void
 }

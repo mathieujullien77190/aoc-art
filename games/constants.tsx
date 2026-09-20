@@ -22,7 +22,7 @@ export type GameConfig = GameMeta & {
 	component: () => JSX.Element
 }
 
-/** le rendu de chaque jeu, par cle annee-jour (voir meta.ts) */
+/** each game's render, by year-day key (see meta.ts) */
 const components: Record<string, () => JSX.Element> = {
 	"2021-25": () => <Game2021 />,
 	"2022-1": () => <GameDay1 />,

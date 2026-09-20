@@ -27,45 +27,45 @@ const BaseWindows = (
 	}: WindowsProps,
 	ref: Ref<HTMLDivElement>
 ) => {
-	// la pile vit dans le store : une commande du shell peut ainsi
-	// ouvrir une fenetre, comme la commande prism
+	// the stack lives in the store: a shell command can open a window, like
+	// the prism command
 	const stack = useGetWindows() as WindowName[]
 
 	const lang = useGetLang()
 
-	// le seuil est a nous : le paquet ne connait aucune taille d'ecran
+	// the threshold is ours: the package knows no screen size
 	const compact = useIsCompact()
 
 	/**
-	 * Rang d'agrandissement du shell : une icone qui l'ouvre l'avance, la
-	 * fenetre s'ouvre alors en grand. Le visiteur reste libre de la
-	 * reduire ensuite, la demande suivante la reouvrira pleine.
+	 * Enlarge rank of the shell: an icon that opens it bumps it, so the window
+	 * opens large. The visitor can shrink it after, the next request reopens
+	 * it full.
 	 */
 	const [expand, setExpand] = useState<number>(0)
 
 	const isOpen = (name: WindowName) => stack.includes(name)
 
-	/** ouvre la fenetre, ou la remonte si elle etait dessous */
+	/** opens the window, or raises it if it was below */
 	const focus = (name: WindowName) => globalActions().focusWindow(name)
 
 	const close = (name: WindowName) => globalActions().closeWindow(name)
 
 	/**
-	 * L'icone ferme sa fenetre seulement si elle est deja au premier plan.
-	 * Cachee derriere une autre, on veut la voir, pas la perdre.
+	 * The icon closes its window only if it is already in front. Hidden behind
+	 * another, we want to see it, not lose it.
 	 */
 	const handleWindowIcon = (name: WindowName) => {
 		if (stack[stack.length - 1] === name) close(name)
 		else focus(name)
 	}
 
-	/** etage d'empilement : le sommet de la pile passe devant */
+	/** stacking level: the top of the stack goes in front */
 	const layer = (name: WindowName) =>
 		TOP_LAYER - (stack.length - 1 - stack.indexOf(name))
 
-	/** l'icone s'allume quand ce qu'elle ouvre est a l'ecran */
+	/** the icon lights up when what it opens is on screen */
 	const isIconOpen = (key: IconKey) => {
-		// une icone qui joue une commande n'ouvre rien, elle rend la main
+		// an icon that plays a command opens nothing, it hands back
 		if (iconOf(key).command) return false
 		return isWindowIcon(key) && isOpen(key)
 	}
@@ -73,8 +73,8 @@ const BaseWindows = (
 	const handleIcon = (key: IconKey) => {
 		const { command } = iconOf(key)
 
-		// la commande s'ecrit dans le shell, qui passe devant en grand :
-		// les sorties sont larges, une fenetre moyenne les replierait
+		// the command is written in the shell, which comes to the front large:
+		// outputs are wide, a medium window would wrap them
 		if (command) {
 			setExpand(prev => prev + 1)
 			focus("shell")
@@ -84,20 +84,20 @@ const BaseWindows = (
 
 		if (!isWindowIcon(key)) return
 
-		// lu avant le clic : seul le shell au premier plan se ferme, et il
-		// est encore monte a cet instant — l'ouvrir ne doit rien vider, il
-		// n'y a alors aucun terminal a qui parler
+		// read before the click: only the front shell closes, and it is still
+		// mounted at that moment — opening it must empty nothing, there is no
+		// terminal to talk to yet
 		const closing = key === "shell" && stack[stack.length - 1] === "shell"
 
 		handleWindowIcon(key)
 
-		// le shell ferme par son icone repart vide
+		// the shell closed by its icon restarts empty
 		if (closing) onCloseWindow()
 	}
 
 	const globalRef = useRef<HTMLDivElement>(null)
 
-	/** une icone du bureau, ou du coin : seule la place change */
+	/** a desktop or corner icon: only the place changes */
 	const desktopIcon = (icon: DesktopIcon) => (
 		<Icon
 			key={icon.key}
@@ -111,7 +111,7 @@ const BaseWindows = (
 
 	return (
 		<S.Container ref={globalRef}>
-			{/* la fenetre rongee jusqu'a l'os emporte la machine avec elle */}
+			{/* a window gnawed to the bone takes the machine down with it */}
 			<Virus onDead={() => onBlueScreen(true)} />
 
 			{ICONS.filter(icon => !icon.corner).map(desktopIcon)}
@@ -153,8 +153,8 @@ const BaseWindows = (
 				<Prism />
 			</Window>
 
-			{/* la doc du paquet, chargee depuis GitHub Pages : elle porte sa
-			    propre mise en page, la fenetre lui laisse tout le cadre */}
+			{/* the package docs, loaded from GitHub Pages: they bring their own
+			    layout, the window leaves them the whole frame */}
 			<Window
 				show={isOpen("storybook")}
 				container={globalRef}
@@ -170,8 +170,8 @@ const BaseWindows = (
 				<Storybook />
 			</Window>
 
-			{/* le mini-jeu, pense pour un ecran de telephone : la fenetre
-			    reste a ce gabarit plutot que le carre moyen habituel */}
+			{/* the mini-game, made for a phone screen: the window keeps that
+			    template rather than the usual medium square */}
 			<Window
 				show={isOpen("game")}
 				container={globalRef}

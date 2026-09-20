@@ -1,9 +1,9 @@
 /**
- * Ce qui decrit un jeu, sans son composant. constants.tsx importe des
- * composants styled-components, inutilisables cote serveur : les pages
- * statiques (app/aoc/...) ont besoin de la liste sans les traîner.
+ * What describes a game, minus its component. constants.tsx imports
+ * styled-components components, unusable server side: static pages need
+ * the list without them.
  *
- * L'ordre compte : `aoc 1` designe l'index dans ce tableau.
+ * Order matters: `aoc 1` designates the index in this array.
  */
 export type GameMeta = {
 	day: string
@@ -31,6 +31,6 @@ export const gamesMeta: GameMeta[] = [
 	{ day: "XX", year: "XXXX", title: "Playground", special: true },
 ]
 
-/** la cle d'un jeu : annee et jour ne se repetent pas */
+/** the key of a game: year and day never repeat */
 export const gameKey = ({ year, day }: Pick<GameMeta, "year" | "day">) =>
 	`${year}-${day}`

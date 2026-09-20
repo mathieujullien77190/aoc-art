@@ -11,25 +11,23 @@ import {
 import { createSpread } from "./spread"
 
 /**
- * La fenetre du shell fond a partir d'un point pris en haut : une case de
- * vingt par vingt disparait de temps en temps, et les suivantes sont
- * prises collees au trou deja ouvert. Une fois la derniere case avalee,
- * onDead previent le poste, qui part en ecran bleu.
+ * The shell window melts from a point at the top: a 20 by 20 cell vanishes
+ * now and then, the next ones taken next to the hole already open. Once
+ * the last cell is eaten, onDead tells the machine, which goes blue screen.
  *
- * Le trou est un vrai trou : un masque CSS pose sur la fenetre elle-meme,
- * blanc au depart, vide case par case. Le bureau apparait dessous, et
- * comme le masque voyage avec l'element, deplacer la fenetre n'impose
- * aucun suivi.
+ * The hole is a real hole: a CSS mask on the window itself, white at first,
+ * emptied cell by cell. The desktop shows through, and as the mask travels
+ * with the element, moving the window needs no tracking.
  *
- * La taille est figee a la premiere mesure — redimensionner la fenetre
- * etirerait le masque, c'est laisse de cote pour l'instant.
+ * Size is frozen at the first measure — resizing would stretch the mask,
+ * left aside for now.
  *
- * La graine vaut 0 tant que stux n'a pas tourne : rien ne se passe alors.
+ * The seed is 0 until stux has run: nothing happens then.
  */
 export const useVirus = (seed: number, onDead: () => void) => {
-	// la callback change a chaque rendu du bureau : la garder dans une ref
-	// evite de relancer l'infection pour autant. La ref se met a jour dans
-	// un effet, y toucher pendant le rendu n'est pas permis.
+	// the callback changes on every desktop render: keeping it in a ref avoids
+	// restarting the infection. The ref updates in an effect, touching it
+	// during render is not allowed.
 	const dead = useRef(onDead)
 
 	useEffect(() => {
@@ -51,9 +49,9 @@ export const useVirus = (seed: number, onDead: () => void) => {
 			const width = Math.floor(rect.width)
 			const height = Math.floor(rect.height)
 
-			// au plafond, pas au plancher : sinon le reste de la division
-			// laisse une bande a droite et une en bas que rien ne ronge. La
-			// derniere case deborde du canvas, ce qui ne coute rien.
+			// ceiling, not floor: otherwise the division remainder leaves a strip on
+			// the right and one at the bottom that nothing gnaws. The last cell
+			// overflows the canvas, which costs nothing.
 			cols = Math.ceil(width / PIXEL_SIZE)
 			mask = createMask(width, height)
 			spread = createSpread(cols, Math.ceil(height / PIXEL_SIZE))
@@ -63,7 +61,7 @@ export const useVirus = (seed: number, onDead: () => void) => {
 		}
 
 		const tick = () => {
-			// la fenetre peut ne pas etre encore la : on reessaie au prochain tour
+			// the window may not be there yet: retry on the next turn
 			if (!mask && !setup()) return
 			if (!mask?.ctx || !target) return
 
@@ -83,9 +81,9 @@ export const useVirus = (seed: number, onDead: () => void) => {
 
 		return () => {
 			window.clearInterval(timer)
-			// la fenetre n'appartient pas au virus : on la rend intacte
+			// the window does not belong to the virus: return it intact
 			if (target) clearMask(target)
 		}
-		// la graine change a chaque stux : la fenetre repart entiere
+		// the seed changes on each stux: the window starts whole again
 	}, [seed])
 }

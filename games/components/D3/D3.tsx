@@ -125,8 +125,8 @@ export const D3 = ({
 		}
 	}, [axes, Z])
 
-	// l'orientation de depart est posee a la frame suivante, pas au montage :
-	// le cube doit d'abord etre peint a plat pour que la transition se voie
+	// the starting orientation is set on the next frame, not on mount: the cube
+	// must first be painted flat for the transition to show
 	useEffect(() => {
 		const frame = requestAnimationFrame(() => handleReset())
 		return () => cancelAnimationFrame(frame)

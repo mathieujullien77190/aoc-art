@@ -11,16 +11,16 @@ export const colors = {
 }
 
 /**
- * Le paquet qui porte le terminal : son depot et sa doc publiee. Les deux
- * servent au bureau (la fenetre de doc) comme au shell (la commande
- * flower-shell), d'ou leur place ici plutot que dans l'un des deux.
+ * The package behind the terminal: its repo and published docs. Both serve
+ * the desktop (docs window) and the shell (flower-shell command), hence
+ * their place here.
  */
 export const pkg = {
 	repo: "https://github.com/mathieujullien77190/flower-shell",
 	storybook: "https://mathieujullien77190.github.io/flower-shell/",
 }
 
-/** le mini-jeu embarque, publie sur GitHub Pages depuis son propre depot */
+/** the embedded mini-game, published on GitHub Pages from its own repo */
 export const game = {
 	url: "https://mathieujullien77190.github.io/game/",
 }

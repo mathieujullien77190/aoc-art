@@ -3,20 +3,16 @@ import { gamesMeta } from "_games/meta"
 import { CV_SECTIONS } from "./cv"
 
 /**
- * Les pages statiques du site : une ligne de commande = un chemin, ses mots
- * separes par des /. `aoc 5` est /aoc/5, `cv xp` est /cv/xp.
+ * Static pages: one command line, one path (`aoc 5` is /aoc/5). Plain data,
+ * because flower-shell and styled-components cannot load in a server
+ * component, and the static export needs its pages known at build time.
  *
- * Donnees pures, sans le shell ni ses composants : generateStaticParams les
- * lit cote serveur, ou flower-shell et styled-components ne passent pas.
- * L'export statique veut ses pages connues au build, donc seules les lignes
- * listees ici ont une adresse ; les autres laissent l'URL a l'accueil.
- *
- * Absentes a dessein : `clear` (rien a rejouer), `cv pdf` et `flower-shell
- * git|storybook` (ouvrent un onglet, qu'un chargement de page se ferait
- * bloquer), et les arguments libres (theme, font, `aoc cuc`...).
+ * Left out on purpose: `clear`, `cv pdf` and `flower-shell git|storybook`
+ * (they open a tab, which a page load would get blocked) and free-form
+ * arguments.
  */
 
-/** les commandes du paquet flower-shell, hors clear et test */
+/** flower-shell commands, minus clear and test */
 const BASE_COMMANDS = [
 	"animation",
 	"flowers",
@@ -27,7 +23,7 @@ const BASE_COMMANDS = [
 	"theme",
 ]
 
-/** les commandes de ce site, hors closeaoc qui est restreinte */
+/** this site's commands, minus the restricted closeaoc */
 const SITE_COMMANDS = ["aoc", "cv", "about", "stux", "prism", "ttt", "flower-shell"]
 
 const COMMANDS = [...BASE_COMMANDS, ...SITE_COMMANDS]
@@ -36,7 +32,7 @@ export const ROUTES: string[][] = [
 	...COMMANDS.map(name => [name]),
 	...COMMANDS.map(name => ["help", name]),
 	["aoc", "list"],
-	// l'index dans la liste, tel que `aoc 5` le designe
+	// list index, as in `aoc 5`
 	...gamesMeta.map((_, index) => ["aoc", String(index)]),
 	...CV_SECTIONS.map(section => ["cv", section]),
 ]
@@ -48,6 +44,6 @@ export const isRoute = (segments: string[]): boolean =>
 			route.every((segment, index) => segment === segments[index])
 	)
 
-/** avec le / final : le site est exporte en trailingSlash */
+/** with the trailing slash: the site is exported with trailingSlash */
 export const routePath = (segments: string[]): string =>
 	`/${segments.join("/")}/`
