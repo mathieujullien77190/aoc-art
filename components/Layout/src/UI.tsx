@@ -3,7 +3,7 @@ import styled, { createGlobalStyle } from "styled-components"
 export const GlobalStyles = createGlobalStyle<{
 	isMobile: boolean
 }>`
-  body, html, #__next {
+  body, html {
 	height: 100%;
 	width: 100%;
 	margin: 0;

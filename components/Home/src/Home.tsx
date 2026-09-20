@@ -1,4 +1,6 @@
-import React, { useCallback, useEffect, useState } from "react"
+"use client"
+
+import { useCallback, useEffect, useState } from "react"
 
 import {
 	baseCommands,
@@ -31,30 +33,6 @@ import {
 import { app } from "_components/constants"
 
 import { isMobile } from "react-device-detect"
-import styled from "styled-components"
-
-export const Button = styled.div`
-	position: absolute;
-	z-index: 10000;
-	top: 27px;
-	right: 22px;
-	display: none;
-
-	@media (min-width: 1024px) {
-		display: block;
-	}
-
-	border: solid 2px #000000;
-	padding: 12px;
-	background-color: #ffffff;
-	cursor: pointer;
-	opacity: 0.2;
-
-	&:hover {
-		background-color: gray;
-		opacity: 1;
-	}
-`
 
 /** le shell connait ses commandes, puis celles de ce site */
 const commands = { ...baseCommands, ...customCommands }
@@ -96,7 +74,7 @@ const dict: Dictionaries = {
 setDict(dict)
 
 /**
- * La ligne portee par le lien profond : #aoc_1 lance +aoc 1+. Rien au
+ * La ligne portee par l'ancien lien profond : #aoc_1 lance +aoc 1+. Rien au
  * prerendu, location n'y existe pas.
  */
 const deepLink = (): string[] => {
@@ -105,18 +83,24 @@ const deepLink = (): string[] => {
 	return [location.hash.substring(1).split("_").join(" ")]
 }
 
-const Home = () => {
+type HomeProps = {
+	/** la commande jouee a l'arrivee : la route /aoc/2022/1 donne "aoc 2022-1" */
+	command?: string
+}
+
+export const Home = ({ command }: HomeProps) => {
 	const shell = useShell()
 
 	/**
 	 * L'ouverture, lue une fois. Elle ne peut pas partir d'ici : le shell
 	 * n'est monte qu'a la fin de la sequence de boot, et jouer une ligne
 	 * avant ca ne trouve aucun terminal. Le shell la joue en arrivant.
+	 * La route prime, le #hash reste pour les liens deja partages.
 	 */
 	const [opening] = useState<string[]>(() => [
 		"title",
 		"welcome",
-		...deepLink(),
+		...(command ? [command] : deepLink()),
 	])
 
 	const handleClick = useCallback(() => {
@@ -154,7 +138,7 @@ const Home = () => {
 	useEffect(() => {
 		const lang = browserLang()
 
-		// _document fige l'attribut a fr, il vaut pour tout le monde
+		// layout.tsx fige l'attribut a fr, il vaut pour tout le monde
 		document.documentElement.lang = lang
 		globalActions().setProperty("lang", lang)
 	}, [])
@@ -183,5 +167,3 @@ const Home = () => {
 		</Layout>
 	)
 }
-
-export default Home
