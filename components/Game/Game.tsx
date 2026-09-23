@@ -1,11 +1,14 @@
 import { useEffect, useRef } from "react"
 
-import { game } from "_components/constants"
-
 import * as S from "./UI"
 
+type GameProps = {
+	url: string
+	title: string
+}
+
 /**
- * The mini-game, published on GitHub Pages from its own repo, in an iframe
+ * A mini-game, published on GitHub Pages from its own repo, in an iframe
  * like the Storybook docs: the desktop window is the frame.
  *
  * Only mounted while the window is open, so nothing loads until clicked.
@@ -16,17 +19,17 @@ import * as S from "./UI"
  * setState in an effect), so the effect writes `src` on the DOM node
  * directly.
  */
-export const Game = () => {
+export const Game = ({ url, title }: GameProps) => {
 	const ref = useRef<HTMLIFrameElement>(null)
 
 	useEffect(() => {
-		if (ref.current) ref.current.src = `${game.url}?t=${Date.now()}`
-	}, [])
+		if (ref.current) ref.current.src = `${url}?t=${Date.now()}`
+	}, [url])
 
 	return (
 		<S.Frame
 			ref={ref}
-			title="Tic-Tac-Tic"
+			title={title}
 			loading="lazy"
 			// the game is on another domain: nothing more to grant it
 			sandbox="allow-scripts allow-same-origin allow-popups"

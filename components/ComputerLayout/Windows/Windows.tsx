@@ -1,6 +1,7 @@
 import { useRef, useState, Ref, forwardRef } from "react"
 
 import { globalActions, useGetLang, useGetWindows } from "_store/global/"
+import { azimut, game } from "_components/constants"
 
 import { DesktopIcon, IconKey, WindowName, WindowsProps } from "./types"
 import { FULL, ICONS, WINDOW_NAMES } from "./constants"
@@ -185,7 +186,24 @@ const BaseWindows = (
 				onFocus={() => focus("game")}
 				onClose={() => close("game")}
 			>
-				<Game />
+				<Game url={game.url} title="Tic-Tac-Tic" />
+			</Window>
+
+			{/* the second mini-game, same phone template */}
+			<Window
+				show={isOpen("azimut")}
+				container={globalRef}
+				title={labelOf("azimut", lang)}
+				layer={layer("azimut")}
+				bottomInset={FULL.heightBar}
+				compact={compact}
+				phone
+				flush
+				rank={rankOf("azimut")}
+				onFocus={() => focus("azimut")}
+				onClose={() => close("azimut")}
+			>
+				<Game url={azimut.url} title="Full Azimut" />
 			</Window>
 
 			<S.Bar>

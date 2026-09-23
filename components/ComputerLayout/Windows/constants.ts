@@ -31,6 +31,11 @@ export const ICONS: DesktopIcon[] = [
 		image: "🎮",
 	},
 	{
+		key: "azimut",
+		label: { fr: "Full Azimut", en: "Full Azimut" },
+		image: "🧭",
+	},
+	{
 		key: "cv",
 		label: "CV",
 		image: "📄",
@@ -46,4 +51,10 @@ export const COMPACT_MAX_WIDTH = 1024
  * The windows, in order: it drives the cascade offset on opening and the
  * taskbar order.
  */
-export const WINDOW_NAMES: WindowName[] = ["shell", "prism", "storybook", "game"]
+export const WINDOW_NAMES: WindowName[] = [
+	"shell",
+	"prism",
+	"storybook",
+	"game",
+	"azimut",
+]

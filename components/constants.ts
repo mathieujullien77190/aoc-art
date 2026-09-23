@@ -20,8 +20,12 @@ export const pkg = {
 	storybook: "https://mathieujullien77190.github.io/flower-shell/",
 }
 
-/** the embedded mini-game, published on GitHub Pages from its own repo */
+/** the embedded mini-games, each published on GitHub Pages from its own repo */
 export const game = {
+	url: "https://mathieujullien77190.github.io/game/",
+}
+
+export const azimut = {
 	url: "https://mathieujullien77190.github.io/full-azimut/",
 }
 
