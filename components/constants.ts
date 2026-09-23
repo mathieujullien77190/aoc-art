@@ -22,7 +22,7 @@ export const pkg = {
 
 /** the embedded mini-game, published on GitHub Pages from its own repo */
 export const game = {
-	url: "https://mathieujullien77190.github.io/game/",
+	url: "https://mathieujullien77190.github.io/full-azimut/",
 }
 
 export const app = {
