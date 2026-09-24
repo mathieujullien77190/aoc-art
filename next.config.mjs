@@ -8,12 +8,6 @@ const withBundleAnalyzer = bundleAnalyzer({
 const nextConfig = {
 	agentRules: false,
 	devIndicators: false,
-	output: "export",
-	/**
-	 * flower-shell's CJS build breaks styled-components interop: it wraps a
-	 * module that already exposes its default, and styled.input disappears.
-	 * Bundling the package takes its ESM build, which is fine.
-	 */
 	transpilePackages: ["flower-shell"],
 	trailingSlash: true,
 	compiler: {
