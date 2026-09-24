@@ -115,7 +115,16 @@ const BaseWindows = (
 			{/* a window gnawed to the bone takes the machine down with it */}
 			<Virus onDead={() => onBlueScreen(true)} />
 
-			{ICONS.filter(icon => !icon.corner).map(desktopIcon)}
+			{ICONS.filter(
+				icon => !icon.corner && icon.key !== "game" && icon.key !== "azimut"
+			).map(desktopIcon)}
+
+			<S.MiniGamesBox>
+				{ICONS.filter(icon => icon.key === "game" || icon.key === "azimut").map(
+					desktopIcon
+				)}
+				<S.MiniGamesNote>in dev</S.MiniGamesNote>
+			</S.MiniGamesBox>
 
 			<S.Corner>{ICONS.filter(icon => icon.corner).map(desktopIcon)}</S.Corner>
 

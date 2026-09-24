@@ -68,3 +68,24 @@ export const Task = styled.div<{ $active: boolean }>`
 `
 
 export const Date = styled.div``
+
+/** hand-drawn-looking box around the mini-game icons, still in dev */
+export const MiniGamesBox = styled.div`
+	position: relative;
+	width: fit-content;
+	border: solid 2px ${COLORS.border};
+	border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+`
+
+/** looks scribbled by hand next to the box, pointing at the mini-games */
+export const MiniGamesNote = styled.div`
+	position: absolute;
+	top: 50%;
+	left: 100%;
+	margin-left: 10px;
+	transform: translateY(-50%) rotate(-6deg);
+	white-space: nowrap;
+	font-family: "Segoe Script", "Comic Sans MS", cursive;
+	font-size: 20px;
+	color: ${COLORS.text};
+`
