@@ -212,7 +212,7 @@ const BaseWindows = (
 				onFocus={() => focus("azimut")}
 				onClose={() => close("azimut")}
 			>
-				<Game url={azimut.url} title="Full Azimut" />
+				<Game url={azimut.url} title="Azimut Quiz" />
 			</Window>
 
 			<S.Bar>

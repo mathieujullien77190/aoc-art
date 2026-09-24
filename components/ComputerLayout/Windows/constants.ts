@@ -32,7 +32,7 @@ export const ICONS: DesktopIcon[] = [
 	},
 	{
 		key: "azimut",
-		label: { fr: "Full Azimut", en: "Full Azimut" },
+		label: { fr: "Azimut Quiz", en: "Azimut Quiz" },
 		image: "🧭",
 	},
 	{

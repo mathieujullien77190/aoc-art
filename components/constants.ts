@@ -26,7 +26,7 @@ export const game = {
 }
 
 export const azimut = {
-	url: "https://mathieujullien77190.github.io/full-azimut/",
+	url: "https://mathieujullien77190.github.io/azimuth-quiz/",
 }
 
 export const app = {
