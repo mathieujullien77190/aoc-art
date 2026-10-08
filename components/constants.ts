@@ -25,6 +25,14 @@ export const game = {
 	url: "https://mathieujullien77190.github.io/game/",
 }
 
+/**
+ * The 3D library, deployed on Vercel from its own repo. `embed=bg` makes it a backdrop: the scene
+ * alone, the desktop icons and windows stay on top of it.
+ */
+export const library = {
+	url: "https://books-zqje.vercel.app/?embed=bg",
+}
+
 export const azimut = {
 	url: "https://mathieujullien77190.github.io/azimuth-quiz/",
 }

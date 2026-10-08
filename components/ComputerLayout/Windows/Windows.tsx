@@ -1,7 +1,7 @@
 import { useRef, useState, Ref, forwardRef } from "react"
 
 import { globalActions, useGetLang, useGetWindows } from "_store/global/"
-import { azimut, game } from "_components/constants"
+import { azimut, game, library } from "_components/constants"
 
 import { DesktopIcon, IconKey, WindowName, WindowsProps } from "./types"
 import { FULL, ICONS, WINDOW_NAMES } from "./constants"
@@ -44,6 +44,9 @@ const BaseWindows = (
 	 */
 	const [expand, setExpand] = useState<number>(0)
 
+	/** the 3D library as desktop backdrop: not a window, just on or off */
+	const [libraryOn, setLibraryOn] = useState(false)
+
 	const isOpen = (name: WindowName) => stack.includes(name)
 
 	/** opens the window, or raises it if it was below */
@@ -68,10 +71,16 @@ const BaseWindows = (
 	const isIconOpen = (key: IconKey) => {
 		// an icon that plays a command opens nothing, it hands back
 		if (iconOf(key).command) return false
+		if (key === "library") return libraryOn
 		return isWindowIcon(key) && isOpen(key)
 	}
 
 	const handleIcon = (key: IconKey) => {
+		if (key === "library") {
+			setLibraryOn(on => !on)
+			return
+		}
+
 		const { command } = iconOf(key)
 
 		// the command is written in the shell, which comes to the front large:
@@ -112,6 +121,14 @@ const BaseWindows = (
 
 	return (
 		<S.Container ref={globalRef}>
+			{/* mounted only when switched on: nothing loads before the click */}
+			{libraryOn && (
+				<S.Backdrop
+					title={labelOf("library", lang)}
+					src={library.url}
+					sandbox="allow-scripts allow-same-origin"
+				/>
+			)}
 			{/* a window gnawed to the bone takes the machine down with it */}
 			<Virus onDead={() => onBlueScreen(true)} />
 

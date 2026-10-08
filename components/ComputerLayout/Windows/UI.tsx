@@ -2,9 +2,23 @@ import styled from "styled-components"
 import { FULL, COLORS } from "./constants"
 
 export const Container = styled.div`
+	/* own stacking context: the backdrop (z-index -1) sits above the desktop, under icons and windows */
+	position: relative;
+	isolation: isolate;
 	width: ${`calc(100% - ${FULL.padding} - ${FULL.padding})`};
 	height: ${`calc(100% - ${FULL.padding} - ${FULL.padding})`};
 	padding: ${FULL.padding};
+`
+
+/** the 3D library behind icons and windows: it fills the desktop, above the task bar */
+export const Backdrop = styled.iframe`
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: calc(100% - ${FULL.heightBar});
+	border: none;
+	z-index: -1;
 `
 
 /**

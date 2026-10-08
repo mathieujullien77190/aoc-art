@@ -16,8 +16,11 @@ export type Pos = { x: number; y: number }
 /** icon that carries a desktop window */
 export type WindowName = "shell" | "prism" | "storybook" | "game" | "azimut"
 
-/** AOC and the CV open no window: they play a command */
-export type IconKey = WindowName | "aoc" | "cv"
+/**
+ * AOC and the CV open no window: they play a command. The library opens none
+ * either: its icon switches the 3D library on or off as the desktop backdrop.
+ */
+export type IconKey = WindowName | "aoc" | "cv" | "library"
 
 export type DesktopIcon = {
 	key: IconKey
