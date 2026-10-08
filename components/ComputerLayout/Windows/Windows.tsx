@@ -131,7 +131,7 @@ const BaseWindows = (
 				<S.Backdrop
 					title={labelOf("library", lang)}
 					src={library.url}
-					sandbox="allow-scripts allow-same-origin"
+					sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
 				/>
 			)}
 			{/* a window gnawed to the bone takes the machine down with it */}
