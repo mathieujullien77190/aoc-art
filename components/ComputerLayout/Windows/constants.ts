@@ -26,11 +26,6 @@ export const ICONS: DesktopIcon[] = [
 		image: "📖",
 	},
 	{
-		key: "library",
-		label: { fr: "Bibliothèque", en: "Library" },
-		image: "📚",
-	},
-	{
 		key: "game",
 		label: { fr: "Tic-Tac-Tic", en: "Tic-Tac-Tic" },
 		image: "🎮",
@@ -46,6 +41,12 @@ export const ICONS: DesktopIcon[] = [
 		image: "📄",
 		corner: true,
 		command: "cv",
+	},
+	{
+		key: "library",
+		label: { fr: "Bibliothèque", en: "Library" },
+		image: "📚",
+		corner: true,
 	},
 ]
 

@@ -31,6 +31,8 @@ export const game = {
  */
 export const library = {
 	url: "https://books-zqje.vercel.app/?embed=bg",
+	/** the library itself, full page: on a phone the icon goes there instead of lighting the backdrop */
+	appUrl: "https://books-zqje.vercel.app/",
 }
 
 export const azimut = {

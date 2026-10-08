@@ -77,6 +77,11 @@ const BaseWindows = (
 
 	const handleIcon = (key: IconKey) => {
 		if (key === "library") {
+			// a phone is too small for a backdrop under windows: go to the real site
+			if (compact) {
+				window.location.assign(library.appUrl)
+				return
+			}
 			setLibraryOn(on => !on)
 			return
 		}

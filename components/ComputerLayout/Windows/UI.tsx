@@ -30,6 +30,8 @@ export const Corner = styled.div`
 	top: ${FULL.padding};
 	right: ${FULL.padding};
 	display: flex;
+	flex-direction: column;
+	align-items: center;
 	gap: 6px;
 `
 
