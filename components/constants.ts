@@ -30,9 +30,9 @@ export const game = {
  * alone, the desktop icons and windows stay on top of it.
  */
 export const library = {
-	url: "https://books-zqje.vercel.app/?embed=bg",
+	url: "https://books-mathieu-jullien.vercel.app/?embed=bg",
 	/** the library itself, full page: on a phone the icon goes there instead of lighting the backdrop */
-	appUrl: "https://books-zqje.vercel.app/",
+	appUrl: "https://books-mathieu-jullien.vercel.app/",
 }
 
 export const azimut = {
