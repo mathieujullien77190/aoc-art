@@ -7,6 +7,7 @@ import { useIsMounted } from "./hooks"
 import Windows from "../Windows"
 import Loading from "../Loading"
 import BIOS from "../BIOS"
+import Birdhouse from "../../Birdhouse"
 
 import { rand } from "../helpers/math"
 import { createArray } from "../helpers/array"
@@ -74,6 +75,8 @@ const BaseComputer = (
 										}}
 									/>
 								)}
+								{/* first, so everything else paints over it */}
+								{power && ready && <Birdhouse />}
 								{power && ready && (
 									<Windows
 										ref={ref}

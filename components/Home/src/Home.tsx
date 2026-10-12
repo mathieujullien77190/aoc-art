@@ -21,7 +21,6 @@ import { syncUrl } from "_commands/url"
 import Layout from "_components/Layout"
 import Computer from "_components/ComputerLayout/Computer"
 import Flowers from "_components/Flowers"
-import Birdhouse from "_components/Birdhouse"
 
 import { globalActions } from "_store/global/"
 import {
@@ -171,7 +170,6 @@ export const Home = ({ command }: HomeProps) => {
 			</Computer>
 
 			<Flowers />
-			<Birdhouse />
 		</Layout>
 	)
 }
