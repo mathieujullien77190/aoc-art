@@ -14,7 +14,7 @@ export type WindowsProps = {
 export type Pos = { x: number; y: number }
 
 /** icon that carries a desktop window */
-export type WindowName = "shell" | "prism" | "storybook" | "game" | "azimut"
+export type WindowName = "shell" | "prism" | "storybook" | "azimut"
 
 /**
  * AOC and the CV open no window: they play a command. The library opens none
@@ -27,6 +27,8 @@ export type DesktopIcon = {
 	/** label under the icon, and in the taskbar */
 	label: Translatable
 	image: string
+	/** not on the desktop: only the prism command opens its window */
+	hidden?: boolean
 	/** placed at the top right, outside the desktop column */
 	corner?: boolean
 	/**

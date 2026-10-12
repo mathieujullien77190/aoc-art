@@ -1,7 +1,7 @@
 import { useRef, useState, Ref, forwardRef } from "react"
 
 import { globalActions, useGetLang, useGetWindows } from "_store/global/"
-import { azimut, game, library } from "_components/constants"
+import { azimut, library } from "_components/constants"
 
 import { DesktopIcon, IconKey, WindowName, WindowsProps } from "./types"
 import { FULL, ICONS, WINDOW_NAMES } from "./constants"
@@ -138,13 +138,11 @@ const BaseWindows = (
 			<Virus onDead={() => onBlueScreen(true)} />
 
 			{ICONS.filter(
-				icon => !icon.corner && icon.key !== "game" && icon.key !== "azimut"
+				icon => !icon.hidden && !icon.corner && icon.key !== "azimut"
 			).map(desktopIcon)}
 
 			<S.MiniGamesBox>
-				{ICONS.filter(icon => icon.key === "game" || icon.key === "azimut").map(
-					desktopIcon
-				)}
+				{ICONS.filter(icon => icon.key === "azimut").map(desktopIcon)}
 				<S.MiniGamesNote>in dev</S.MiniGamesNote>
 			</S.MiniGamesBox>
 
@@ -204,23 +202,6 @@ const BaseWindows = (
 
 			{/* the mini-game, made for a phone screen: the window keeps that
 			    template rather than the usual medium square */}
-			<Window
-				show={isOpen("game")}
-				container={globalRef}
-				title={labelOf("game", lang)}
-				layer={layer("game")}
-				bottomInset={FULL.heightBar}
-				compact={compact}
-				phone
-				flush
-				rank={rankOf("game")}
-				onFocus={() => focus("game")}
-				onClose={() => close("game")}
-			>
-				<Game url={game.url} title="Tic-Tac-Tic" />
-			</Window>
-
-			{/* the second mini-game, same phone template */}
 			<Window
 				show={isOpen("azimut")}
 				container={globalRef}

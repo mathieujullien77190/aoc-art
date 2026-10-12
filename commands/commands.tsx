@@ -208,28 +208,6 @@ export const commands: BaseCommands = {
 		}),
 	},
 
-	ttt: {
-		restricted: false,
-		action: () =>
-			say({
-				fr: "ouverture de Tic-Tac-Tic",
-				en: "opening Tic-Tac-Tic",
-			}),
-		// the desktop reads the window stack from the store
-		effect: () => globalActions().focusWindow("game"),
-		help: () => ({
-			patterns: [
-				{
-					pattern: "ttt",
-					description: say({
-						fr: "Ouvre Tic-Tac-Tic (jeu en construction)",
-						en: "Opens Tic-Tac-Tic (game under construction)",
-					}),
-				},
-			],
-		}),
-	},
-
 	"flower-shell": {
 		restricted: false,
 		testArgs: { authorize: FS_TARGETS, empty: true },

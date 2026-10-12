@@ -19,16 +19,11 @@ export const COLORS = {
 export const ICONS: DesktopIcon[] = [
 	{ key: "shell", label: "Flower Shell", image: "🌼" },
 	{ key: "aoc", label: "Advent of Code", image: "🎄", command: "aoc list" },
-	{ key: "prism", label: "1/PRISM", image: "📡" },
+	{ key: "prism", label: "1/PRISM", image: "📡", hidden: true },
 	{
 		key: "storybook",
 		label: { fr: "Doc Flower Shell", en: "Flower Shell docs" },
 		image: "📖",
-	},
-	{
-		key: "game",
-		label: { fr: "Tic-Tac-Tic", en: "Tic-Tac-Tic" },
-		image: "🎮",
 	},
 	{
 		key: "azimut",
@@ -61,6 +56,5 @@ export const WINDOW_NAMES: WindowName[] = [
 	"shell",
 	"prism",
 	"storybook",
-	"game",
 	"azimut",
 ]

@@ -24,7 +24,7 @@ const BASE_COMMANDS = [
 ]
 
 /** this site's commands, minus the restricted closeaoc */
-const SITE_COMMANDS = ["aoc", "cv", "about", "stux", "prism", "ttt", "flower-shell"]
+const SITE_COMMANDS = ["aoc", "cv", "about", "stux", "prism", "flower-shell"]
 
 const COMMANDS = [...BASE_COMMANDS, ...SITE_COMMANDS]
 

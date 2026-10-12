@@ -20,11 +20,6 @@ export const pkg = {
 	storybook: "https://mathieujullien77190.github.io/flower-shell/",
 }
 
-/** the embedded mini-games, each published on GitHub Pages from its own repo */
-export const game = {
-	url: "https://mathieujullien77190.github.io/game/",
-}
-
 /**
  * The 3D library, deployed on Vercel from its own repo. `embed=bg` makes it a backdrop: the scene
  * alone, the desktop icons and windows stay on top of it.
