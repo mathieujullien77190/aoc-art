@@ -8,6 +8,13 @@ export const Container = styled.div`
 	width: ${`calc(100% - ${FULL.padding} - ${FULL.padding})`};
 	height: ${`calc(100% - ${FULL.padding} - ${FULL.padding})`};
 	padding: ${FULL.padding};
+
+	/* the empty desktop lets clicks through to what sits behind it (the birdhouse); icons, windows and bar catch them again */
+	pointer-events: none;
+
+	& > * {
+		pointer-events: auto;
+	}
 `
 
 /** the 3D library behind icons and windows: it fills the desktop, above the task bar */
