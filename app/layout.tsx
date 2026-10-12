@@ -6,7 +6,7 @@ import StyledRegistry from "_components/StyledRegistry"
 import { app } from "_components/constants"
 
 export const metadata: Metadata = {
-	title: app.name,
+	title: "Portfolio Jullien Mathieu",
 	description: `${app.name} : Par ${app.author}`,
 	icons: { shortcut: "/favicon.ico" },
 }
