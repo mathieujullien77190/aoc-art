@@ -1,50 +1,77 @@
-import * as S from "./UI"
+import {
+	CircleGeometry,
+	CylinderGeometry,
+	ExtrudeGeometry,
+	Group,
+	Mesh,
+	MeshLambertMaterial,
+	Shape,
+} from "three"
 
-const URL = "https://mathieujullien77190.github.io/birds/"
+export const URL = "https://mathieujullien77190.github.io/birds/"
 
-const BODY = "10,58 46,38 46,120 10,120"
+/** One unit of the old flat drawing, in world units. */
+const K = 0.0028
+
+/** Width of the house, back to front, and depth of its wall. */
+const DEPTH = 44 * K
+
+const wall = new MeshLambertMaterial({ color: "#ffffff", flatShading: true })
+const oak = new MeshLambertMaterial({ color: "#b8854a", flatShading: true })
+const dark = new MeshLambertMaterial({ color: "#2a2a2a" })
+
+const slab = (points: [number, number][], depth: number, material: MeshLambertMaterial) => {
+	const shape = new Shape()
+	points.forEach(([x, y], i) => (i ? shape.lineTo(x, y) : shape.moveTo(x, y)))
+	const g = new ExtrudeGeometry(shape, { depth, bevelEnabled: false })
+	g.translate(0, 0, -depth / 2)
+	return new Mesh(g, material)
+}
 
 /**
- * A birdhouse seen from the side, its back against the right edge of the
- * screen: a trapezoid wall of vertical boards, its top sloping down toward
- * the front, under a roof that follows the slope and overhangs the front.
- * White wall, oak roof.
+ * The birdhouse of the desktop, in 3D: a wall whose top slopes down toward the
+ * front, under an oak roof that follows the slope and overhangs. The back is
+ * the plane X = 0, flat against the trunk; the front points toward +X; the
+ * floor is Y = 0. Same proportions as the flat drawing it replaces.
  */
-export const Birdhouse = () => (
-	<S.Wrapper
-		href={URL}
-		target="_blank"
-		rel="noopener noreferrer"
-		aria-label="Birds"
-	>
-		<svg viewBox="0 0 46 124" xmlns="http://www.w3.org/2000/svg">
-			<defs>
-				<clipPath id="birdhouse-body">
-					<polygon points={BODY} />
-				</clipPath>
-			</defs>
-			{/* wall, then its vertical boards */}
-			<polygon points={BODY} fill="#ffffff" />
-			<g clipPath="url(#birdhouse-body)" stroke="#c4c4c4" strokeWidth="1.5">
-				{[16, 22, 28, 34, 40].map(x => (
-					<line key={x} x1={x} y1="38" x2={x} y2="120" />
-				))}
-			</g>
-			<polygon
-				points={BODY}
-				fill="none"
-				stroke="#8c8c8c"
-				strokeWidth="2"
-				strokeLinejoin="round"
-			/>
-			{/* roof: a slab following the slope, overhanging the front */}
-			<polygon
-				points="2,55 46,31 46,38 2,62"
-				fill="#b8854a"
-				stroke="#6b4423"
-				strokeWidth="2"
-				strokeLinejoin="round"
-			/>
-		</svg>
-	</S.Wrapper>
-)
+export const buildBirdhouse = () => {
+	const house = new Group()
+
+	house.add(
+		slab(
+			[
+				[0, 0],
+				[36 * K, 0],
+				[36 * K, 62 * K],
+				[0, 82 * K],
+			],
+			DEPTH,
+			wall
+		)
+	)
+	house.add(
+		slab(
+			[
+				[0, 82 * K],
+				[44 * K, 58 * K],
+				[44 * K, 65 * K],
+				[0, 89 * K],
+			],
+			DEPTH + 10 * K,
+			oak
+		)
+	)
+
+	// the entrance on the front, and the perch under it
+	const hole = new Mesh(new CircleGeometry(7 * K, 12), dark)
+	hole.rotation.y = Math.PI / 2
+	hole.position.set(36 * K + 0.0005, 34 * K, 0)
+	house.add(hole)
+
+	const perch = new Mesh(new CylinderGeometry(1.4 * K, 1.4 * K, 12 * K, 6), oak)
+	perch.rotation.x = Math.PI / 2
+	perch.position.set(40 * K, 20 * K, 0)
+	house.add(perch)
+
+	return house
+}

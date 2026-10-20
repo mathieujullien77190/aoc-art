@@ -1,3 +1,1 @@
-import { Birdhouse } from "./Birdhouse"
-
-export default Birdhouse
+export { URL, buildBirdhouse } from "./Birdhouse"
