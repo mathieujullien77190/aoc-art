@@ -96,6 +96,12 @@ lui-même, les taper ne donne rien.
 
 ## Architecture
 
+![Schéma d'architecture : app Next.js, components, commands, store zustand, games, projects/prism, paquet flower-shell, Vercel et flux HLS](docs/architecture.svg)
+
+Les pages (`app/`) montent les composants, qui lisent le store zustand et passent par les commandes du site ;
+les commandes lancent les jeux (`games/`) et le terminal vient du paquet `flower-shell`. Le site est exporté
+en statique et servi par Vercel ; seuls les flux HLS de 1/PRISM sont chargés depuis l'extérieur.
+
 ```
 app/page.tsx                accueil : monte le bureau et le shell (components/Home)
 app/[...command]/           une page statique par ligne de commande (commands/routes.ts)
