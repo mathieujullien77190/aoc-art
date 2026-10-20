@@ -8,6 +8,8 @@ Le terminal lui-même est un paquet npm à part, [flower-shell](https://github.c
 ([storybook](https://mathieujullien77190.github.io/flower-shell/)) : ce site
 l'installe, lui donne ses commandes et le pose dans une fenêtre du bureau.
 
+**Live : <https://mathieu-jullien.vercel.app/>**
+
 Par JULLIEN Mathieu (SuperMatou).
 
 ## Démarrer
