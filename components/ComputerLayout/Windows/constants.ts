@@ -31,6 +31,11 @@ export const ICONS: DesktopIcon[] = [
 		image: "🧭",
 	},
 	{
+		key: "all",
+		label: { fr: "Ring", en: "Ring" },
+		image: "💍",
+	},
+	{
 		key: "cv",
 		label: "CV",
 		image: "📄",
@@ -57,4 +62,5 @@ export const WINDOW_NAMES: WindowName[] = [
 	"prism",
 	"storybook",
 	"azimut",
+	"all",
 ]

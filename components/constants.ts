@@ -34,6 +34,11 @@ export const azimut = {
 	url: "https://mathieujullien77190.github.io/azimuth-quiz/",
 }
 
+/** The dashboard of all the projects, published on GitHub Pages from its own repo. */
+export const all = {
+	url: "https://mathieujullien77190.github.io/all/",
+}
+
 export const app = {
 	name: "Flower Shell",
 	logo: "🌼",

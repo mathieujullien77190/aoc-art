@@ -14,7 +14,7 @@ export type WindowsProps = {
 export type Pos = { x: number; y: number }
 
 /** icon that carries a desktop window */
-export type WindowName = "shell" | "prism" | "storybook" | "azimut"
+export type WindowName = "shell" | "prism" | "storybook" | "azimut" | "all"
 
 /**
  * AOC and the CV open no window: they play a command. The library opens none

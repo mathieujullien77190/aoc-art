@@ -1,7 +1,7 @@
 import { useRef, useState, Ref, forwardRef } from "react"
 
 import { globalActions, useGetLang, useGetWindows } from "_store/global/"
-import { azimut, library } from "_components/constants"
+import { all, azimut, library } from "_components/constants"
 
 import { DesktopIcon, IconKey, WindowName, WindowsProps } from "./types"
 import { FULL, ICONS, WINDOW_NAMES } from "./constants"
@@ -82,6 +82,9 @@ const BaseWindows = (
 				window.location.assign(library.appUrl)
 				return
 			}
+			// the backdrop is for looking at: every window goes, the shell restarts empty
+			if (isOpen("shell")) onCloseWindow()
+			globalActions().setProperty("windows", [])
 			setLibraryOn(on => !on)
 			return
 		}
@@ -216,6 +219,22 @@ const BaseWindows = (
 				onClose={() => close("azimut")}
 			>
 				<Game url={azimut.url} title="Azimut Quiz" />
+			</Window>
+
+			{/* the dashboard of all the projects, published on GitHub Pages */}
+			<Window
+				show={isOpen("all")}
+				container={globalRef}
+				title={labelOf("all", lang)}
+				layer={layer("all")}
+				bottomInset={FULL.heightBar}
+				compact={compact}
+				flush
+				rank={rankOf("all")}
+				onFocus={() => focus("all")}
+				onClose={() => close("all")}
+			>
+				<Game url={all.url} title="All" />
 			</Window>
 
 			<S.Bar>
