@@ -49,11 +49,17 @@ export const createGarden = (canvas: HTMLCanvasElement) => {
 
 	// the birdhouse: floor at the start of the trunk's third segment, back
 	// against the trunk's left face, front toward -X
-	const house = buildBirdhouse()
 	const floor = segmentY(HOUSE_SEGMENT)
 	const spot = trunkAt(floor)
+	const houseX = spot.x - spot.radius + HOUSE_SINK
+	// where the bark stands, in the house's own X, at a height above its floor
+	const trunkSurface = (y: number) => {
+		const at = trunkAt(floor + y)
+		return houseX - (at.x - at.radius)
+	}
+	const { house, update: wire } = buildBirdhouse(trunkSurface)
 	house.rotation.y = Math.PI
-	house.position.set(spot.x - spot.radius + HOUSE_SINK, floor, spot.z)
+	house.position.set(houseX, floor, spot.z)
 	scene.add(house)
 
 	// autumn leaves falling from the crown
@@ -61,6 +67,7 @@ export const createGarden = (canvas: HTMLCanvasElement) => {
 	scene.add(leaves.group)
 
 	const render = () => renderer.render(scene, camera)
+	wire(0)
 
 	camera.lookAt(...CAMERA.target)
 
@@ -99,6 +106,7 @@ export const createGarden = (canvas: HTMLCanvasElement) => {
 	let last = performance.now()
 	const tick = (now: number) => {
 		leaves.update(now / 1000, Math.min((now - last) / 1000, 0.1))
+		wire(now / 1000)
 		last = now
 		render()
 		frame = requestAnimationFrame(tick)
